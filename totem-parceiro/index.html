@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ACQUA CARD - Consulta Parceiro</title>
+    <link rel="manifest" href="manifest_totem_parceiro.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Consulta Parceiro">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a1628 0%, #1a3a5c 50%, #0d2137 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7, #0369a1);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: linear-gradient(to bottom, rgba(14,165,233,0.3), transparent);
+        }
+
+        .header-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 20px;
+            padding: 4px 14px;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .header h1 .icon {
+            font-size: 24px;
+            margin-right: 6px;
+        }
+
+        .header p {
+            font-size: 13px;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+
+        .parceiro-tag {
+            display: inline-block;
+            background: #fbbf24;
+            color: #1a1a1a;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 12px;
+            border-radius: 12px;
+            margin-top: 8px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+
+        /* SEARCH SECTION */
+        .search-section {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #7dd3fc;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .search-tab {
+            flex: 1;
+            padding: 10px 8px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.6);
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .search-tab.active {
+            background: rgba(14,165,233,0.3);
+            border-color: #0ea5e9;
+            color: #fff;
+        }
+
+        .search-tab:hover {
+            background: rgba(14,165,233,0.15);
+        }
+
+        .search-input-wrapper {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 50px 14px 16px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(0,0,0,0.3);
+            color: #fff;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #0ea5e9;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255,255,255,0.35);
+        }
+
+        .btn-search {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            border: none;
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .btn-search:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        /* QR CODE SECTION */
+        .qr-section {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .qr-section.active {
+            display: block;
+        }
+
+        .qr-area {
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 16px;
+            border: 2px dashed rgba(14,165,233,0.5);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 8px;
+            color: rgba(255,255,255,0.5);
+            background: rgba(0,0,0,0.2);
+        }
+
+        .qr-area .icon {
+            font-size: 48px;
+        }
+
+        .qr-area p {
+            font-size: 13px;
+        }
+
+        .btn-qr {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            border: none;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-qr:active {
+            transform: scale(0.97);
+        }
+
+        /* TEXT SEARCH */
+        .text-search {
+            display: block;
+        }
+
+        .text-search.hidden {
+            display: none;
+        }
+
+        /* RESULT SECTION */
+        .result-section {
+            display: none;
+        }
+
+        .result-section.active {
+            display: block;
+        }
+
+        /* STATUS CARD */
+        .status-card {
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-card.liberado {
+            background: linear-gradient(135deg, #065f46, #047857, #059669);
+            border: 1px solid rgba(16,185,129,0.4);
+        }
+
+        .status-card.bloqueado {
+            background: linear-gradient(135deg, #7f1d1d, #991b1b, #b91c1c);
+            border: 1px solid rgba(239,68,68,0.4);
+        }
+
+        .status-card.inadimplente {
+            background: linear-gradient(135deg, #78350f, #92400e, #b45309);
+            border: 1px solid rgba(245,158,11,0.4);
+        }
+
+        .status-icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        .status-text {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .status-sub {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        .status-pulse {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-pulse.green {
+            background: #34d399;
+            box-shadow: 0 0 8px #34d399;
+        }
+
+        .status-pulse.red {
+            background: #f87171;
+            box-shadow: 0 0 8px #f87171;
+        }
+
+        .status-pulse.yellow {
+            background: #fbbf24;
+            box-shadow: 0 0 8px #fbbf24;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.3); }
+        }
+
+        /* SOCIO INFO CARD */
+        .socio-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .socio-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .socio-foto {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 700;
+            flex-shrink: 0;
+            border: 3px solid rgba(255,255,255,0.2);
+            overflow: hidden;
+        }
+
+        .socio-foto img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .socio-nome {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .socio-id {
+            font-size: 13px;
+            color: #7dd3fc;
+            margin-top: 2px;
+        }
+
+        .socio-plano-badge {
+            display: inline-block;
+            background: rgba(14,165,233,0.2);
+            border: 1px solid rgba(14,165,233,0.3);
+            color: #7dd3fc;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 8px;
+            margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .socio-details {
+            padding: 16px 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .detail-value.masked {
+            color: rgba(255,255,255,0.6);
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+
+        /* DEPENDENTES */
+        .dependentes-section {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+        }
+
+        .dependentes-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #7dd3fc;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dep-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .dep-item:last-child {
+            border-bottom: none;
+        }
+
+        .dep-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .dep-relation {
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .dep-status {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 8px;
+        }
+
+        .dep-status.ok {
+            background: rgba(16,185,129,0.2);
+            color: #34d399;
+        }
+
+        .dep-status.blocked {
+            background: rgba(239,68,68,0.2);
+            color: #f87171;
+        }
+
+        /* AVISO PARCEIRO */
+        .aviso-parceiro {
+            background: rgba(251,191,36,0.1);
+            border: 1px solid rgba(251,191,36,0.2);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .aviso-parceiro .icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .aviso-parceiro p {
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.5;
+        }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            padding: 24px 16px;
+            color: rgba(255,255,255,0.3);
+            font-size: 11px;
+        }
+
+        .footer .logo-text {
+            font-weight: 700;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 1px;
+        }
+
+        /* BTN NOVA CONSULTA */
+        .btn-nova {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #fff;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 16px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-nova:hover {
+            background: rgba(255,255,255,0.12);
+        }
+
+        /* LOADING */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: #0ea5e9;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* NOT FOUND */
+        .not-found {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .not-found.active {
+            display: block;
+        }
+
+        .not-found .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .not-found h3 {
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .not-found p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* SUGGESTIONS LIST */
+        .suggestions {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            margin-top: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .suggestions.active {
+            display: block;
+        }
+
+        .suggestion-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .suggestion-item:hover {
+            background: rgba(14,165,233,0.15);
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .suggestion-id {
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+        }
+
+        /* WATERMARK */
+        .watermark {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.6);
+            text-align: center;
+            padding: 8px;
+            font-size: 10px;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 0.5px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .watermark strong {
+            color: #7dd3fc;
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="header-badge">🤝 Acesso Parceiro</div>
+    <h1><span class="icon">🏊</span> ACQUA CARD</h1>
+    <p>Passaporte 3 Parques — Consulta de Sócios</p>
+    <div class="parceiro-tag">🔒 Modo Consulta</div>
+</div>
+
+<div class="container">
+
+    <!-- SEARCH -->
+    <div class="search-section" id="searchSection">
+        <div class="search-title">🔍 Consultar Sócio</div>
+
+        <div class="search-tabs">
+            <div class="search-tab active" onclick="switchTab('nome')" id="tabNome">👤 Nome</div>
+            <div class="search-tab" onclick="switchTab('cartao')" id="tabCartao">💳 Cartão</div>
+            <div class="search-tab" onclick="switchTab('qrcode')" id="tabQR">📷 QR Code</div>
+        </div>
+
+        <!-- TEXT SEARCH -->
+        <div class="text-search" id="textSearch">
+            <div class="search-input-wrapper">
+                <input type="text" class="search-input" id="searchInput"
+                       placeholder="Digite o nome do sócio..."
+                       oninput="onSearchInput()"
+                       onkeypress="if(event.key==='Enter') buscar()">
+                <button class="btn-search" onclick="buscar()">🔍</button>
+            </div>
+            <div class="suggestions" id="suggestions"></div>
+        </div>
+
+        <!-- QR CODE -->
+        <div class="qr-section" id="qrSection">
+            <div class="qr-area">
+                <div class="icon">📷</div>
+                <p>Aponte a câmera para o<br>QR Code do sócio</p>
+            </div>
+            <button class="btn-qr" onclick="iniciarQR()">📱 Abrir Câmera</button>
+            <p style="font-size:11px; color:rgba(255,255,255,0.4); margin-top:10px;">
+                Ou utilize a busca por nome/cartão
+            </p>
+        </div>
+    </div>
+
+    <!-- LOADING -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Consultando base de dados...</p>
+    </div>
+
+    <!-- NOT FOUND -->
+    <div class="not-found" id="notFound">
+        <div class="icon">😕</div>
+        <h3>Sócio não encontrado</h3>
+        <p>Verifique o nome ou número do cartão e tente novamente.</p>
+        <button class="btn-nova" onclick="novaConsulta()" style="margin-top:16px;">
+            🔄 Nova Consulta
+        </button>
+    </div>
+
+    <!-- RESULT -->
+    <div class="result-section" id="resultSection">
+
+        <!-- STATUS -->
+        <div class="status-card" id="statusCard">
+            <div class="status-pulse" id="statusPulse"></div>
+            <div class="status-icon" id="statusIcon"></div>
+            <div class="status-text" id="statusText"></div>
+            <div class="status-sub" id="statusSub"></div>
+        </div>
+
+        <!-- SOCIO INFO -->
+        <div class="socio-card" id="socioCard">
+            <div class="socio-header">
+                <div class="socio-foto" id="socioFoto"></div>
+                <div>
+                    <div class="socio-nome" id="socioNome"></div>
+                    <div class="socio-id" id="socioId"></div>
+                    <div class="socio-plano-badge" id="socioPlano"></div>
+                </div>
+            </div>
+            <div class="socio-details" id="socioDetails">
+                <!-- preenchido via JS -->
+            </div>
+        </div>
+
+        <!-- DEPENDENTES -->
+        <div class="dependentes-section" id="depSection" style="display:none;">
+            <div class="dependentes-title">👨‍👩‍👧‍👦 Dependentes</div>
+            <div id="depList"></div>
+        </div>
+
+        <!-- AVISO -->
+        <div class="aviso-parceiro">
+            <div class="icon">ℹ️</div>
+            <p>Este é um acesso de <strong>consulta parceira</strong>. Dados sensíveis estão parcialmente ocultos por segurança. Para informações completas, entre em contato com a administração do Parque das Águas.</p>
+        </div>
+
+        <!-- NOVA CONSULTA -->
+        <button class="btn-nova" onclick="novaConsulta()">
+            🔄 Nova Consulta
+        </button>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <div class="logo-text">🏊 ACQUA CARD</div>
+        <p style="margin-top:4px;">Passaporte 3 Parques • Sistema de Gestão</p>
+        <p style="margin-top:2px;">© 2026 Parque das Águas — Nova Mutum/MT</p>
+    </div>
+
+</div>
+
+<!-- WATERMARK FIXO -->
+<div class="watermark">
+    🔒 Acesso restrito — <strong>Modo Consulta Parceiro</strong> — Dados protegidos
+</div>
+
+<script>
+    // ============================================================
+    //  ACQUA CARD — TOTEM CONSULTA PARCEIRO
+    //  Conecta ao mesmo localStorage do sistema principal
+    // ============================================================
+
+    let currentTab = 'nome';
+
+    function switchTab(tab) {
+        currentTab = tab;
+        document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
+
+        if (tab === 'nome') {
+            document.getElementById('tabNome').classList.add('active');
+            document.getElementById('textSearch').classList.remove('hidden');
+            document.getElementById('textSearch').style.display = 'block';
+            document.getElementById('qrSection').classList.remove('active');
+            document.getElementById('searchInput').placeholder = 'Digite o nome do sócio...';
+            document.getElementById('searchInput').type = 'text';
+        } else if (tab === 'cartao') {
+            document.getElementById('tabCartao').classList.add('active');
+            document.getElementById('textSearch').classList.remove('hidden');
+            document.getElementById('textSearch').style.display = 'block';
+            document.getElementById('qrSection').classList.remove('active');
+            document.getElementById('searchInput').placeholder = 'Digite o número do cartão...';
+            document.getElementById('searchInput').type = 'text';
+        } else if (tab === 'qrcode') {
+            document.getElementById('tabQR').classList.add('active');
+            document.getElementById('textSearch').style.display = 'none';
+            document.getElementById('qrSection').classList.add('active');
+        }
+
+        document.getElementById('searchInput').value = '';
+        document.getElementById('suggestions').classList.remove('active');
+    }
+
+    // Buscar sócios no localStorage (mesma base do sistema principal)
+    function getSocios() {
+        try {
+            let socios = JSON.parse(localStorage.getItem('socios') || '[]');
+            return socios;
+        } catch (e) {
+            return [];
+        }
+    }
+
+    // Mascarar CPF: ***.456.789-**
+    function maskCPF(cpf) {
+        if (!cpf) return '—';
+        let clean = cpf.replace(/\D/g, '');
+        if (clean.length === 11) {
+            return '***.' + clean.substring(3, 6) + '.' + clean.substring(6, 9) + '-**';
+        }
+        return cpf.substring(0, 3) + '****' + cpf.substring(cpf.length - 2);
+    }
+
+    // Mascarar Telefone: (XX) *****-1234
+    function maskPhone(phone) {
+        if (!phone) return '—';
+        let clean = phone.replace(/\D/g, '');
+        if (clean.length >= 10) {
+            let last4 = clean.substring(clean.length - 4);
+            let ddd = clean.substring(0, 2);
+            return '(' + ddd + ') *****-' + last4;
+        }
+        return '*****-' + clean.substring(clean.length - 4);
+    }
+
+    // Sugestões de busca
+    function onSearchInput() {
+        let val = document.getElementById('searchInput').value.trim().toLowerCase();
+        let sugDiv = document.getElementById('suggestions');
+
+        if (val.length < 2) {
+            sugDiv.classList.remove('active');
+            return;
+        }
+
+        let socios = getSocios();
+        let results = [];
+
+        if (currentTab === 'nome') {
+            results = socios.filter(s =>
+                (s.nome || '').toLowerCase().includes(val)
+            ).slice(0, 5);
+        } else if (currentTab === 'cartao') {
+            results = socios.filter(s =>
+                (s.cartao || s.id || '').toString().toLowerCase().includes(val)
+            ).slice(0, 5);
+        }
+
+        if (results.length === 0) {
+            sugDiv.classList.remove('active');
+            return;
+        }
+
+        sugDiv.innerHTML = results.map((s, i) =>
+            `<div class="suggestion-item" onclick="selecionarSocio(${i}, '${encodeURIComponent(JSON.stringify(s))}')">
+                <div>
+                    <div class="suggestion-name">${s.nome || 'Sem nome'}</div>
+                    <div class="suggestion-id">${s.cartao || s.id || ''}</div>
+                </div>
+                <span style="font-size:20px;">→</span>
+            </div>`
+        ).join('');
+
+        sugDiv.classList.add('active');
+    }
+
+    function selecionarSocio(idx, encoded) {
+        let socio = JSON.parse(decodeURIComponent(encoded));
+        document.getElementById('suggestions').classList.remove('active');
+        exibirResultado(socio);
+    }
+
+    function buscar() {
+        let val = document.getElementById('searchInput').value.trim().toLowerCase();
+        if (!val) return;
+
+        document.getElementById('suggestions').classList.remove('active');
+        document.getElementById('searchSection').style.display = 'none';
+        document.getElementById('loading').classList.add('active');
+
+        setTimeout(() => {
+            document.getElementById('loading').classList.remove('active');
+
+            let socios = getSocios();
+            let encontrado = null;
+
+            if (currentTab === 'nome') {
+                encontrado = socios.find(s =>
+                    (s.nome || '').toLowerCase().includes(val)
+                );
+            } else if (currentTab === 'cartao') {
+                encontrado = socios.find(s =>
+                    (s.cartao || s.id || '').toString().toLowerCase() === val
+                );
+            }
+
+            if (encontrado) {
+                exibirResultado(encontrado);
+            } else {
+                document.getElementById('notFound').classList.add('active');
+            }
+        }, 1200);
+    }
+
+    function exibirResultado(socio) {
+        // Determinar status
+        let status = (socio.status || 'ativo').toString().toLowerCase();
+        let isLiberado = (status === 'ativo' || status === 'liberado' || status === '1' || status === 'true');
+        let isInadimplente = (status === 'inadimplente' || status === 'pendente');
+
+        let statusCard = document.getElementById('statusCard');
+        let statusPulse = document.getElementById('statusPulse');
+        let statusIcon = document.getElementById('statusIcon');
+        let statusText = document.getElementById('statusText');
+        let statusSub = document.getElementById('statusSub');
+
+        statusCard.className = 'status-card';
+        statusPulse.className = 'status-pulse';
+
+        if (isLiberado) {
+            statusCard.classList.add('liberado');
+            statusPulse.classList.add('green');
+            statusIcon.textContent = '✅';
+            statusText.textContent = 'LIBERADO';
+            statusSub.textContent = 'Passaporte ativo — acesso permitido';
+        } else if (isInadimplente) {
+            statusCard.classList.add('inadimplente');
+            statusPulse.classList.add('yellow');
+            statusIcon.textContent = '⚠️';
+            statusText.textContent = 'PENDENTE';
+            statusSub.textContent = 'Passaporte com pendência — verificar com administração';
+        } else {
+            statusCard.classList.add('bloqueado');
+            statusPulse.classList.add('red');
+            statusIcon.textContent = '🚫';
+            statusText.textContent = 'BLOQUEADO';
+            statusSub.textContent = 'Passaporte inativo — acesso não autorizado';
+        }
+
+        // Foto / Iniciais
+        let fotoDiv = document.getElementById('socioFoto');
+        if (socio.foto) {
+            fotoDiv.innerHTML = `<img src="${socio.foto}" alt="Foto">`;
+        } else {
+            let iniciais = (socio.nome || 'XX').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            fotoDiv.textContent = iniciais;
+        }
+
+        // Nome e ID
+        document.getElementById('socioNome').textContent = socio.nome || 'Nome não informado';
+        document.getElementById('socioId').textContent = '🆔 ' + (socio.cartao || socio.id || 'N/A');
+        document.getElementById('socioPlano').textContent = socio.plano || socio.tipo || 'Passaporte 3 Parques';
+
+        // Details
+        let detailsHTML = '';
+
+        detailsHTML += `
+            <div class="detail-row">
+                <span class="detail-label">📋 CPF</span>
+                <span class="detail-value masked">${maskCPF(socio.cpf)}</span>
+            </div>`;
+
+        detailsHTML += `
+            <div class="detail-row">
+                <span class="detail-label">📱 Telefone</span>
+                <span class="detail-value masked">${maskPhone(socio.telefone || socio.celular || socio.whatsapp)}</span>
+            </div>`;
+
+        if (socio.validade || socio.vencimento) {
+            detailsHTML += `
+                <div class="detail-row">
+                    <span class="detail-label">📅 Validade</span>
+                    <span class="detail-value">${socio.validade || socio.vencimento}</span>
+                </div>`;
+        }
+
+        if (socio.plano || socio.tipo) {
+            detailsHTML += `
+                <div class="detail-row">
+                    <span class="detail-label">🎫 Plano</span>
+                    <span class="detail-value">${socio.plano || socio.tipo}</span>
+                </div>`;
+        }
+
+        if (socio.email) {
+            let emailMasked = socio.email.split('@');
+            let maskedEmail = emailMasked[0].substring(0, 2) + '****@' + emailMasked[1];
+            detailsHTML += `
+                <div class="detail-row">
+                    <span class="detail-label">✉️ Email</span>
+                    <span class="detail-value masked">${maskedEmail}</span>
+                </div>`;
+        }
+
+        if (socio.endereco || socio.cidade) {
+            detailsHTML += `
+                <div class="detail-row">
+                    <span class="detail-label">📍 Cidade</span>
+                    <span class="detail-value">${socio.cidade || '—'}</span>
+                </div>`;
+        }
+
+        document.getElementById('socioDetails').innerHTML = detailsHTML;
+
+        // Dependentes
+        let depSection = document.getElementById('depSection');
+        let depList = document.getElementById('depList');
+
+        if (socio.dependentes && socio.dependentes.length > 0) {
+            depSection.style.display = 'block';
+            depList.innerHTML = socio.dependentes.map(d => `
+                <div class="dep-item">
+                    <div>
+                        <div class="dep-name">${d.nome || 'Dependente'}</div>
+                        <div class="dep-relation">${d.parentesco || d.relacao || ''}</div>
+                    </div>
+                    <span class="dep-status ${(d.status || 'ativo').toLowerCase() === 'ativo' ? 'ok' : 'blocked'}">
+                        ${(d.status || 'ativo').toLowerCase() === 'ativo' ? '✅ Ativo' : '❌ Inativo'}
+                    </span>
+                </div>
+            `).join('');
+        } else {
+            depSection.style.display = 'none';
+        }
+
+        // Mostrar resultado
+        document.getElementById('resultSection').classList.add('active');
+    }
+
+    function novaConsulta() {
+        document.getElementById('resultSection').classList.remove('active');
+        document.getElementById('notFound').classList.remove('active');
+        document.getElementById('loading').classList.remove('active');
+        document.getElementById('searchSection').style.display = 'block';
+        document.getElementById('searchInput').value = '';
+        document.getElementById('suggestions').classList.remove('active');
+        switchTab('nome');
+    }
+
+    function iniciarQR() {
+        alert('📷 Funcionalidade de QR Code\n\nPara ativar o leitor de QR Code, é necessário integrar uma biblioteca como html5-qrcode.\n\nPor enquanto, utilize a busca por nome ou número do cartão.');
+    }
+
+    // Prevenir zoom no iOS
+    document.addEventListener('gesturestart', function(e) {
+        e.preventDefault();
+    });
+</script>
+
+</body>
+</html>
