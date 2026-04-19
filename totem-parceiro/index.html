@@ -157,12 +157,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
 <script>
-// ===== FIREBASE CONFIG =====
 var FB_URL = 'https://aqcuacard-default-rtdb.firebaseio.com';
 var associados = [];
 var isOnline = false;
 
-// ===== CARREGAR BASE DO FIREBASE =====
 function carregarBase() {
     var x = new XMLHttpRequest();
     x.open('GET', FB_URL + '/associados.json', true);
@@ -181,7 +179,6 @@ function carregarBase() {
                 }
                 isOnline = true;
                 updateSyncUI();
-                console.log('Base carregada: ' + associados.length + ' associados');
             } catch(e) {
                 isOnline = false;
                 updateSyncUI();
@@ -201,7 +198,7 @@ function updateSyncUI() {
     var txt = document.getElementById('syncText');
     if (isOnline) {
         dot.style.background = '#68d391';
-        txt.textContent = 'Sincronizado • ' + associados.length + ' associados';
+        txt.textContent = 'Base sincronizada';
         txt.style.color = '#68d391';
     } else {
         dot.style.background = '#fc8181';
@@ -210,10 +207,8 @@ function updateSyncUI() {
     }
 }
 
-// Polling: atualiza base a cada 15 segundos
 setInterval(carregarBase, 15000);
 
-// ===== FUNÇÕES UTILITÁRIAS =====
 function normalizar(texto) {
     return texto.toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Z0-9 ]/g, '').trim();
 }
@@ -227,21 +222,17 @@ function formatarCPFMascarado(cpf) {
     return '***.' + limpo.substring(3,6) + '.' + limpo.substring(6,9) + '-**';
 }
 
-// ===== RESOLVER ASSOCIADO (mesmo formato do consultasocios) =====
 function resolverAssociado(valor) {
     var a = null;
 
-    // Formato QR: ACQUACARD|ID|NOME
     if (valor.indexOf('ACQUACARD|') === 0) {
         var partes = valor.split('|');
         var qrId = partes[1] || '';
         var qrNome = partes[2] || '';
 
-        // Busca por ID
         for (var i = 0; i < associados.length; i++) {
             if (associados[i].id === qrId) { a = associados[i]; break; }
         }
-        // Fallback: busca por nome exato
         if (!a && qrNome) {
             var nomeNorm = normalizar(qrNome);
             for (var i = 0; i < associados.length; i++) {
@@ -251,7 +242,6 @@ function resolverAssociado(valor) {
         return a;
     }
 
-    // Busca por CPF
     var cpfBusca = normalizarCPF(valor);
     if (/^\d{11}$/.test(cpfBusca)) {
         for (var i = 0; i < associados.length; i++) {
@@ -260,16 +250,13 @@ function resolverAssociado(valor) {
         if (a) return a;
     }
 
-    // Busca por nome exato
     var norm = normalizar(valor);
     for (var i = 0; i < associados.length; i++) {
         if (normalizar(associados[i].nome) === norm) { a = associados[i]; break; }
     }
-
     return a;
 }
 
-// ===== TABS =====
 var currentTab = 'qr';
 var html5QrCode = null;
 var scannerRunning = false;
@@ -291,7 +278,6 @@ function switchTab(tab) {
     }
 }
 
-// ===== QR CODE SCANNER =====
 function startScanner() {
     if (scannerRunning) return;
     var qrReader = document.getElementById('qr-reader');
@@ -306,7 +292,7 @@ function startScanner() {
     ).then(function() {
         scannerRunning = true;
         document.getElementById('qrStatus').textContent = '📷 Câmera ativa — aponte para o QR Code da carteirinha';
-    }).catch(function(err) {
+    }).catch(function() {
         document.getElementById('qrStatus').innerHTML =
             '⚠️ Não foi possível acessar a câmera.<br><small style="color:rgba(255,255,255,.3)">Verifique as permissões ou use a busca por nome/CPF.</small>';
     });
@@ -327,14 +313,12 @@ function onQrCodeSuccess(decodedText) {
     processarConsulta(decodedText, 'qr');
 }
 
-// ===== BUSCA POR NOME/CPF =====
 function buscar() {
     var input = document.getElementById('searchInput').value.trim();
     if (!input) return;
     processarConsulta(input, 'search');
 }
 
-// ===== PROCESSAR CONSULTA (QR ou busca manual) =====
 function processarConsulta(texto, origem) {
     var idleState = document.getElementById('idleState');
     var resultArea = document.getElementById('resultArea');
@@ -347,7 +331,6 @@ function processarConsulta(texto, origem) {
     setTimeout(function() {
         loading.style.display = 'none';
 
-        // Tenta resolver direto (QR Code ou nome/CPF exato)
         var associado = resolverAssociado(texto);
 
         if (associado) {
@@ -358,7 +341,6 @@ function processarConsulta(texto, origem) {
             return;
         }
 
-        // Se não achou exato, tenta busca parcial (só para busca manual)
         if (origem === 'search') {
             var busca = normalizar(texto);
             var buscaCPF = normalizarCPF(texto);
@@ -382,7 +364,7 @@ function processarConsulta(texto, origem) {
             }
 
             if (resultados.length > 1) {
-                var items = resultados.slice(0, 15).map(function(a, idx) {
+                var items = resultados.slice(0, 15).map(function(a) {
                     var badgeClass = a.status === 'Ativo' ? 'badge-active' : 'badge-restricted';
                     var badgeText = a.status === 'Ativo' ? 'Ativo' : 'Restrito';
                     return '<div class="result-item" onclick="mostrarResultado(associados[' + associados.indexOf(a) + '])">' +
@@ -402,7 +384,6 @@ function processarConsulta(texto, origem) {
             }
         }
 
-        // Não encontrou
         resultArea.innerHTML =
             '<div class="card-invalid">' +
             '<div class="status-icon">✕</div>' +
@@ -418,7 +399,6 @@ function processarConsulta(texto, origem) {
     }, 600);
 }
 
-// ===== MOSTRAR RESULTADO =====
 function mostrarResultado(associado) {
     var resultArea = document.getElementById('resultArea');
     var agora = new Date();
@@ -460,12 +440,10 @@ function limpar() {
     if (currentTab === 'qr') document.getElementById('qrStatus').textContent = '📷 Câmera ativa — aponte para o QR Code da carteirinha';
 }
 
-// ENTER para buscar
 document.getElementById('searchInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') buscar();
 });
 
-// ===== INIT =====
 window.addEventListener('load', function() {
     carregarBase();
     startScanner();
