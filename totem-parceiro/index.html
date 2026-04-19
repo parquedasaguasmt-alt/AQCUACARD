@@ -1,897 +1,278 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Totem Parceiro | Parque das Águas - Validação de Carteirinha</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Totem Parceiro | Parque das Águas</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#000;min-height:100vh;display:flex;flex-direction:column;align-items:center;color:#fff;overflow-x:hidden}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #000000;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #fff;
-            overflow-x: hidden;
-        }
+.header{text-align:center;padding:40px 20px 20px;width:100%;max-width:700px}
+.header h1{font-size:28px;font-weight:800;color:#fff;letter-spacing:1px}
+.header .subtitle{font-size:13px;color:rgba(255,255,255,.4);margin-top:6px;letter-spacing:2px;text-transform:uppercase}
+.header .mode-badge{display:inline-block;margin-top:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.5);padding:6px 20px;border-radius:30px;font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase}
+.header .sync-status{margin-top:10px;font-size:11px;font-weight:600}
+.sync-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-        /* HEADER */
-        .header {
-            text-align: center;
-            padding: 40px 20px 20px;
-            width: 100%;
-            max-width: 700px;
-        }
-        .header h1 {
-            font-size: 28px;
-            font-weight: 800;
-            color: #ffffff;
-            letter-spacing: 1px;
-        }
-        .header .subtitle {
-            font-size: 13px;
-            color: rgba(255,255,255,0.4);
-            margin-top: 6px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-        .header .mode-badge {
-            display: inline-block;
-            margin-top: 14px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.12);
-            color: rgba(255,255,255,0.5);
-            padding: 6px 20px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-        }
+.tabs{display:flex;justify-content:center;gap:0;margin-top:30px;width:100%;max-width:600px;padding:0 20px}
+.tab-btn{flex:1;padding:14px 10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.4);font-size:14px;font-weight:600;cursor:pointer;transition:all .3s;text-align:center}
+.tab-btn:first-child{border-radius:12px 0 0 12px}
+.tab-btn:last-child{border-radius:0 12px 12px 0}
+.tab-btn.active{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25);color:#fff}
 
-        /* TABS */
-        .tabs {
-            display: flex;
-            justify-content: center;
-            gap: 0;
-            margin-top: 30px;
-            width: 100%;
-            max-width: 600px;
-            padding: 0 20px;
-        }
-        .tab-btn {
-            flex: 1;
-            padding: 14px 10px;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
-            color: rgba(255,255,255,0.4);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-        }
-        .tab-btn:first-child {
-            border-radius: 12px 0 0 12px;
-        }
-        .tab-btn:last-child {
-            border-radius: 0 12px 12px 0;
-        }
-        .tab-btn.active {
-            background: rgba(255,255,255,0.1);
-            border-color: rgba(255,255,255,0.25);
-            color: #fff;
-        }
-        .tab-btn:hover:not(.active) {
-            background: rgba(255,255,255,0.06);
-        }
+.search-container{width:100%;max-width:600px;padding:0 20px;margin-top:20px;display:none}
+.search-box{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px;transition:border-color .3s}
+.search-box:focus-within{border-color:rgba(255,255,255,.2)}
+.search-box label{display:block;font-size:14px;color:rgba(255,255,255,.5);margin-bottom:12px;font-weight:600}
+.search-box .input-wrapper{display:flex;gap:10px}
+.search-box input{flex:1;padding:16px 20px;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.06);color:#fff;font-size:18px;font-weight:500;outline:none;transition:all .3s}
+.search-box input::placeholder{color:rgba(255,255,255,.2);font-size:15px}
+.search-box input:focus{border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.08)}
+.btn-search{padding:16px 28px;background:#fff;border:none;border-radius:12px;color:#000;font-size:16px;font-weight:700;cursor:pointer;transition:all .3s;white-space:nowrap}
+.btn-search:hover{transform:scale(1.03);box-shadow:0 8px 25px rgba(255,255,255,.15)}
+.search-hint{font-size:12px;color:rgba(255,255,255,.2);margin-top:10px;text-align:center}
 
-        /* SEARCH AREA */
-        .search-container {
-            width: 100%;
-            max-width: 600px;
-            padding: 0 20px;
-            margin-top: 20px;
-        }
-        .search-box {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 16px;
-            padding: 28px;
-            transition: border-color 0.3s;
-        }
-        .search-box:focus-within {
-            border-color: rgba(255,255,255,0.2);
-        }
-        .search-box label {
-            display: block;
-            font-size: 14px;
-            color: rgba(255,255,255,0.5);
-            margin-bottom: 12px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-        .search-box .input-wrapper {
-            display: flex;
-            gap: 10px;
-        }
-        .search-box input {
-            flex: 1;
-            padding: 16px 20px;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            background: rgba(255,255,255,0.06);
-            color: #fff;
-            font-size: 18px;
-            font-weight: 500;
-            outline: none;
-            transition: all 0.3s;
-        }
-        .search-box input::placeholder {
-            color: rgba(255,255,255,0.2);
-            font-size: 15px;
-        }
-        .search-box input:focus {
-            border-color: rgba(255,255,255,0.25);
-            background: rgba(255,255,255,0.08);
-        }
-        .btn-search {
-            padding: 16px 28px;
-            background: #fff;
-            border: none;
-            border-radius: 12px;
-            color: #000;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-        .btn-search:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 25px rgba(255,255,255,0.15);
-        }
-        .btn-search:active {
-            transform: scale(0.98);
-        }
-        .search-hint {
-            font-size: 12px;
-            color: rgba(255,255,255,0.2);
-            margin-top: 10px;
-            text-align: center;
-        }
+.qr-container{width:100%;max-width:600px;padding:0 20px;margin-top:20px;display:block}
+.qr-box{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px;text-align:center}
+.qr-box label{display:block;font-size:14px;color:rgba(255,255,255,.5);margin-bottom:16px;font-weight:600}
+.qr-status{margin-top:16px;font-size:14px;color:rgba(255,255,255,.4)}
 
-        /* QR AREA */
-        .qr-container {
-            width: 100%;
-            max-width: 600px;
-            padding: 0 20px;
-            margin-top: 20px;
-            display: none;
-        }
-        .qr-box {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 16px;
-            padding: 28px;
-            text-align: center;
-        }
-        .qr-box label {
-            display: block;
-            font-size: 14px;
-            color: rgba(255,255,255,0.5);
-            margin-bottom: 16px;
-            font-weight: 600;
-        }
-        #qr-reader {
-            width: 100% !important;
-            max-width: 400px;
-            margin: 0 auto;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        #qr-reader video {
-            border-radius: 12px;
-        }
-        #qr-reader__scan_region {
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        #qr-reader__dashboard {
-            padding: 10px 0 !important;
-        }
-        #qr-reader__dashboard button {
-            background: #fff !important;
-            color: #000 !important;
-            border: none !important;
-            padding: 10px 20px !important;
-            border-radius: 8px !important;
-            font-weight: 600 !important;
-            cursor: pointer !important;
-            font-size: 13px !important;
-            margin-top: 8px !important;
-        }
-        #qr-reader__dashboard select {
-            background: rgba(255,255,255,0.1) !important;
-            color: #fff !important;
-            border: 1px solid rgba(255,255,255,0.2) !important;
-            padding: 6px 10px !important;
-            border-radius: 6px !important;
-            font-size: 13px !important;
-        }
-        #qr-reader__dashboard span, #qr-reader__dashboard a {
-            color: rgba(255,255,255,0.5) !important;
-            font-size: 12px !important;
-        }
-        .qr-status {
-            margin-top: 16px;
-            font-size: 14px;
-            color: rgba(255,255,255,0.4);
-        }
-        .cam-frame {
-            position: relative;
-            width: 280px;
-            height: 280px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .cam-frame::before,
-        .cam-frame::after {
-            content: '';
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            border-color: rgba(255,255,255,0.3);
-            border-style: solid;
-        }
-        .cam-frame::before {
-            top: 0; left: 0;
-            border-width: 3px 0 0 3px;
-            border-radius: 4px 0 0 0;
-        }
-        .cam-frame::after {
-            top: 0; right: 0;
-            border-width: 3px 3px 0 0;
-            border-radius: 0 4px 0 0;
-        }
-        .cam-frame-bottom::before,
-        .cam-frame-bottom::after {
-            content: '';
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            border-color: rgba(255,255,255,0.3);
-            border-style: solid;
-        }
-        .cam-frame-bottom::before {
-            bottom: 0; left: 0;
-            border-width: 0 0 3px 3px;
-            border-radius: 0 0 0 4px;
-        }
-        .cam-frame-bottom::after {
-            bottom: 0; right: 0;
-            border-width: 0 3px 3px 0;
-            border-radius: 0 0 4px 0;
-        }
+#qr-reader{width:100%!important;max-width:400px;margin:0 auto;border-radius:12px;overflow:hidden}
+#qr-reader video{border-radius:12px}
+#qr-reader__scan_region{border-radius:12px;overflow:hidden}
+#qr-reader__dashboard{padding:10px 0!important}
+#qr-reader__dashboard button{background:#fff!important;color:#000!important;border:none!important;padding:10px 20px!important;border-radius:8px!important;font-weight:600!important;cursor:pointer!important;font-size:13px!important;margin-top:8px!important}
+#qr-reader__dashboard select{background:rgba(255,255,255,.1)!important;color:#fff!important;border:1px solid rgba(255,255,255,.2)!important;padding:6px 10px!important;border-radius:6px!important;font-size:13px!important}
+#qr-reader__dashboard span,#qr-reader__dashboard a{color:rgba(255,255,255,.5)!important;font-size:12px!important}
 
-        /* RESULT AREA */
-        .result-container {
-            width: 100%;
-            max-width: 600px;
-            padding: 20px;
-            margin-top: 20px;
-        }
+.result-container{width:100%;max-width:600px;padding:20px;margin-top:20px}
+.idle-state{text-align:center;padding:40px 20px;color:rgba(255,255,255,.2)}
+.idle-state .icon{font-size:48px;margin-bottom:12px}
+.idle-state p{font-size:14px}
 
-        /* CARD VÁLIDO */
-        .card-valid {
-            background: rgba(255,255,255,0.03);
-            border: 2px solid rgba(0, 200, 100, 0.4);
-            border-radius: 20px;
-            padding: 32px;
-            text-align: center;
-            animation: slideUp 0.4s ease;
-        }
-        .card-valid .status-icon {
-            width: 80px;
-            height: 80px;
-            background: #00c853;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 16px;
-            font-size: 40px;
-            box-shadow: 0 0 40px rgba(0, 200, 83, 0.2);
-        }
-        .card-valid .status-text {
-            font-size: 22px;
-            font-weight: 800;
-            color: #00e676;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        .card-valid .member-name {
-            font-size: 20px;
-            font-weight: 700;
-            color: #fff;
-            margin-top: 16px;
-        }
-        .card-valid .member-details {
-            margin-top: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .card-valid .detail-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 16px;
-            background: rgba(255,255,255,0.04);
-            border-radius: 10px;
-            font-size: 14px;
-        }
-        .card-valid .detail-row .label {
-            color: rgba(255,255,255,0.5);
-            font-weight: 600;
-        }
-        .card-valid .detail-row .value {
-            color: #fff;
-            font-weight: 500;
-        }
-        .card-valid .aquacard-badge {
-            display: inline-block;
-            margin-top: 20px;
-            background: #fff;
-            color: #000;
-            padding: 8px 24px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
+.loading{display:none;text-align:center;padding:40px}
+.loading .spinner{width:48px;height:48px;border:4px solid rgba(255,255,255,.1);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-        /* CARD INVÁLIDO */
-        .card-invalid {
-            background: rgba(255,255,255,0.03);
-            border: 2px solid rgba(255, 80, 80, 0.4);
-            border-radius: 20px;
-            padding: 32px;
-            text-align: center;
-            animation: slideUp 0.4s ease;
-        }
-        .card-invalid .status-icon {
-            width: 80px;
-            height: 80px;
-            background: #e53e3e;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 16px;
-            font-size: 40px;
-            box-shadow: 0 0 40px rgba(229, 62, 62, 0.2);
-        }
-        .card-invalid .status-text {
-            font-size: 22px;
-            font-weight: 800;
-            color: #fc5c65;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        .card-invalid .status-desc {
-            font-size: 14px;
-            color: rgba(255,255,255,0.4);
-            margin-top: 8px;
-        }
+.card-valid{background:rgba(255,255,255,.03);border:2px solid rgba(0,200,100,.4);border-radius:20px;padding:32px;text-align:center;animation:slideUp .4s ease}
+.card-valid .status-icon{width:80px;height:80px;background:#00c853;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:40px;box-shadow:0 0 40px rgba(0,200,83,.2)}
+.card-valid .status-text{font-size:22px;font-weight:800;color:#00e676;text-transform:uppercase;letter-spacing:2px}
+.card-valid .member-name{font-size:20px;font-weight:700;color:#fff;margin-top:16px}
+.card-valid .member-details{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.card-valid .detail-row{display:flex;justify-content:space-between;padding:10px 16px;background:rgba(255,255,255,.04);border-radius:10px;font-size:14px}
+.card-valid .detail-row .label{color:rgba(255,255,255,.5);font-weight:600}
+.card-valid .detail-row .value{color:#fff;font-weight:500}
+.card-valid .aquacard-badge{display:inline-block;margin-top:20px;background:#fff;color:#000;padding:8px 24px;border-radius:30px;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
 
-        /* MÚLTIPLOS RESULTADOS */
-        .card-multiple {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 28px;
-            animation: slideUp 0.4s ease;
-        }
-        .card-multiple h3 {
-            color: rgba(255,255,255,0.5);
-            font-size: 16px;
-            margin-bottom: 16px;
-            text-align: center;
-        }
-        .card-multiple .result-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 16px;
-            background: rgba(255,255,255,0.04);
-            border-radius: 12px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid transparent;
-        }
-        .card-multiple .result-item:hover {
-            background: rgba(255,255,255,0.08);
-            border-color: rgba(255,255,255,0.15);
-        }
-        .card-multiple .result-item .name {
-            font-weight: 600;
-            font-size: 14px;
-        }
-        .card-multiple .result-item .badge-active {
-            background: rgba(0, 200, 100, 0.15);
-            color: #00e676;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
+.card-invalid{background:rgba(255,255,255,.03);border:2px solid rgba(255,80,80,.4);border-radius:20px;padding:32px;text-align:center;animation:slideUp .4s ease}
+.card-invalid .status-icon{width:80px;height:80px;background:#e53e3e;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:40px;box-shadow:0 0 40px rgba(229,62,62,.2)}
+.card-invalid .status-text{font-size:22px;font-weight:800;color:#fc5c65;text-transform:uppercase;letter-spacing:2px}
+.card-invalid .status-desc{font-size:14px;color:rgba(255,255,255,.4);margin-top:8px}
 
-        /* ANIMAÇÃO */
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+.card-blocked{background:rgba(255,255,255,.03);border:2px solid rgba(255,165,0,.4);border-radius:20px;padding:32px;text-align:center;animation:slideUp .4s ease}
+.card-blocked .status-icon{width:80px;height:80px;background:#dd6b20;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:40px;box-shadow:0 0 40px rgba(221,107,32,.2)}
+.card-blocked .status-text{font-size:22px;font-weight:800;color:#f6ad55;text-transform:uppercase;letter-spacing:2px}
+.card-blocked .member-name{font-size:20px;font-weight:700;color:#fff;margin-top:16px}
 
-        /* FOOTER */
-        .footer {
-            margin-top: auto;
-            padding: 30px;
-            text-align: center;
-            font-size: 11px;
-            color: rgba(255,255,255,0.15);
-        }
+.card-multiple{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:28px;animation:slideUp .4s ease}
+.card-multiple h3{color:rgba(255,255,255,.5);font-size:16px;margin-bottom:16px;text-align:center}
+.card-multiple .result-item{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:rgba(255,255,255,.04);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all .2s;border:1px solid transparent}
+.card-multiple .result-item:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15)}
+.card-multiple .result-item .name{font-weight:600;font-size:14px}
+.card-multiple .result-item .badge-active{background:rgba(0,200,100,.15);color:#00e676;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase}
+.card-multiple .result-item .badge-restricted{background:rgba(255,165,0,.15);color:#f6ad55;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase}
 
-        /* BTN NOVA CONSULTA */
-        .btn-new {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 12px 28px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            color: rgba(255,255,255,0.6);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .btn-new:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: rgba(255,255,255,0.2);
-        }
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
-        /* LOADING */
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 40px;
-        }
-        .loading .spinner {
-            width: 48px;
-            height: 48px;
-            border: 4px solid rgba(255,255,255,0.1);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 16px;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+.btn-new{display:inline-block;margin-top:20px;padding:12px 28px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:rgba(255,255,255,.6);font-size:14px;font-weight:600;cursor:pointer;transition:all .3s}
+.btn-new:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2)}
 
-        /* IDLE STATE */
-        .idle-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: rgba(255,255,255,0.2);
-        }
-        .idle-state .icon { font-size: 48px; margin-bottom: 12px; }
-        .idle-state p { font-size: 14px; }
+.footer{margin-top:auto;padding:30px;text-align:center;font-size:11px;color:rgba(255,255,255,.15)}
 
-        /* RESPONSIVO */
-        @media (max-width: 500px) {
-            .header h1 { font-size: 22px; }
-            .search-box { padding: 20px; }
-            .search-box .input-wrapper { flex-direction: column; }
-            .btn-search { padding: 14px; }
-            .card-valid, .card-invalid { padding: 24px; }
-            .cam-frame { width: 240px; height: 240px; }
-        }
-    </style>
+@media(max-width:500px){
+.header h1{font-size:22px}
+.search-box{padding:20px}
+.search-box .input-wrapper{flex-direction:column}
+.btn-search{padding:14px}
+.card-valid,.card-invalid,.card-blocked{padding:24px}
+}
+</style>
 </head>
 <body>
 
-    <!-- HEADER -->
-    <div class="header">
-        <h1>PARQUE DAS ÁGUAS</h1>
-        <div class="subtitle">AQUACARD</div>
-        <div class="mode-badge">Totem Parceiro</div>
+<div class="header">
+    <h1>PARQUE DAS ÁGUAS</h1>
+    <div class="subtitle">AQUACARD</div>
+    <div class="mode-badge">Totem Parceiro</div>
+    <div class="sync-status" id="syncStatusEl">
+        <span class="sync-dot" id="syncDot" style="background:#f6e05e"></span>
+        <span id="syncText" style="color:rgba(255,255,255,.4)">Conectando...</span>
     </div>
+</div>
 
-    <!-- TABS -->
-    <div class="tabs">
-        <div class="tab-btn active" id="tabQR" onclick="switchTab('qr')">📷 Ler QR Code</div>
-        <div class="tab-btn" id="tabSearch" onclick="switchTab('search')">🔍 Buscar por Nome / CPF</div>
+<div class="tabs">
+    <div class="tab-btn active" id="tabQR" onclick="switchTab('qr')">📷 Ler QR Code</div>
+    <div class="tab-btn" id="tabSearch" onclick="switchTab('search')">🔍 Buscar Nome / CPF</div>
+</div>
+
+<div class="qr-container" id="qrContainer">
+    <div class="qr-box">
+        <label>Aponte a câmera para o QR Code da carteirinha</label>
+        <div id="qr-reader"></div>
+        <div class="qr-status" id="qrStatus">Iniciando câmera...</div>
     </div>
+</div>
 
-    <!-- QR CODE READER -->
-    <div class="qr-container" id="qrContainer" style="display:block;">
-        <div class="qr-box">
-            <label>Aponte a câmera para o QR Code da carteirinha</label>
-            <div id="qr-reader"></div>
-            <div class="qr-status" id="qrStatus">Aguardando leitura...</div>
+<div class="search-container" id="searchContainer">
+    <div class="search-box">
+        <label>Validar Carteirinha Digital</label>
+        <div class="input-wrapper">
+            <input type="text" id="searchInput" placeholder="Digite o nome ou CPF..." autocomplete="off"/>
+            <button class="btn-search" onclick="buscar()">Validar</button>
         </div>
+        <div class="search-hint">Pressione ENTER ou clique em Validar</div>
     </div>
+</div>
 
-    <!-- BUSCA POR NOME/CPF -->
-    <div class="search-container" id="searchContainer" style="display:none;">
-        <div class="search-box">
-            <label>Validar Carteirinha Digital</label>
-            <div class="input-wrapper">
-                <input
-                    type="text"
-                    id="searchInput"
-                    placeholder="Digite o nome ou CPF..."
-                    autocomplete="off"
-                />
-                <button class="btn-search" id="btnSearch" onclick="buscar()">
-                    Validar
-                </button>
-            </div>
-            <div class="search-hint">Pressione ENTER ou clique em Validar</div>
-        </div>
+<div class="result-container" id="resultContainer">
+    <div class="idle-state" id="idleState">
+        <div class="icon">💳</div>
+        <p>Escaneie o QR Code ou busque pelo nome para validar</p>
     </div>
-
-    <!-- RESULTADO -->
-    <div class="result-container" id="resultContainer">
-        <div class="idle-state" id="idleState">
-            <div class="icon">💳</div>
-            <p>Escaneie o QR Code ou busque pelo nome para validar</p>
-        </div>
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <div style="color: rgba(255,255,255,0.5); font-size: 14px;">Consultando base de associados...</div>
-        </div>
-        <div id="resultArea"></div>
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div style="color:rgba(255,255,255,.5);font-size:14px">Consultando base de associados...</div>
     </div>
+    <div id="resultArea"></div>
+</div>
 
-    <!-- FOOTER -->
-    <div class="footer">
-        Parque das Águas — Sistema AquaCard &copy; 2026<br>
-        Totem Parceiro — Validação de Carteirinha Digital
-    </div>
+<div class="footer">
+    Parque das Águas — Sistema AquaCard &copy; 2026<br>
+    Totem Parceiro — Validação de Carteirinha Digital
+</div>
 
-    <!-- HTML5-QRCODE LIBRARY -->
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
 <script>
-// ===== BASE DE ASSOCIADOS =====
-const associados = [
-    {nome:"BENICIO SOUZA DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"LUIZ FELIPE SOUZA DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"ROSEANA APARECIDA GOMES DE SOUZA",cpf:"",status:"Ativo"},
-    {nome:"ADALBERTO TALINI",cpf:"",status:"Ativo"},
-    {nome:"KELLY BERNAL TALINI",cpf:"",status:"Ativo"},
-    {nome:"MAITE GABRIELLY ALVES DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"VITOR TRINDADE LEMES",cpf:"",status:"Ativo"},
-    {nome:"LUIZ CARLOS RIBEIRO DA SILVA FILHO",cpf:"",status:"Ativo"},
-    {nome:"AMANDA FERRAZ MARQUES",cpf:"",status:"Ativo"},
-    {nome:"MATHEUS BERNAL TALINI",cpf:"",status:"Ativo"},
-    {nome:"BEATRIZ DIETRICH DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"AUGUSTO JOSE KLOSTTERMANN",cpf:"",status:"Ativo"},
-    {nome:"FERNANDA LIDIA DIETRICH DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"GEFFERSON PEREIRA DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"JACKSON MATIAS DA ROCHA",cpf:"",status:"Ativo"},
-    {nome:"EMANUELLE LIMA DOS SANTOS",cpf:"",status:"Ativo"},
-    {nome:"CELEBE ALEXANDRE SANTOS DA ROCHA",cpf:"",status:"Ativo"},
-    {nome:"DAVI EMANUEL SANTOS DA ROCHA",cpf:"",status:"Ativo"},
-    {nome:"GABRIEL TALINI",cpf:"",status:"Ativo"},
-    {nome:"RONALD LIMA DOS SANTOS",cpf:"",status:"Ativo"},
-    {nome:"MARIANY DA SILVA GOMES",cpf:"",status:"Ativo"},
-    {nome:"PEDRO CEZAR FACCIO ALMEIDA",cpf:"",status:"Ativo"},
-    {nome:"HEITOR MIGUEL FACCIO QUEIROZ",cpf:"",status:"Ativo"},
-    {nome:"VANESSA ADRIANA FACCIO",cpf:"",status:"Ativo"},
-    {nome:"ONE MARIA FACCIO",cpf:"",status:"Ativo"},
-    {nome:"ADEMIR CEZAR FACCIO",cpf:"",status:"Ativo"},
-    {nome:"ALEXANDRO QUEROBINO DE ALMEIDA",cpf:"",status:"Ativo"},
-    {nome:"ADRIANA DOS SANTOS RODRIGUES",cpf:"",status:"Ativo"},
-    {nome:"EDUARDA PONTE GROCHOSKI",cpf:"",status:"Ativo"},
-    {nome:"EDEMILSON GROCHOSKI LANSSONI",cpf:"",status:"Ativo"},
-    {nome:"GILVANE CARDOSO PONTE GROCHOSKI",cpf:"",status:"Ativo"},
-    {nome:"ANA JULIA MENDES DE ARRUDA GREGORIO",cpf:"",status:"Ativo"},
-    {nome:"LEIDIANE GARBIN DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"LUCAS SILVA BARRETO",cpf:"",status:"Ativo"},
-    {nome:"ADRIANO APARECIDO COSTA CAMARGO",cpf:"",status:"Ativo"},
-    {nome:"LIVIA OLIVEIRA NEPONOCENO",cpf:"",status:"Ativo"},
-    {nome:"MARIA EDUARDA LEITE DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"GABRIEL CARVALHO PAIAO",cpf:"",status:"Ativo"},
-    {nome:"GLEICE ZIMERMANN BARGERI",cpf:"",status:"Ativo"},
-    {nome:"BRUNO APARECIDO DA CRUZ",cpf:"",status:"Ativo"},
-    {nome:"ANGELA FRANCIELE LOPES",cpf:"",status:"Ativo"},
-    {nome:"LISIANE SANTOS",cpf:"",status:"Ativo"},
-    {nome:"LARA CARLA SANTOS CHAGAS",cpf:"",status:"Ativo"},
-    {nome:"CARLOS FRANCISCO DA SILVA CHAGAS",cpf:"",status:"Ativo"},
-    {nome:"BETINA MAITO VIEIRA",cpf:"",status:"Ativo"},
-    {nome:"ANA LUCIA VIEIRA ARAUJO",cpf:"",status:"Ativo"},
-    {nome:"EDERSANDRO NASCIMENTO ARAUJO",cpf:"",status:"Ativo"},
-    {nome:"RENATA CRISTINA MAITO",cpf:"",status:"Ativo"},
-    {nome:"LEONARDO VINICIUS VIEIRA MAGALHAES",cpf:"",status:"Ativo"},
-    {nome:"MARIA LUIZA GIANNOULIS PAIVA",cpf:"",status:"Ativo"},
-    {nome:"EVANY GIANNOULIS CORDEIRO DE SOUZA",cpf:"",status:"Ativo"},
-    {nome:"ALLANA VICTORIA GIANNOULIS DE OLIVEIRA",cpf:"",status:"Ativo"},
-    {nome:"JOSE ALEONIO DE OLIVEIRA PINHEIRO",cpf:"",status:"Ativo"},
-    {nome:"MARIA ADRIANA SANTOS GIANNOULIS",cpf:"",status:"Ativo"},
-    {nome:"AYLLA SOPHIA OLIVEIRA GIANNOULIS DOS SANTOS",cpf:"",status:"Ativo"},
-    {nome:"JULIANA BRASIL DE OLIVEIRA",cpf:"",status:"Ativo"},
-    {nome:"FERNANDO SOARES DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"VICENTE SOARES BRASIL",cpf:"",status:"Ativo"},
-    {nome:"THAUAN HENRIQUE DA COSTA SOUZA",cpf:"",status:"Ativo"},
-    {nome:"ROSEANE DOS SANTOS LISBOA",cpf:"",status:"Ativo"},
-    {nome:"FABIANO CIRILO DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"ELENILSON LOPES DOS SANTOS",cpf:"",status:"Ativo"},
-    {nome:"MARIA VALERIA SILVA DOS SANTOS",cpf:"",status:"Ativo"},
-    {nome:"GUILHERME SOUSA SENA",cpf:"",status:"Ativo"},
-    {nome:"RAYANE PAIVA DE OLIVEIRA",cpf:"",status:"Ativo"},
-    {nome:"LILIANE BATISTA PEREIRA",cpf:"",status:"Ativo"},
-    {nome:"ANDRE KLABUNDE",cpf:"",status:"Ativo"},
-    {nome:"CRISTIANA LAIA MOREIRA",cpf:"",status:"Ativo"},
-    {nome:"VITORIA ZIMERMANN BARGERI KANIESKI",cpf:"",status:"Ativo"},
-    {nome:"LAURA OLBERMANN BEDIM",cpf:"",status:"Ativo"},
-    {nome:"MAURICIO SILVA DE SOUZA",cpf:"",status:"Ativo"},
-    {nome:"LYARA MARQUES SOUZA",cpf:"",status:"Ativo"},
-    {nome:"TATIANY MARQUES DE OLIVEIRA",cpf:"",status:"Ativo"},
-    {nome:"FRANCIELLE GUISOLFI OLBERMANN BEDIM",cpf:"",status:"Ativo"},
-    {nome:"MARCELO BEDIM PEDROSO",cpf:"",status:"Ativo"},
-    {nome:"FABRICIO OBERMANN BEDIM",cpf:"",status:"Ativo"},
-    {nome:"DAYANE DOS SANTOS ALMEIDA",cpf:"",status:"Ativo"},
-    {nome:"BENJAMIN SANTOS DE ALMEIDA",cpf:"",status:"Ativo"},
-    {nome:"JOAO GLEYCON SANTOS DE ALMEIDA",cpf:"",status:"Ativo"},
-    {nome:"EVERALDO EROTILDES DE ALMEIDA",cpf:"",status:"Ativo"},
-    {nome:"MESEQUE ALVES RIBEIRO",cpf:"",status:"Ativo"},
-    {nome:"RAUL PRADO BESCOROVAINE",cpf:"",status:"Ativo"},
-    {nome:"THEO PRADO BESCOROVAINE",cpf:"",status:"Ativo"},
-    {nome:"ADEMAR BESCOROVAINE",cpf:"",status:"Ativo"},
-    {nome:"JAQUELINE ALMEIDA PRADO BESCOROVAINE",cpf:"",status:"Ativo"},
-    {nome:"GABRIEL JOSE DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"ANDREZA DA SILVA SOUSA",cpf:"",status:"Ativo"},
-    {nome:"NICOLAS SOUSA DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"SAMUEL PORT RAMOS",cpf:"",status:"Ativo"},
-    {nome:"ARTHUR PORT RAMOS",cpf:"",status:"Ativo"},
-    {nome:"MARIA EDUARDA NONATO RAMOS",cpf:"",status:"Ativo"},
-    {nome:"MONICA CRISTIANE PORT",cpf:"",status:"Ativo"},
-    {nome:"GILMAR RAMOS",cpf:"",status:"Ativo"},
-    {nome:"GILBERTO RAMOS",cpf:"",status:"Ativo"},
-    {nome:"JOSE HENRIQUE NONATO RAMOS",cpf:"",status:"Ativo"},
-    {nome:"ANDREIA RODRIGUES SEVERINO",cpf:"",status:"Ativo"},
-    {nome:"WESTTER AIDES PANUNCIO APELFELLER",cpf:"",status:"Ativo"},
-    {nome:"PEDRO HENRIQUE DE FREITAS APELEFELLER",cpf:"",status:"Ativo"},
-    {nome:"ANDRELIZA SEVERINO DE FREITAS",cpf:"",status:"Ativo"},
-    {nome:"BALBINA PEREIRA DIAS DE JESUS",cpf:"",status:"Ativo"},
-    {nome:"NARDINHO BISPO DE JESUS",cpf:"",status:"Ativo"},
-    {nome:"DAVERSON DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"HISABELLY VICTORIA DIAS DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"HISABELL AURORA DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"TALITA DIAS DE JESUS",cpf:"",status:"Ativo"},
-    {nome:"VALTER BORGES DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"JOSEMARE FERREIRA DE ARAUJO DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"ISABELLY VITORIA ARAUJO DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"DAVI JOSE ARAUJO DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"EDITE CONCEICAO QUEIROZ DE ALMEIDA",cpf:"",status:"Ativo"},
-    {nome:"LUIZ RODOLFO BORGES DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"ALEXSANDRA GOMES CIGERZA",cpf:"",status:"Ativo"},
-    {nome:"ADAILTON CIGERZA",cpf:"",status:"Ativo"},
-    {nome:"LUCIENE DE OLIVEIRA GOMES",cpf:"",status:"Ativo"},
-    {nome:"MARIA LAURA DE OLIVEIRA CRUZ",cpf:"",status:"Ativo"},
-    {nome:"EDELSON PEREIRA DA CRUZ",cpf:"",status:"Ativo"},
-    {nome:"JOAN ROGELIO DA ROSA FRANCK",cpf:"",status:"Ativo"},
-    {nome:"SOPHIA SANTANA DOS SANTOS",cpf:"",status:"Ativo"},
-    {nome:"LEANDRO SANTANA DOS SANTOS",cpf:"",status:"Ativo"},
-    {nome:"LORRAINE SANTANA DOS SANTOS",cpf:"",status:"Ativo"},
-    {nome:"MARIA ANA CLAUDIA ARAUJO DE JESUS",cpf:"",status:"Ativo"},
-    {nome:"FABIANO VIANA DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"ANTONIO EDUARDO ZUK",cpf:"",status:"Ativo"},
-    {nome:"EDUARDA INACIO ZUK",cpf:"",status:"Ativo"},
-    {nome:"LAIZA FERREIRA MIRANDA",cpf:"",status:"Ativo"},
-    {nome:"EMILI CRISTINA MATOS PEDROZO",cpf:"",status:"Ativo"},
-    {nome:"RUBIA CARLA LEICHTWEIS",cpf:"",status:"Ativo"},
-    {nome:"DABIANO LUIZ DA COSTA",cpf:"",status:"Ativo"},
-    {nome:"SOPHIA VIEIRA BATALHA",cpf:"",status:"Ativo"},
-    {nome:"RAFAELA MOREIRA VIEIRA BATALHA",cpf:"",status:"Ativo"},
-    {nome:"JEFERSON VIEIRA MENDES",cpf:"",status:"Ativo"},
-    {nome:"MARIA DAS GRACAS VIEIRA MENDES",cpf:"",status:"Ativo"},
-    {nome:"KLEYTON RICHARD MAGALHAES",cpf:"",status:"Ativo"},
-    {nome:"LIDIA BEATRIZ ARAUJO SOARES",cpf:"",status:"Ativo"},
-    {nome:"IVY ARAUJO MAGALHAES",cpf:"",status:"Ativo"},
-    {nome:"LUKAS ARAUJO MAGALHAES",cpf:"",status:"Ativo"},
-    {nome:"QUELI CRISTINA PEREIRA DIAS DE JESUS ROEDER",cpf:"",status:"Ativo"},
-    {nome:"AKILLY KAROLINY DIAS ROEDER",cpf:"",status:"Ativo"},
-    {nome:"AKEMILLY NICOLLY DIAS ROEDER",cpf:"",status:"Ativo"},
-    {nome:"VALMIR ROEDER",cpf:"",status:"Ativo"},
-    {nome:"JEANE BISPO DE SOUZA",cpf:"",status:"Ativo"},
-    {nome:"VALDEILTON ALVES SILVA DOS SANTOS",cpf:"",status:"Ativo"},
-    {nome:"CAUA GUILHERME DE SOUZA SANTOS",cpf:"",status:"Ativo"},
-    {nome:"HELOISA MARQUES FAVARO",cpf:"",status:"Ativo"},
-    {nome:"GABRIEL FELIPE MARQUES ALVES MARQUES DE OLIVEIRA",cpf:"",status:"Ativo"},
-    {nome:"PAULO DANIEL MARQUES FAVARO",cpf:"",status:"Ativo"},
-    {nome:"SAMUEL MARQUES FAVARO",cpf:"",status:"Ativo"},
-    {nome:"DEBORA MARQUES FAVARO",cpf:"",status:"Ativo"},
-    {nome:"JULIANO ZOTESSO FAVARO",cpf:"",status:"Ativo"},
-    {nome:"ANTONIO BARBOZA",cpf:"",status:"Ativo"},
-    {nome:"JOSE HORLANDO DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"PATRICIA LAMENHA FAUSTINO",cpf:"",status:"Ativo"},
-    {nome:"RENATA APOLINARIO OES",cpf:"",status:"Ativo"},
-    {nome:"JOSE ISRAEL DA SILVA SANTOS",cpf:"",status:"Ativo"},
-    {nome:"IZAELI DA SILVA SANTOS",cpf:"",status:"Ativo"},
-    {nome:"MARCELO AUGUSTO GOMES SILVA",cpf:"",status:"Ativo"},
-    {nome:"FERNANDA DA CONCEICAO GOMES",cpf:"",status:"Ativo"},
-    {nome:"VICTORIA EMANUELLE GOMES BERTO",cpf:"",status:"Ativo"},
-    {nome:"JOAQUIM VICENTE NUNES",cpf:"",status:"Ativo"},
-    {nome:"NAYANE SINOCA DE ARAUJO",cpf:"",status:"Ativo"},
-    {nome:"CAMILA VICENTE NUNES",cpf:"",status:"Ativo"},
-    {nome:"HELENA NUNES ARRUDA",cpf:"",status:"Ativo"},
-    {nome:"MIGUEL ANTONIO ARAUJO CORREA",cpf:"",status:"Ativo"},
-    {nome:"AMANDA RONYZE GOMES VALENTIM",cpf:"",status:"Ativo"},
-    {nome:"LARA FABIAN ALVES DA CONCEICAO",cpf:"",status:"Ativo"},
-    {nome:"ANA CORREIA DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"MATHEUS AGUIAR FERREIRA",cpf:"",status:"Ativo"},
-    {nome:"RONALDO PAULO DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"JOAO EMANUEL OLIVEIRA BASILIO",cpf:"",status:"Ativo"},
-    {nome:"DAYANE DOS SANTOS OLIVEIRA",cpf:"",status:"Ativo"},
-    {nome:"JOSE PEDRO OLIVEIRA BASILIO",cpf:"",status:"Ativo"},
-    {nome:"MIRIELE LORRAYNE SILVA DE JESUS",cpf:"",status:"Ativo"},
-    {nome:"MIRIAN SILVA DE JESUS",cpf:"",status:"Ativo"},
-    {nome:"ANA PAULA DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"JULIANA DA SILVA SILVEIRA",cpf:"",status:"Ativo"},
-    {nome:"MARIANA DA SILVA SILVEIRA",cpf:"",status:"Ativo"},
-    {nome:"EDUARDO CARLOT",cpf:"",status:"Ativo"},
-    {nome:"TIAGO BAU",cpf:"015.296.671-43",status:"Ativo"},
-    {nome:"RAQUEL BARBOSA SILVA BAÚ",cpf:"030.129.401-11",status:"Ativo"},
-    {nome:"LENIR FÁTIMA CARLOT BAÚ",cpf:"567.198.681-87",status:"Ativo"},
-    {nome:"MARIA ROSANE ANTONOV",cpf:"492.227.249-68",status:"Ativo"},
-    {nome:"CINTHYA GOMES DOS SANTOS",cpf:"118.249.934-12",status:"Ativo"},
-    {nome:"DANIEL TRENTIN",cpf:"066.723.279-67",status:"Ativo"},
-    {nome:"ADRIANA BELEGANTE TRENTIN",cpf:"023.516.511-54",status:"Ativo"},
-    {nome:"RAIANE DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"VICTOR HUGO NASCIMENTO DE OLIVEIRA",cpf:"060.906.571-82",status:"Ativo"},
-    {nome:"JOÃO PAULO BELEGANTE TRENTIN",cpf:"080.737.441-55",status:"Ativo"},
-    {nome:"BRUNO VINICIUS SOUZA BACELAR",cpf:"053.459.981-83",status:"Ativo"},
-    {nome:"FRANCIELE DOS SANTOS",cpf:"015.049.611-70",status:"Ativo"},
-    {nome:"ELIVALDO DIONIZIO DA SILVA",cpf:"057.178.351-16",status:"Ativo"},
-    {nome:"JOSE CARLOS SANTOS BENITES AGUAYO",cpf:"095.426.791-57",status:"Ativo"},
-    {nome:"BRENDA DA SILVA SANTOS",cpf:"",status:"Ativo"},
-    {nome:"MAURELINA HORTENCIA DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"ANA CAROLINA CAMPOS AMORIM",cpf:"",status:"Ativo"},
-    {nome:"ANGELA PATRICIA OLIVEIRA CAMPOS",cpf:"",status:"Ativo"},
-    {nome:"MICHELLY CAROLINE DA COSTA",cpf:"",status:"Ativo"},
-    {nome:"MAYCON JACKSON RODRIGUES",cpf:"",status:"Ativo"},
-    {nome:"MARIA SOCORRO GOMES",cpf:"",status:"Ativo"},
-    {nome:"JONILSSON RODRIGUES AMORIM",cpf:"",status:"Ativo"},
-    {nome:"JOAO HENRIQUE DALLA VECCIA",cpf:"",status:"Ativo"},
-    {nome:"CLEBERTON LAZZARETT",cpf:"",status:"Ativo"},
-    {nome:"ARTHUR HENRIQUE DALLA VECCHIA",cpf:"",status:"Ativo"},
-    {nome:"BRUNA GABRIELA TOLEDO",cpf:"060.929.681-77",status:"Ativo"},
-    {nome:"ADELSON TELES DOS SANTOS",cpf:"",status:"Ativo"},
-    {nome:"MAYRA FRANCISCA DOS SANTOS",cpf:"",status:"Ativo"},
-    {nome:"JOSÉ FRANCISCO DOS SANTOS",cpf:"361.494.971-00",status:"Ativo"},
-    {nome:"SARAH RAYANNI DOS SANTOS",cpf:"",status:"Ativo"},
-    {nome:"RAYNNER DIOGO TELES DOS SANTOS",cpf:"",status:"Ativo"},
-    {nome:"TATIANE DOS SANTOS",cpf:"",status:"Ativo"},
-    {nome:"JOEL DE ARAUJO",cpf:"",status:"Ativo"},
-    {nome:"SARITA DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"JOSUE MIRANDA DE SOUSA",cpf:"774.576.687-72",status:"Ativo"},
-    {nome:"JANETE VIEIRA LIMA",cpf:"",status:"Ativo"},
-    {nome:"EDSON CANDIDO DE SOUZA",cpf:"166.313.971-53",status:"Ativo"},
-    {nome:"AMINADABE DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"ADAUE MIRELIS DE SOUZA",cpf:"",status:"Ativo"},
-    {nome:"MARILEIDE DOS SANTOS SILVA",cpf:"",status:"Ativo"},
-    {nome:"JOSE OTAVIO DEBORTOLI BARROS",cpf:"",status:"Ativo"},
-    {nome:"ALLAN DAVID LOPES MACEDO",cpf:"",status:"Ativo"},
-    {nome:"ANDRE LUIZ DEBORTOLI",cpf:"",status:"Ativo"},
-    {nome:"THAYNARA CASSIA MARQUES DO AMARAL",cpf:"",status:"Ativo"},
-    {nome:"ALICE KHALI AMARAL DE OLIVEIRA",cpf:"",status:"Ativo"},
-    {nome:"LAURA THAIS ANDRE CAMPOS",cpf:"",status:"Ativo"},
-    {nome:"LIVIA CAMPOS CALCIOLARI",cpf:"",status:"Ativo"},
-    {nome:"SOLANGE DE GOIS GOMES",cpf:"822.720.982-22",status:"Ativo"},
-    {nome:"ANA CAROLINA DE GOIS LEITE",cpf:"",status:"Ativo"},
-    {nome:"FELIPE JOSE GOMES",cpf:"",status:"Ativo"},
-    {nome:"MARCELO JOSE GOMES",cpf:"",status:"Ativo"},
-    {nome:"EMANUELLY DA CONCEIÇÃO CARVALHO",cpf:"079.181.711-36",status:"Ativo"},
-    {nome:"NATHALY ANGELICA CAMPOS PAULINO",cpf:"",status:"Ativo"},
-    {nome:"VANDERLUCIA CAMPOS DA CONCEIÇÃO CARVALHO",cpf:"030.741.411-66",status:"Ativo"},
-    {nome:"LEANDRO SILVA DOS SANTOS",cpf:"740.283.081-00",status:"Ativo"},
-    {nome:"PATRICIA DE OLIVEIRA MACIEL",cpf:"",status:"Ativo"},
-    {nome:"ISABELLY INGRID OLIVEIRA DOS SANTOS",cpf:"",status:"Ativo"},
-    {nome:"NATHAN DE OLIVEIRA DOS SANTOS",cpf:"",status:"Ativo"},
-    {nome:"FILIPE ENGEL MOURA",cpf:"063.750.041-52",status:"Ativo"},
-    {nome:"WANDERLEY DA MOTA MOURA",cpf:"617.169.601-34",status:"Ativo"},
-    {nome:"PEDRO HENRIQUE OLIVEIRA DE SOUZA",cpf:"055.880.331-83",status:"Ativo"},
-    {nome:"SANDA TERESINHA ENGEL MOTA MOURA",cpf:"817.491.200-20",status:"Ativo"},
-    {nome:"GABRIELA ENGE MOURA",cpf:"062.100.041-80",status:"Ativo"},
-    {nome:"AMINADABI DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"KAROLINE BEATRIZ DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"KARYNE ELIANE DA SILVA RAFAEL",cpf:"",status:"Ativo"},
-    {nome:"JOSE AMADEU MANDELLO JUNIOR",cpf:"051.389.786-08",status:"Ativo"},
-    {nome:"ALINE SIMONY STELLA",cpf:"024.735.891-80",status:"Ativo"},
-    {nome:"EDIMAR PEREIRA DE CARVALHO",cpf:"026.181.241-62",status:"Ativo"},
-    {nome:"ADIRANE LUZIA MARIN",cpf:"001.746.321-18",status:"Ativo"},
-    {nome:"ENTONNY VINICIUS MARIN DE CARVALHO",cpf:"",status:"Ativo"},
-    {nome:"CHRISTOPHER MIGUEL MARIN",cpf:"",status:"Ativo"},
-    {nome:"CHRYTIAN LORENZO MARIN DE CARVALHO",cpf:"",status:"Ativo"},
-    {nome:"SARA FERNANDES DOS SANTOS",cpf:"",status:"Ativo"},
-    {nome:"ERICO NARCISO BARRETO DIAS",cpf:"073.135.429-09",status:"Ativo"},
-    {nome:"CAMILA DOS SANTOS DS REIS",cpf:"",status:"Ativo"},
-    {nome:"SAMUEL FERNANDES DOS SANTOS",cpf:"052.233.681-77",status:"Ativo"},
-    {nome:"ANA PAULA FERNANDES DOS SANTOS",cpf:"072.591.164-63",status:"Ativo"},
-    {nome:"JEOVA OLIVEIRA DOS SANTOS",cpf:"007.803.134-61",status:"Ativo"},
-    {nome:"MARCIEL MORAIS DOS SANTOS",cpf:"050.495.441-57",status:"Ativo"},
-    {nome:"LILIAN BATISTA DE JESUS MORAIS",cpf:"059.339.701-07",status:"Ativo"},
-    {nome:"ANNY MARIA BATISTA DOS SANTOS",cpf:"075.377.151-90",status:"Ativo"},
-    {nome:"BENJAMIM BATISTA DOS SANTOS",cpf:"",status:"Ativo"},
-    {nome:"JOSE WELLINGTON JACINTO DE LIMA",cpf:"106.806.214-54",status:"Ativo"},
-    {nome:"ARYANNE JULIA DUARTE DA COSTA",cpf:"078.124.644-46",status:"Ativo"},
-    {nome:"LAIS CAMILLE LITAIFF DA COSTA REZENDE",cpf:"017.704.452-77",status:"Ativo"},
-    {nome:"WENDEL SALES CAVALCANTE",cpf:"774.198.802-63",status:"Ativo"},
-    {nome:"WINIE HELENA LITAIFF REZENDE CAVALCANTE",cpf:"079.352.672-86",status:"Ativo"},
-    {nome:"FERNANDO HENRIQUE FABRICIO LUIZ",cpf:"403.765.238-24",status:"Ativo"},
-    {nome:"ANDRIELE NUNES DE SOUZA",cpf:"035.896.611-60",status:"Ativo"},
-    {nome:"PIETRO EMANUEL SOUZA CAMPOS",cpf:"",status:"Ativo"},
-    {nome:"THÁILA HELLEN NUNES DE SOUZA LOPES",cpf:"",status:"Ativo"},
-    {nome:"OSCAR DE ASSIS CAMPOS",cpf:"965.169.501-30",status:"Ativo"},
-    {nome:"GABRIEL SCHORDNG FERRÃO",cpf:"005.682.481-55",status:"Ativo"},
-    {nome:"SUMAYA FERREIRA GUEDES",cpf:"016.793.471-60",status:"Ativo"},
-    {nome:"ISA BELLA FERREIRA GUEDES FERRÃO",cpf:"",status:"Ativo"},
-    {nome:"MARCIO NUNES DE MORAES",cpf:"046.739.221-82",status:"Ativo"},
-    {nome:"WESLEY KAUAN DA SILVA",cpf:"",status:"Ativo"},
-    {nome:"GILMAR SILVA DE ALMEIDA",cpf:"",status:"Ativo"},
-    {nome:"CARLOSFERRNANDO DE ARRUDA",cpf:"005.187.811-94",status:"Ativo"},
-    {nome:"ALICE KARLA MARQUES DE ARRUDA",cpf:"",status:"Ativo"},
-    {nome:"ANDRE CARLOS MARQUES DE ARRUDA",cpf:"",status:"Ativo"},
-    {nome:"ANDREA DA SILVA MARQUES DE ARRUDA",cpf:"",status:"Ativo"},
-    {nome:"ROSIMARA DE SOUZA",cpf:"003.147.881-66",status:"Ativo"},
-    {nome:"RAIMUDO DE DEUS E SILVA FILHO",cpf:"568.365.461-00",status:"Ativo"},
-    {nome:"JOAO KLEBER BARBOSA DA SILVA",cpf:"061.435.451-03",status:"Ativo"},
-    {nome:"VANESSA CRISTINA BATISTA KRAJEWSKI",cpf:"031.963.701-86",status:"Ativo"},
-    {nome:"CLOVIS KRAJEWSKI",cpf:"013.539.361-20",status:"Ativo"},
-    {nome:"RAFAEL BATISTA KRAJEWSKI",cpf:"094.478.001-65",status:"Ativo"},
-    {nome:"JOEL KRAJEWSKI",cpf:"012.267.571-11",status:"Ativo"},
-    {nome:"PAULA CRISTINA CUSTODIO DA SILVA KRAJEWSKI",cpf:"022.881.121-07",status:"Ativo"},
-    {nome:"MIGUEL KRAJEWSKI",cpf:"067.357.471-78",status:"Ativo"},
-    {nome:"FABIO NEVES",cpf:"049.432.329-90",status:"Ativo"},
-    {nome:"MARCIA LORENZETTI",cpf:"838.945.601-00",status:"Ativo"},
-    {nome:"RONALDO FERRO DOS SANTOS",cpf:"815.950.001-78",status:"Ativo"},
-    {nome:"ELISANGELA PEREIRA NEVES",cpf:"",status:"Ativo"},
-    {nome:"ANNA CLARA NEVES DOS SANTOS",cpf:"079.067.951-56",status:"Ativo"},
-    {nome:"ARTHUR MICHEL NEVES FERRO DOS SANTOS",cpf:"093.466.321-19",status:"Ativo"}
-];
+// ===== FIREBASE CONFIG =====
+var FB_URL = 'https://aqcuacard-default-rtdb.firebaseio.com';
+var associados = [];
+var isOnline = false;
+
+// ===== CARREGAR BASE DO FIREBASE =====
+function carregarBase() {
+    var x = new XMLHttpRequest();
+    x.open('GET', FB_URL + '/associados.json', true);
+    x.timeout = 10000;
+    x.onload = function() {
+        if (x.status === 200) {
+            try {
+                var data = JSON.parse(x.responseText);
+                associados = [];
+                if (data) {
+                    for (var k in data) {
+                        var a = data[k];
+                        a._fbKey = k;
+                        associados.push(a);
+                    }
+                }
+                isOnline = true;
+                updateSyncUI();
+                console.log('Base carregada: ' + associados.length + ' associados');
+            } catch(e) {
+                isOnline = false;
+                updateSyncUI();
+            }
+        } else {
+            isOnline = false;
+            updateSyncUI();
+        }
+    };
+    x.onerror = function() { isOnline = false; updateSyncUI(); };
+    x.ontimeout = function() { isOnline = false; updateSyncUI(); };
+    x.send();
+}
+
+function updateSyncUI() {
+    var dot = document.getElementById('syncDot');
+    var txt = document.getElementById('syncText');
+    if (isOnline) {
+        dot.style.background = '#68d391';
+        txt.textContent = 'Sincronizado • ' + associados.length + ' associados';
+        txt.style.color = '#68d391';
+    } else {
+        dot.style.background = '#fc8181';
+        txt.textContent = 'Offline — verifique a conexão';
+        txt.style.color = '#fc8181';
+    }
+}
+
+// Polling: atualiza base a cada 15 segundos
+setInterval(carregarBase, 15000);
 
 // ===== FUNÇÕES UTILITÁRIAS =====
 function normalizar(texto) {
     return texto.toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Z0-9 ]/g, '').trim();
 }
-
 function normalizarCPF(cpf) {
     return cpf.replace(/\D/g, '');
 }
-
 function formatarCPFMascarado(cpf) {
     if (!cpf) return '—';
-    const limpo = cpf.replace(/\D/g, '');
+    var limpo = cpf.replace(/\D/g, '');
     if (limpo.length !== 11) return cpf;
-    return '***.'+limpo.substring(3,6)+'.'+limpo.substring(6,9)+'-**';
+    return '***.' + limpo.substring(3,6) + '.' + limpo.substring(6,9) + '-**';
+}
+
+// ===== RESOLVER ASSOCIADO (mesmo formato do consultasocios) =====
+function resolverAssociado(valor) {
+    var a = null;
+
+    // Formato QR: ACQUACARD|ID|NOME
+    if (valor.indexOf('ACQUACARD|') === 0) {
+        var partes = valor.split('|');
+        var qrId = partes[1] || '';
+        var qrNome = partes[2] || '';
+
+        // Busca por ID
+        for (var i = 0; i < associados.length; i++) {
+            if (associados[i].id === qrId) { a = associados[i]; break; }
+        }
+        // Fallback: busca por nome exato
+        if (!a && qrNome) {
+            var nomeNorm = normalizar(qrNome);
+            for (var i = 0; i < associados.length; i++) {
+                if (normalizar(associados[i].nome) === nomeNorm) { a = associados[i]; break; }
+            }
+        }
+        return a;
+    }
+
+    // Busca por CPF
+    var cpfBusca = normalizarCPF(valor);
+    if (/^\d{11}$/.test(cpfBusca)) {
+        for (var i = 0; i < associados.length; i++) {
+            if (normalizarCPF(associados[i].cpf || '') === cpfBusca) { a = associados[i]; break; }
+        }
+        if (a) return a;
+    }
+
+    // Busca por nome exato
+    var norm = normalizar(valor);
+    for (var i = 0; i < associados.length; i++) {
+        if (normalizar(associados[i].nome) === norm) { a = associados[i]; break; }
+    }
+
+    return a;
 }
 
 // ===== TABS =====
-let currentTab = 'qr';
-let html5QrCode = null;
-let scannerRunning = false;
+var currentTab = 'qr';
+var html5QrCode = null;
+var scannerRunning = false;
 
 function switchTab(tab) {
     currentTab = tab;
@@ -899,8 +280,6 @@ function switchTab(tab) {
     document.getElementById('tabSearch').classList.toggle('active', tab === 'search');
     document.getElementById('qrContainer').style.display = tab === 'qr' ? 'block' : 'none';
     document.getElementById('searchContainer').style.display = tab === 'search' ? 'block' : 'none';
-
-    // Limpar resultado
     document.getElementById('resultArea').innerHTML = '';
     document.getElementById('idleState').style.display = 'block';
 
@@ -915,226 +294,170 @@ function switchTab(tab) {
 // ===== QR CODE SCANNER =====
 function startScanner() {
     if (scannerRunning) return;
-    const qrReader = document.getElementById('qr-reader');
+    var qrReader = document.getElementById('qr-reader');
     qrReader.innerHTML = '';
 
     html5QrCode = new Html5Qrcode("qr-reader");
-
     html5QrCode.start(
         { facingMode: "environment" },
-        {
-            fps: 10,
-            qrbox: { width: 250, height: 250 },
-            aspectRatio: 1.0
-        },
+        { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 },
         onQrCodeSuccess,
-        onQrCodeError
-    ).then(() => {
+        function() {}
+    ).then(function() {
         scannerRunning = true;
-        document.getElementById('qrStatus').textContent = '📷 Câmera ativa — aponte para o QR Code';
-    }).catch(err => {
+        document.getElementById('qrStatus').textContent = '📷 Câmera ativa — aponte para o QR Code da carteirinha';
+    }).catch(function(err) {
         document.getElementById('qrStatus').innerHTML =
-            '⚠️ Não foi possível acessar a câmera.<br><small style="color:rgba(255,255,255,0.3);">Verifique as permissões do navegador ou use a busca por nome/CPF.</small>';
+            '⚠️ Não foi possível acessar a câmera.<br><small style="color:rgba(255,255,255,.3)">Verifique as permissões ou use a busca por nome/CPF.</small>';
     });
 }
 
 function stopScanner() {
     if (html5QrCode && scannerRunning) {
-        html5QrCode.stop().then(() => {
-            scannerRunning = false;
-        }).catch(() => {});
+        html5QrCode.stop().then(function() { scannerRunning = false; }).catch(function() {});
     }
 }
 
-let lastScanTime = 0;
-
+var lastScanTime = 0;
 function onQrCodeSuccess(decodedText) {
-    const now = Date.now();
+    var now = Date.now();
     if (now - lastScanTime < 3000) return;
     lastScanTime = now;
-
     document.getElementById('qrStatus').textContent = '✅ QR Code lido! Validando...';
-    processarQR(decodedText);
+    processarConsulta(decodedText, 'qr');
 }
 
-function onQrCodeError(errorMessage) {
-    // silencioso
+// ===== BUSCA POR NOME/CPF =====
+function buscar() {
+    var input = document.getElementById('searchInput').value.trim();
+    if (!input) return;
+    processarConsulta(input, 'search');
 }
 
-function processarQR(texto) {
-    const idleState = document.getElementById('idleState');
-    const resultArea = document.getElementById('resultArea');
-    const loading = document.getElementById('loading');
+// ===== PROCESSAR CONSULTA (QR ou busca manual) =====
+function processarConsulta(texto, origem) {
+    var idleState = document.getElementById('idleState');
+    var resultArea = document.getElementById('resultArea');
+    var loading = document.getElementById('loading');
 
     idleState.style.display = 'none';
     resultArea.innerHTML = '';
     loading.style.display = 'block';
 
-    setTimeout(() => {
+    setTimeout(function() {
         loading.style.display = 'none';
 
-        const busca = normalizar(texto);
-        const buscaCPF = normalizarCPF(texto);
+        // Tenta resolver direto (QR Code ou nome/CPF exato)
+        var associado = resolverAssociado(texto);
 
-        let resultado = null;
-
-        // Tenta por CPF
-        if (/^\d{11}$/.test(buscaCPF)) {
-            resultado = associados.find(a => normalizarCPF(a.cpf) === buscaCPF);
+        if (associado) {
+            mostrarResultado(associado);
+            if (origem === 'qr') {
+                document.getElementById('qrStatus').textContent = '📷 Aponte para outro QR Code para nova validação';
+            }
+            return;
         }
 
-        // Tenta por nome exato
-        if (!resultado) {
-            resultado = associados.find(a => normalizar(a.nome) === busca);
+        // Se não achou exato, tenta busca parcial (só para busca manual)
+        if (origem === 'search') {
+            var busca = normalizar(texto);
+            var buscaCPF = normalizarCPF(texto);
+            var isDigits = /^\d+$/.test(buscaCPF) && buscaCPF.length >= 3;
+            var resultados = [];
+
+            if (isDigits) {
+                resultados = associados.filter(function(a) {
+                    return a.cpf && normalizarCPF(a.cpf).indexOf(buscaCPF) >= 0;
+                });
+            }
+            if (resultados.length === 0) {
+                resultados = associados.filter(function(a) {
+                    return normalizar(a.nome).indexOf(busca) >= 0;
+                });
+            }
+
+            if (resultados.length === 1) {
+                mostrarResultado(resultados[0]);
+                return;
+            }
+
+            if (resultados.length > 1) {
+                var items = resultados.slice(0, 15).map(function(a, idx) {
+                    var badgeClass = a.status === 'Ativo' ? 'badge-active' : 'badge-restricted';
+                    var badgeText = a.status === 'Ativo' ? 'Ativo' : 'Restrito';
+                    return '<div class="result-item" onclick="mostrarResultado(associados[' + associados.indexOf(a) + '])">' +
+                        '<div class="name">' + a.nome + '</div>' +
+                        '<div class="' + badgeClass + '">' + badgeText + '</div></div>';
+                }).join('');
+
+                var extra = resultados.length > 15
+                    ? '<div style="text-align:center;margin-top:12px;font-size:13px;color:rgba(255,255,255,.3)">Mostrando 15 de ' + resultados.length + '. Refine a busca.</div>'
+                    : '';
+
+                resultArea.innerHTML =
+                    '<div class="card-multiple"><h3>' + resultados.length + ' associado(s) encontrado(s) — selecione:</h3>' +
+                    items + extra +
+                    '<div style="text-align:center"><button class="btn-new" onclick="limpar()">🔄 Nova Consulta</button></div></div>';
+                return;
+            }
         }
 
-        // Tenta por conteúdo parcial
-        if (!resultado) {
-            const encontrados = associados.filter(a =>
-                normalizar(a.nome).includes(busca) ||
-                (a.cpf && normalizarCPF(a.cpf).includes(buscaCPF) && buscaCPF.length >= 6)
-            );
-            if (encontrados.length === 1) resultado = encontrados[0];
-        }
+        // Não encontrou
+        resultArea.innerHTML =
+            '<div class="card-invalid">' +
+            '<div class="status-icon">✕</div>' +
+            '<div class="status-text">Não Encontrado</div>' +
+            '<div class="status-desc">Carteirinha não identificada na base de associados.' +
+            (origem === 'qr' ? '<br><small style="color:rgba(255,255,255,.3)">Dado lido: ' + texto.substring(0, 80) + '</small>' : '') +
+            '</div>' +
+            '<button class="btn-new" onclick="limpar()">🔄 Nova Consulta</button></div>';
 
-        if (resultado) {
-            mostrarCarteirinha(resultado);
-            document.getElementById('qrStatus').textContent = '📷 Aponte para outro QR Code para nova validação';
-        } else {
-            resultArea.innerHTML = `
-                <div class="card-invalid">
-                    <div class="status-icon">✕</div>
-                    <div class="status-text">Não Encontrado</div>
-                    <div class="status-desc">
-                        Carteirinha não identificada na base de associados.<br>
-                        <small style="color:rgba(255,255,255,0.3);">Dado lido: ${texto.substring(0, 60)}</small>
-                    </div>
-                    <button class="btn-new" onclick="limpar()">🔄 Nova Consulta</button>
-                </div>
-            `;
+        if (origem === 'qr') {
             document.getElementById('qrStatus').textContent = '📷 Aponte para outro QR Code para tentar novamente';
         }
     }, 600);
 }
 
-// ===== BUSCA POR NOME / CPF =====
-function buscar() {
-    const input = document.getElementById('searchInput').value.trim();
-    const resultArea = document.getElementById('resultArea');
-    const idleState = document.getElementById('idleState');
-    const loading = document.getElementById('loading');
+// ===== MOSTRAR RESULTADO =====
+function mostrarResultado(associado) {
+    var resultArea = document.getElementById('resultArea');
+    var agora = new Date();
+    var dataConsulta = agora.toLocaleDateString('pt-BR') + ' às ' + agora.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
 
-    if (!input) {
-        resultArea.innerHTML = '';
-        idleState.style.display = 'block';
+    if (associado.status === 'Acesso Restrito') {
+        resultArea.innerHTML =
+            '<div class="card-blocked">' +
+            '<div class="status-icon">⚠</div>' +
+            '<div class="status-text">Acesso Restrito</div>' +
+            '<div class="member-name">' + associado.nome + '</div>' +
+            '<div style="margin-top:12px;font-size:14px;color:rgba(255,255,255,.5)">Esta carteirinha está com acesso restrito. Procure a administração.</div>' +
+            '<button class="btn-new" onclick="limpar()">🔄 Nova Consulta</button></div>';
         return;
     }
 
-    idleState.style.display = 'none';
-    resultArea.innerHTML = '';
-    loading.style.display = 'block';
-
-    setTimeout(() => {
-        loading.style.display = 'none';
-
-        const busca = normalizar(input);
-        const buscaCPF = normalizarCPF(input);
-        const isDigits = /^\d+$/.test(buscaCPF) && buscaCPF.length >= 3;
-
-        let resultados = [];
-
-        if (isDigits) {
-            resultados = associados.filter(a => a.cpf && normalizarCPF(a.cpf).includes(buscaCPF));
-        }
-
-        if (resultados.length === 0) {
-            resultados = associados.filter(a => normalizar(a.nome).includes(busca));
-        }
-
-        if (resultados.length === 0) {
-            resultArea.innerHTML = `
-                <div class="card-invalid">
-                    <div class="status-icon">✕</div>
-                    <div class="status-text">Não Encontrado</div>
-                    <div class="status-desc">
-                        Nenhum associado encontrado para "<strong>${input}</strong>".<br>
-                        Verifique o nome ou CPF e tente novamente.
-                    </div>
-                    <button class="btn-new" onclick="limpar()">🔄 Nova Consulta</button>
-                </div>
-            `;
-        } else if (resultados.length === 1) {
-            mostrarCarteirinha(resultados[0]);
-        } else {
-            let items = resultados.slice(0, 15).map((a) => `
-                <div class="result-item" onclick="mostrarCarteirinha(associados[${associados.indexOf(a)}])">
-                    <div class="name">${a.nome}</div>
-                    <div class="badge-active">${a.status}</div>
-                </div>
-            `).join('');
-
-            let extra = resultados.length > 15
-                ? `<div style="text-align:center;margin-top:12px;font-size:13px;color:rgba(255,255,255,0.3);">Mostrando 15 de ${resultados.length} resultados. Refine a busca.</div>`
-                : '';
-
-            resultArea.innerHTML = `
-                <div class="card-multiple">
-                    <h3>${resultados.length} associado(s) encontrado(s) — selecione:</h3>
-                    ${items}
-                    ${extra}
-                    <div style="text-align:center;">
-                        <button class="btn-new" onclick="limpar()">🔄 Nova Consulta</button>
-                    </div>
-                </div>
-            `;
-        }
-    }, 600);
-}
-
-function mostrarCarteirinha(associado) {
-    const resultArea = document.getElementById('resultArea');
-    const agora = new Date();
-    const dataConsulta = agora.toLocaleDateString('pt-BR') + ' às ' + agora.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
-
-    resultArea.innerHTML = `
-        <div class="card-valid">
-            <div class="status-icon">✓</div>
-            <div class="status-text">Carteirinha Válida</div>
-            <div class="member-name">${associado.nome}</div>
-            <div class="aquacard-badge">AQUACARD ATIVO</div>
-            <div class="member-details">
-                <div class="detail-row">
-                    <span class="label">Status</span>
-                    <span class="value" style="color:#00e676;font-weight:700;">${associado.status}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="label">CPF</span>
-                    <span class="value">${formatarCPFMascarado(associado.cpf)}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="label">Validação</span>
-                    <span class="value">${dataConsulta}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="label">Tipo</span>
-                    <span class="value">Associado AquaCard</span>
-                </div>
-            </div>
-            <button class="btn-new" onclick="limpar()" style="margin-top:24px;">🔄 Nova Consulta</button>
-        </div>
-    `;
+    resultArea.innerHTML =
+        '<div class="card-valid">' +
+        '<div class="status-icon">✓</div>' +
+        '<div class="status-text">Carteirinha Válida</div>' +
+        '<div class="member-name">' + associado.nome + '</div>' +
+        '<div class="aquacard-badge">AQUACARD ATIVO</div>' +
+        '<div class="member-details">' +
+            '<div class="detail-row"><span class="label">Status</span><span class="value" style="color:#00e676;font-weight:700">' + associado.status + '</span></div>' +
+            '<div class="detail-row"><span class="label">CPF</span><span class="value">' + formatarCPFMascarado(associado.cpf) + '</span></div>' +
+            (associado.emp ? '<div class="detail-row"><span class="label">Empresa</span><span class="value">' + associado.emp + '</span></div>' : '') +
+            (associado.titulo ? '<div class="detail-row"><span class="label">Título</span><span class="value">' + associado.titulo + '</span></div>' : '') +
+            (associado.fim ? '<div class="detail-row"><span class="label">Validade</span><span class="value">' + associado.fim + '</span></div>' : '') +
+            '<div class="detail-row"><span class="label">Validação</span><span class="value">' + dataConsulta + '</span></div>' +
+        '</div>' +
+        '<button class="btn-new" onclick="limpar()" style="margin-top:24px">🔄 Nova Consulta</button></div>';
 }
 
 function limpar() {
     document.getElementById('searchInput').value = '';
     document.getElementById('resultArea').innerHTML = '';
     document.getElementById('idleState').style.display = 'block';
-    if (currentTab === 'search') {
-        document.getElementById('searchInput').focus();
-    }
-    if (currentTab === 'qr') {
-        document.getElementById('qrStatus').textContent = '📷 Câmera ativa — aponte para o QR Code';
-    }
+    if (currentTab === 'search') document.getElementById('searchInput').focus();
+    if (currentTab === 'qr') document.getElementById('qrStatus').textContent = '📷 Câmera ativa — aponte para o QR Code da carteirinha';
 }
 
 // ENTER para buscar
@@ -1142,8 +465,9 @@ document.getElementById('searchInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') buscar();
 });
 
-// Iniciar scanner ao carregar
+// ===== INIT =====
 window.addEventListener('load', function() {
+    carregarBase();
     startScanner();
 });
 </script>
