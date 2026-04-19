@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parque das Águas | Passaportes Empresariais — CDL Nova Mutum</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#0a0a0a;--card:#161616;--elev:#1c1c1c;--hover:#242424;--inp:#1a1a1a;--bd:#2c2c2c;--bd2:#383838;--gold:#d4a853;--gold-l:#f5e6c4;--gold-d:rgba(212,168,83,.10);--gold-b:rgba(212,168,83,.22);--acc:#a78bfa;--acc-d:rgba(167,139,250,.08);--acc-b:rgba(167,139,250,.22);--ok:#34d399;--ok-d:rgba(52,211,153,.08);--ok-b:rgba(52,211,153,.22);--err:#f87171;--err-d:rgba(248,113,113,.08);--err-b:rgba(248,113,113,.22);--warn:#fbbf24;--warn-d:rgba(251,191,36,.08);--warn-b:rgba(251,191,36,.22);--blue:#60a5fa;--blue-d:rgba(96,165,250,.08);--blue-b:rgba(96,165,250,.22);--t1:#ececec;--t2:#b0b0b0;--t3:#8a8a8a;--t4:#5a5a5a;--r:12px;--r2:16px}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.6}
+        ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px}
+        .home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;position:relative;overflow:hidden}
+        .home::before{content:'';position:absolute;top:-300px;right:-300px;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(212,168,83,.03),transparent 70%)}
+        .deco{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.25}
+        .logo-h{height:70px;margin-bottom:24px;filter:brightness(0) invert(1);opacity:.85}
+        .home h1{font-size:2.2rem;font-weight:800;letter-spacing:-.5px;text-align:center;margin-bottom:8px;background:linear-gradient(135deg,#fff,var(--gold-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .sub{color:var(--t2);font-size:1rem;margin-bottom:10px}
+        .env{background:linear-gradient(135deg,rgba(52,211,153,.12),rgba(52,211,153,.06));border:1px solid var(--ok-b);color:var(--ok);padding:6px 20px;border-radius:20px;font-size:.72rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:36px}
+        .sync{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:16px;font-size:.72rem;font-weight:700;margin-bottom:16px}
+        .sync-on{background:rgba(52,211,153,.1);color:var(--ok);border:1px solid var(--ok-b)}
+        .sync-off{background:rgba(248,113,113,.1);color:var(--err);border:1px solid var(--err-b)}
+        .sync-dot{width:8px;height:8px;border-radius:50%;animation:pulse 2s infinite}
+        .sync-on .sync-dot{background:var(--ok)}.sync-off .sync-dot{background:var(--err)}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+        .srch-w{max-width:1080px;width:100%;position:relative;z-index:1;margin-bottom:22px}
+        .srch-i{position:relative}.srch-i .si{position:absolute;left:18px;top:50%;transform:translateY(-50%);opacity:.4;pointer-events:none}
+        .srch{width:100%;padding:16px 20px 16px 50px;border:1px solid var(--bd);border-radius:var(--r);background:var(--card);color:var(--t1);font-size:.95rem;font-family:inherit;font-weight:500;outline:none;transition:all .3s}
+        .srch::placeholder{color:var(--t4)}.srch:focus{border-color:var(--gold-b);background:var(--elev)}
+        .srch-c{text-align:center;font-size:.8rem;color:var(--t3);margin-top:10px;min-height:20px}
+        .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;max-width:1080px;width:100%;position:relative;z-index:1}
+        .crd{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);padding:28px 24px;text-align:center;cursor:pointer;transition:all .35s;position:relative;overflow:hidden}
+        .crd:hover{transform:translateY(-5px);border-color:var(--bd2);box-shadow:0 12px 40px rgba(0,0,0,.55)}
+        .crd .ci{width:58px;height:58px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.7rem;margin:0 auto 16px;background:rgba(255,255,255,.03);border:1px solid var(--bd)}
+        .crd h3{color:var(--t1);font-size:1.05rem;font-weight:700;margin-bottom:6px}
+        .crd p{color:var(--t3);font-size:.85rem}
+        .crd .cb{margin-top:14px;display:inline-block;padding:5px 16px;border-radius:8px;font-size:.78rem;font-weight:600;background:rgba(255,255,255,.03);color:var(--t2);border:1px solid var(--bd)}
+        .crd.adm{border-color:var(--gold-b);background:var(--gold-d)}
+        .crd.adm:hover{border-color:var(--gold)}
+        .crd.adm .ci{background:var(--gold-d);border-color:var(--gold-b)}
+        .crd.adm .cb{background:var(--gold-d);color:var(--gold);border-color:var(--gold-b)}
+        .crd.hid{display:none}
+        .ca{display:flex;gap:8px;margin-top:14px;justify-content:center}
+        .cab{padding:7px 14px;border-radius:8px;font-size:.78rem;font-weight:700;border:1px solid var(--bd);background:var(--elev);color:var(--t3);cursor:pointer;transition:all .2s;font-family:inherit;display:inline-flex;align-items:center;gap:5px}
+        .cab:hover{background:var(--hover);color:var(--t1);border-color:var(--bd2)}
+        .cab.cwp{border-color:rgba(37,211,102,.35);color:#25d366}
+        .cab.cwp:hover{background:rgba(37,211,102,.1);border-color:#25d366}
+        .cab.ccp{border-color:rgba(96,165,250,.35);color:var(--blue)}
+        .cab.ccp:hover{background:var(--blue-d);border-color:var(--blue)}
+        .hdr{background:var(--card);border-bottom:1px solid var(--bd);padding:0 28px;display:flex;align-items:center;height:64px;gap:16px;position:sticky;top:0;z-index:100}
+        .hdr .logo{height:32px;filter:brightness(0) invert(1);opacity:.8}
+        .hdr .dv{width:1px;height:28px;background:var(--bd)}
+        .hdr .tt{font-size:.95rem;font-weight:700}
+        .hdr .et{background:var(--ok-d);color:var(--ok);padding:3px 10px;border-radius:5px;font-size:.65rem;font-weight:700;letter-spacing:.5px;border:1px solid var(--ok-b)}
+        .hdr .sp{flex:1}
+        .bbk{display:flex;align-items:center;gap:6px;background:var(--elev);border:1px solid var(--bd);color:var(--t2);padding:8px 16px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+        .bbk:hover{background:var(--hover);color:var(--t1)}
+        .etb{background:var(--card);border-bottom:1px solid var(--bd);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+        .en{font-size:1.2rem;font-weight:800;letter-spacing:-.3px}
+        .ec{font-size:.85rem;color:var(--t3);margin-top:3px}
+        .em{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+        .em .mi{font-size:.88rem;color:var(--t3);display:flex;align-items:center;gap:5px}
+        .em .mi strong{color:var(--t1)}
+        .pill{display:inline-flex;align-items:center;gap:4px;padding:5px 14px;border-radius:20px;font-size:.78rem;font-weight:600}
+        .p-ok{background:var(--ok-d);color:var(--ok);border:1px solid var(--ok-b)}
+        .p-pn{background:var(--warn-d);color:var(--warn);border:1px solid var(--warn-b)}
+        .p-rj{background:var(--err-d);color:var(--err);border:1px solid var(--err-b)}
+        .p-rs{background:var(--err-d);color:var(--err);border:1px solid var(--err-b)}
+        .cnt{max-width:1140px;margin:24px auto;padding:0 20px}
+        .kr{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+        .kc{background:var(--card);border-radius:var(--r);padding:22px;border:1px solid var(--bd);position:relative;overflow:hidden}
+        .kc::after{content:'';position:absolute;top:0;left:0;width:100%;height:2px}
+        .kc.kb::after{background:linear-gradient(90deg,var(--blue),transparent)}
+        .kc.kg::after{background:linear-gradient(90deg,var(--ok),transparent)}
+        .kc.ko::after{background:linear-gradient(90deg,var(--gold),transparent)}
+        .kc.kp::after{background:linear-gradient(90deg,var(--acc),transparent)}
+        .kc.kd::after{background:linear-gradient(90deg,var(--err),transparent)}
+        .kv{font-size:2rem;font-weight:800;letter-spacing:-.5px}
+        .kb .kv{color:var(--blue)}.kg .kv{color:var(--ok)}.ko .kv{color:var(--gold)}.kp .kv{color:var(--acc)}.kd .kv{color:var(--err)}
+        .kl{font-size:.78rem;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+        .pnl{background:var(--card);border-radius:var(--r);border:1px solid var(--bd);margin-bottom:20px;overflow:hidden}
+        .pnl-h{padding:20px 24px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+        .pnl-t{font-size:1rem;font-weight:700;display:flex;align-items:center;gap:8px}
+        .pnl-b{padding:0}
+        .tbl{width:100%;border-collapse:collapse;font-size:.88rem}
+        .tbl thead th{padding:14px 20px;text-align:left;font-size:.75rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;background:var(--elev);border-bottom:1px solid var(--bd);white-space:nowrap}
+        .tbl tbody td{padding:16px 20px;border-bottom:1px solid var(--bd);color:var(--t2);font-size:.9rem}
+        .tbl tbody tr{transition:background .15s}
+        .tbl tbody tr:hover{background:var(--elev)}
+        .tbl tbody tr:last-child td{border-bottom:none}
+        .un{font-weight:700;color:var(--t1);font-size:.92rem}
+        .ut{display:inline-block;margin-top:4px;font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:4px;background:var(--acc-d);color:var(--acc);border:1px solid var(--acc-b)}
+        .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:none;border-radius:8px;font-size:.85rem;font-weight:600;font-family:inherit;cursor:pointer;transition:all .25s}
+        .b-or{background:var(--gold);color:var(--bg)}.b-or:hover{background:#e0b85e}
+        .b-gn{background:var(--ok);color:var(--bg)}.b-gn:hover{background:#4ade80}
+        .b-rd{background:var(--err);color:var(--bg)}.b-rd:hover{background:#fca5a5}
+        .b-gh{background:var(--elev);color:var(--t2);border:1px solid var(--bd)}.b-gh:hover{background:var(--hover);color:var(--t1)}
+        .b-lg{padding:12px 26px;font-size:.92rem}
+        .b-dis{opacity:.3;cursor:not-allowed}
+        .b-wp{background:#25d366;color:#fff}.b-wp:hover{background:#1da851}
+        .rules{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:22px 26px;margin-bottom:20px;position:relative;overflow:hidden}
+        .rules::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--acc),transparent);opacity:.3}
+        .rules h4{font-size:.95rem;font-weight:700;color:var(--acc);margin-bottom:12px}
+        .rules ul{padding-left:20px;font-size:.88rem;color:var(--t2);line-height:1.8}
+        .rules li strong{color:var(--t1)}
+        .dreq{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap}
+        .drc{flex:1;min-width:180px;padding:14px 18px;border-radius:10px;text-align:center}
+        .drc.out{background:var(--err-d);border:1px solid var(--err-b)}
+        .drc.in{background:var(--ok-d);border:1px solid var(--ok-b)}
+        .drc .di{font-size:1.4rem}.drc .dt{font-weight:700;color:var(--t1);font-size:.92rem}.drc .ds{font-size:.78rem;color:var(--t3)}
+        .he{padding:18px 24px;border-bottom:1px solid var(--bd);display:flex;flex-direction:column;gap:6px}
+        .he:last-child{border-bottom:none}
+        .ht{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}
+        .hn{font-weight:700;font-size:.92rem;color:var(--t1)}
+        .hd{font-size:.82rem;color:var(--t3)}
+        .mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);z-index:1000;justify-content:center;align-items:flex-start;padding:24px;overflow-y:auto}
+        .mo.act{display:flex}
+        .md{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);width:100%;max-width:640px;margin:20px auto;box-shadow:0 24px 64px rgba(0,0,0,.65);overflow:hidden}
+        .md-h{background:linear-gradient(135deg,var(--gold-d),var(--elev));border-bottom:1px solid var(--gold-b);padding:24px 28px}
+        .md-h h2{font-size:1.1rem;font-weight:700;color:var(--gold-l)}
+        .md-h p{font-size:.85rem;color:var(--t3);margin-top:4px}
+        .md-c{padding:28px}
+        .md-a{padding:0 28px 28px;display:flex;gap:10px;justify-content:flex-end}
+        .fld{margin-bottom:18px}
+        .fld label{display:block;font-size:.85rem;font-weight:600;color:var(--t2);margin-bottom:6px}
+        .fld .rq{color:var(--err)}
+        .fld input,.fld select,.fld textarea{width:100%;padding:11px 16px;border:1px solid var(--bd);border-radius:8px;font-size:.92rem;font-family:inherit;color:var(--t1);background:var(--inp);transition:all .2s}
+        .fld input:focus,.fld select:focus,.fld textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(167,139,250,.06)}
+        .fld select option{background:var(--card);color:var(--t1)}
+        .fld textarea{resize:vertical;min-height:80px}
+        .fld .hn2{font-size:.78rem;color:var(--t3);margin-top:4px}
+        .f-ro{background:var(--elev)!important;color:var(--t3)!important;font-weight:600!important}
+        .f-out{border-color:var(--err-b)!important;background:var(--err-d)!important;color:var(--err)!important}
+        .f-in{border-color:var(--ok-b)!important;background:var(--ok-d)!important;color:var(--ok)!important}
+        .uz{border:1.5px dashed var(--bd2);border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;background:var(--elev)}
+        .uz:hover{border-color:var(--acc);background:var(--acc-d)}
+        .uz.dn{border-color:var(--ok-b);background:var(--ok-d)}
+        .uz .ui{font-size:1.5rem;margin-bottom:6px}
+        .uz p{font-size:.88rem;color:var(--t3)}
+        .uz .uf{color:var(--ok);font-weight:700;margin-top:6px;display:none;font-size:.88rem}
+        .ipv{max-width:100%;max-height:160px;border-radius:8px;border:1px solid var(--bd);margin-top:8px;display:none}
+        .dl{border:none;border-top:1px solid var(--bd);margin:22px 0}
+        .fst{font-size:.98rem;font-weight:700;color:var(--t1);margin-bottom:16px}
+        .fg{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+        .alrt{background:var(--warn-d);border-left:3px solid var(--warn);padding:14px 18px;border-radius:0 8px 8px 0;margin-bottom:20px;font-size:.88rem;color:var(--t2)}
+        .alrt strong{display:block;color:var(--warn);margin-bottom:2px}
+        .atabs{background:var(--card);display:flex;gap:0;padding:0 28px;overflow-x:auto;border-bottom:1px solid var(--bd)}
+        .atab{padding:14px 22px;font-size:.88rem;font-weight:600;color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;font-family:inherit}
+        .atab:hover{color:var(--t2)}
+        .atab.act{color:var(--gold);border-bottom-color:var(--gold)}
+        .atab .tc{background:var(--err);color:#fff;font-size:.7rem;padding:2px 7px;border-radius:8px;margin-left:6px}
+        .asw{margin-bottom:20px}.asi{position:relative}
+        .asi .asx{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--t4);pointer-events:none}
+        .asin{width:100%;padding:13px 18px 13px 46px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--t1);font-size:.92rem;font-family:inherit;font-weight:500;outline:none;transition:all .2s}
+        .asin::placeholder{color:var(--t4)}.asin:focus{border-color:var(--gold-b)}
+        .asc{font-size:.8rem;color:var(--t3);margin-top:8px}
+        .rp{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:20px;overflow:hidden}
+        .rp-h{padding:20px 24px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+        .rp-h h3{font-size:1rem;font-weight:700;display:flex;align-items:center;gap:8px}
+        .rp-h .tb2{background:var(--gold-d);border:1px solid var(--gold-b);color:var(--gold);padding:5px 14px;border-radius:20px;font-size:.82rem;font-weight:700}
+        .rsm{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;padding:20px 24px;border-bottom:1px solid var(--bd)}
+        .rs{text-align:center;padding:14px 10px;background:var(--elev);border-radius:10px;border:1px solid var(--bd)}
+        .rs .rv{font-size:1.6rem;font-weight:800}.rs .rl{font-size:.78rem;font-weight:600;color:var(--t3);margin-top:2px}
+        .rs.rgo .rv{color:var(--gold)}.rs.rgn .rv{color:var(--ok)}.rs.rbl .rv{color:var(--blue)}.rs.rpu .rv{color:var(--acc)}.rs.rrd .rv{color:var(--err)}
+        .sbi{display:flex;align-items:center;gap:14px;padding:14px 24px;border-bottom:1px solid var(--bd);transition:background .15s}
+        .sbi:last-child{border-bottom:none}.sbi:hover{background:var(--elev)}
+        .sbi .sic{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:rgba(255,255,255,.03);border:1px solid var(--bd);flex-shrink:0}
+        .sbi .sin{flex:1;min-width:0}.sbi .sbn{font-weight:700;font-size:.92rem;color:var(--t1)}.sbi .sbd{font-size:.78rem;color:var(--t3)}
+        .sbi .sbc{font-size:1.3rem;font-weight:800;color:var(--gold);flex-shrink:0;min-width:40px;text-align:right}
+        .sbi .sbw{flex-shrink:0;width:120px;height:6px;background:var(--hover);border-radius:3px;overflow:hidden}
+        .sbi .sb{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold),#e0b85e);transition:width .6s}
+        .sc{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:14px;overflow:hidden}
+        .sc.urg{border-color:var(--err-b)}
+        .sh{padding:18px 24px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .15s;flex-wrap:wrap;gap:8px}
+        .sh:hover{background:var(--elev)}
+        .si2 .se{font-weight:700;font-size:.95rem;color:var(--t1)}.si2 .st{font-size:.82rem;color:var(--t3);margin-top:3px}
+        .sb2{padding:0 24px 24px;display:none}.sb2.opn{display:block}
+        .scl{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+        .sco{background:var(--elev);border-radius:10px;padding:18px;border:1px solid var(--bd)}
+        .sco h4{font-size:.88rem;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
+        .sco.oc h4{color:var(--err)}.sco.ic h4{color:var(--ok)}
+        .sf{margin-bottom:8px;font-size:.88rem}.sf strong{color:var(--t3);font-size:.78rem;display:block;font-weight:600}.sf span{color:var(--t1)}
+        .sjt{background:var(--elev);border:1px solid var(--bd);border-radius:10px;padding:18px;margin-bottom:18px}
+        .sjt h4{font-size:.88rem;color:var(--t3);font-weight:600;margin-bottom:8px}.sjt p{font-size:.92rem;font-style:italic;color:var(--t2);line-height:1.7}
+        .abx{background:var(--elev);border:1px solid var(--bd);border-radius:10px;padding:20px}
+        .abx h4{font-size:.95rem;font-weight:700;color:var(--t1);margin-bottom:14px}
+        .chi{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd);font-size:.88rem;color:var(--t2)}
+        .chi:last-of-type{border-bottom:none}
+        .chi input[type="checkbox"]{width:20px;height:20px;accent-color:var(--gold);cursor:pointer;flex-shrink:0}
+        .ab2{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+        .ab2 .btn{flex:1;min-width:100px;justify-content:center;padding:11px 18px}
+        .rjf{display:none;margin-top:14px;background:var(--card);border:1px solid var(--err-b);border-radius:8px;padding:16px}
+        .rjf.opn{display:block}
+        .rjf label{font-size:.88rem;font-weight:600;color:var(--err);display:block;margin-bottom:6px}
+        .rjf textarea{width:100%;padding:10px;border:1px solid var(--bd);border-radius:7px;font-size:.88rem;font-family:inherit;min-height:70px;background:var(--inp);color:var(--t1)}
+        .rjf .rfa{margin-top:10px;display:flex;gap:8px;justify-content:flex-end}
+        .lmd{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);width:100%;max-width:520px;margin:20px auto;box-shadow:0 24px 64px rgba(0,0,0,.65);overflow:hidden}
+        .lmd-h{padding:22px 26px;border-bottom:1px solid var(--bd)}
+        .lmd-h h3{font-size:1.05rem;font-weight:700}
+        .lmd-h p{font-size:.85rem;color:var(--t3);margin-top:4px}
+        .lmd-b{padding:24px 26px}
+        .lbx{background:var(--elev);border:1px solid var(--bd);border-radius:10px;padding:14px 16px;font-size:.82rem;color:var(--gold);word-break:break-all;font-weight:600;margin-bottom:18px;line-height:1.6;user-select:all}
+        .lar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+        .lar .btn{flex:1;min-width:120px;justify-content:center;padding:12px}
+        .wps{background:var(--elev);border:1px solid var(--bd);border-radius:10px;padding:18px;display:none}
+        .wps h4{font-size:.92rem;font-weight:700;color:#25d366;margin-bottom:12px}
+        .wps .fld{margin-bottom:14px}
+        .mpv{background:var(--inp);border:1px solid var(--bd);border-radius:8px;padding:12px 14px;font-size:.82rem;color:var(--t3);line-height:1.7;white-space:pre-line;margin-bottom:14px;max-height:160px;overflow-y:auto}
+        .tst{position:fixed;top:20px;right:20px;padding:16px 24px;border-radius:10px;font-size:.92rem;font-weight:600;color:var(--bg);z-index:2000;display:none;box-shadow:0 12px 40px rgba(0,0,0,.55);max-width:420px}
+        .tst.tok{background:var(--ok)}.tst.ter{background:var(--err)}.tst.twn{background:var(--warn)}
+        .ftr{text-align:center;padding:30px 16px;font-size:.78rem;color:var(--t4);border-top:1px solid var(--bd)}
+        .ftr strong{color:var(--t3)}
+        .hdn{display:none!important}
+        .lov{position:fixed;inset:0;background:var(--bg);z-index:3000;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .4s}
+        .lov.fo{opacity:0;pointer-events:none}
+        .spn{width:48px;height:48px;border:3px solid var(--bd);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:20px}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .lov p{color:var(--t3);font-size:.95rem}
+        .lov .rbtn{margin-top:20px;display:none;padding:10px 24px;background:var(--gold);color:var(--bg);border:none;border-radius:8px;font-size:.92rem;font-weight:700;cursor:pointer;font-family:inherit}
+        .dmo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);z-index:1100;justify-content:center;align-items:center;padding:30px}
+        .dmo.act{display:flex}
+        .dmb{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);max-width:720px;width:100%;max-height:88vh;overflow-y:auto}
+        .dmh{padding:20px 26px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center}
+        .dmh h3{font-size:1rem;font-weight:700}
+        .dmc{padding:26px;text-align:center}
+        .dmc img{max-width:100%;max-height:65vh;border-radius:10px;border:1px solid var(--bd)}
+        .bcl{background:var(--elev);border:1px solid var(--bd);color:var(--t2);padding:7px 16px;border-radius:6px;cursor:pointer;font-size:.85rem;font-weight:600;font-family:inherit;transition:all .2s}
+        .bcl:hover{background:var(--hover);color:var(--t1)}
+        @media(max-width:768px){.fg,.scl,.dreq{grid-template-columns:1fr;flex-direction:column}.grid{grid-template-columns:1fr}.hdr{padding:0 14px;gap:8px}.etb{flex-direction:column;text-align:center}.em{flex-direction:column;gap:6px}.sbi .sbw{display:none}.lar{flex-direction:column}}
+    </style>
+</head>
+<body>
+<div class="lov" id="lo"><div class="spn"></div><p id="loMsg">Conectando ao ACQUA CARD...</p><button class="rbtn" id="loRetry" onclick="retryLoad()">🔄 Tentar novamente</button></div>
+<div class="tst" id="toast"></div>
+
+<div id="vHome" class="home hdn">
+    <div class="deco"></div>
+    <img class="logo-h" src="https://parquedasaguasmt-alt.github.io/AQCUACARD/logo-parque.png" onerror="this.style.display='none'" alt="">
+    <h1>Passaportes Empresariais</h1>
+    <p class="sub">Parceria CDL Nova Mutum × Parque das Águas</p>
+    <div class="sync" id="syncB"><div class="sync-dot"></div><span>Conectando...</span></div>
+    <div class="env">🔗 INTEGRADO COM ACQUA CARD</div>
+    <div class="srch-w"><div class="srch-i"><span class="si">🔍</span><input type="text" class="srch" id="sHome" placeholder="Pesquisar empresa..." oninput="filterHome()"></div><div class="srch-c" id="sHomeCnt"></div></div>
+    <div class="grid" id="hGrid"></div>
+</div>
+
+<div id="vComp" class="hdn">
+    <div class="hdr"><img class="logo" src="https://parquedasaguasmt-alt.github.io/AQCUACARD/logo-parque.png" onerror="this.style.display='none'" alt=""><div class="dv"></div><span class="tt">Passaportes Empresariais</span><span class="et">ACQUA CARD</span><div class="sp"></div><button class="bbk" id="bbkC" onclick="goHome()">← Voltar</button></div>
+    <div class="etb"><div><div class="en" id="cN"></div><div class="ec" id="cC"></div></div><div class="em"><div class="mi">👥 <strong id="cTA"></strong></div><div class="mi">📅 Vigência <strong>2026</strong></div><span class="pill p-ok">● Ativo</span></div></div>
+    <div class="cnt"><div class="kr" id="cK"></div>
+        <div class="rules"><h4>📌 Regras de Substituição</h4><ul><li>Passaportes = <strong>sócios ACQUA CARD</strong></li><li>Substituição só por <strong>desligamento</strong></li><li><strong>Quem sai:</strong> rescisão obrigatória</li><li><strong>Quem entra:</strong> contrato obrigatório</li></ul><div class="dreq"><div class="drc out"><div class="di">🔴</div><div class="dt">Quem SAI</div><div class="ds">Rescisão</div></div><div class="drc in"><div class="di">🟢</div><div class="dt">Quem ENTRA</div><div class="ds">Contrato</div></div></div></div>
+        <div class="pnl"><div class="pnl-h"><div class="pnl-t">👥 Colaboradores</div><div id="cSync" style="font-size:.78rem;color:var(--t4);"></div></div><div class="pnl-b"><div style="overflow-x:auto;"><table class="tbl"><thead><tr><th>#</th><th>Colaborador</th><th>CPF</th><th>Cargo</th><th>Telefone</th><th>Status</th><th>Ações</th></tr></thead><tbody id="cTbl"></tbody></table></div></div></div>
+        <div class="pnl hdn" id="cHP"><div class="pnl-h"><div class="pnl-t">📜 Histórico</div></div><div class="pnl-b" id="cHB"></div></div>
+    </div>
+</div>
+
+<div id="vAdm" class="hdn">
+    <div class="hdr"><img class="logo" src="https://parquedasaguasmt-alt.github.io/AQCUACARD/logo-parque.png" onerror="this.style.display='none'" alt="" style="filter:brightness(0) invert(1);opacity:.8;"><div class="dv"></div><span class="tt">Painel Administrativo</span><span class="et">ACQUA CARD</span><div class="sp"></div><button class="bbk" onclick="goHome()">← Voltar</button></div>
+    <div class="atabs"><div class="atab act" onclick="aTab('pn',this)">📥 Pendentes <span class="tc" id="tPC">0</span></div><div class="atab" onclick="aTab('hi',this)">📋 Histórico</div><div class="atab" onclick="aTab('em',this)">🏢 Empresas</div><div class="atab" onclick="aTab('rp',this)">📊 Relatório</div></div>
+    <div class="cnt"><div class="kr" id="aK"></div><div id="aPn"></div><div id="aHi" class="hdn"></div><div id="aEm" class="hdn"></div><div id="aRp" class="hdn"></div></div>
+</div>
+
+<div class="mo" id="mSub">
+    <div class="md">
+        <div class="md-h"><h2>🔄 Solicitar Substituição</h2><p>Preencha todos os campos</p></div>
+        <div class="md-c">
+            <div class="alrt"><strong>⚠️ Documentação obrigatória</strong>Rescisão + Contrato</div>
+            <div class="fst">🔴 Colaborador que sai</div>
+            <div class="fld"><label>Nome</label><input id="mON" class="f-ro f-out" readonly></div>
+            <div class="fld"><label>Cargo</label><input id="mOR" class="f-ro f-out" readonly></div>
+            <div class="fld"><label>Motivo <span class="rq">*</span></label><select id="mMt"><option value="">Selecione...</option><option value="desligamento">Desligamento</option></select></div>
+            <div class="fld"><label>Data <span class="rq">*</span></label><input type="date" id="mDt"></div>
+            <div class="fld"><label>Justificativa <span class="rq">*</span></label><textarea id="mJs" placeholder="Descreva..."></textarea><div class="hn2">Mín. 30 caracteres</div></div>
+            <div class="fld"><label>📄 Rescisão <span class="rq">*</span></label><div class="uz" id="uz1" onclick="document.getElementById('f1').click()"><div class="ui">🔴 📄</div><p>Clique para anexar</p><div class="uf" id="fn1"></div></div><input type="file" id="f1" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="onF(this,'uz1','fn1','pv1')"><img id="pv1" class="ipv"></div>
+            <hr class="dl">
+            <div class="fst">🟢 Novo colaborador</div>
+            <div class="fg"><div class="fld"><label>Nome <span class="rq">*</span></label><input id="mIN"></div><div class="fld"><label>CPF <span class="rq">*</span></label><input id="mIC" placeholder="000.000.000-00"></div><div class="fld"><label>Cargo <span class="rq">*</span></label><input id="mIR"></div><div class="fld"><label>Telefone <span class="rq">*</span></label><input id="mIT" placeholder="(65) 99999-9999"></div></div>
+            <div class="fld"><label>📋 Contrato <span class="rq">*</span></label><div class="uz" id="uz2" onclick="document.getElementById('f2').click()"><div class="ui">🟢 📋</div><p>Clique para anexar</p><div class="uf" id="fn2"></div></div><input type="file" id="f2" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="onF(this,'uz2','fn2','pv2')"><img id="pv2" class="ipv"></div>
+        </div>
+        <div class="md-a"><button class="btn b-gh" onclick="closeSub()">Cancelar</button><button class="btn b-gn b-lg" onclick="sendReq()">✅ Enviar</button></div>
+    </div>
+</div>
+
+<div class="mo" id="mLink">
+    <div class="lmd">
+        <div class="lmd-h"><h3>🔗 Link Exclusivo</h3><p id="lEN"></p></div>
+        <div class="lmd-b">
+            <div class="lbx" id="lURL"></div>
+            <div class="lar">
+                <button class="btn b-gh" onclick="doCopy()">📋 Copiar Link</button>
+                <button class="btn b-wp" onclick="togWp()">💬 WhatsApp</button>
+            </div>
+            <div class="wps" id="wpS">
+                <h4>💬 Enviar via WhatsApp</h4>
+                <div class="fld"><label>Numero com DDD (opcional)</label><input type="text" id="wpN" placeholder="65999999999" maxlength="13" oninput="this.value=this.value.replace(/\D/g,'');upMP()"><div class="hn2">So numeros. Deixe vazio para escolher o contato</div></div>
+                <div class="mpv" id="mpv"></div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <button class="btn b-wp" style="flex:1;justify-content:center;padding:12px;" onclick="doWp()">📤 Abrir WhatsApp</button>
+                    <button class="btn b-gh" style="flex:1;justify-content:center;padding:12px;" onclick="closeLink()">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="dmo" id="dMo"><div class="dmb"><div class="dmh"><h3 id="dMoT">📎 Documento</h3><button class="bcl" onclick="closeDM()">✕</button></div><div class="dmc" id="dMoB"></div></div></div>
+
+<div class="ftr">🌊 <strong>Parque das Águas</strong> — Passaportes Empresariais | CDL Nova Mutum</div>
+
+<script>
+/* ═══ URL BASE FIXA — GITHUB PAGES ═══ */
+var BASE_URL='https://parquedasaguasmt-alt.github.io/AQCUACARD/linkempresa.html';
+
+var FB='https://aqcuacard-default-rtdb.firebaseio.com';
+var raw=[],cos={},reqs=[],hist=[];
+var curCo=null,repSt=null,fds={},online=false,lSync=null;
+var curLK='',dirMode=false;
+
+var ICO=[{k:['SUPERMERCADO','MERCADO','ATACAD'],i:'🛒'},{k:['AGRO','FAZENDA','RURAL','SEMENTE','SAFRA'],i:'🌾'},{k:['CLINICA','SAUDE','HOSPITAL','MEDIC','FARMA','ODONTO','DENT'],i:'🏥'},{k:['CONSTRU','ENGENHARIA','OBRA'],i:'🏗️'},{k:['RESTAUR','LANCHE','PIZZA','ALIMENT','PADARIA'],i:'🍽️'},{k:['ESCOLA','EDUCA','COLEGIO','CURSO'],i:'🎓'},{k:['ADVOG','JURID','DIREITO'],i:'⚖️'},{k:['CONTAB','CONTAD','FISCAL'],i:'📊'},{k:['MAQUINA','TRATOR','MECANICA','PECAS'],i:'⚙️'},{k:['TRANSPORTE','LOGISTIC','FRETE'],i:'🚛'},{k:['HOTEL','POUSADA','TURISMO'],i:'🏨'},{k:['LOJA','COMERCIO','VAREJO','MAGAZINE'],i:'🏪'},{k:['IMOBIL','IMOVEIS','CORRET'],i:'🏠'},{k:['POSTO','COMBUSTIVEL','GASOLINA'],i:'⛽'},{k:['TECNOLOGIA','SISTEMA','SOFTWARE','TI','INFORM'],i:'💻'},{k:['BANCO','FINANC','CRED','SEGUR'],i:'🏦'},{k:['VETERI','ANIMAL','PET'],i:'🐾'},{k:['BELEZA','SALAO','ESTETICA'],i:'💇'},{k:['ACADEMIA','FITNESS','GYM','ESPORTE'],i:'🏋️'},{k:['CDL','ASSOCIA','SINDICATO','COOPERATIVA'],i:'🏛️'},{k:['FARMACIA','DROGA'],i:'💊'},{k:['OTICA','OPTICA'],i:'👓'},{k:['MOVEIS','COLCH','DECOR'],i:'🛋️'},{k:['ELETR','CELULAR','PHONE'],i:'📱'},{k:['AUTO','CARRO','VEICUL','REVENDA'],i:'🚗'}];
+function gIco(n){var u=(n||'').toUpperCase();for(var i=0;i<ICO.length;i++)for(var j=0;j<ICO[i].k.length;j++)if(u.indexOf(ICO[i].k[j])>=0)return ICO[i].i;return'🏢';}
+function eKey(n){return btoa(unescape(encodeURIComponent((n||'').trim().toUpperCase()))).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');}
+function dKey(h){try{return decodeURIComponent(escape(atob(h.replace(/-/g,'+').replace(/_/g,'/'))));}catch(e){return null;}}
+
+/* ═══ LINK SEMPRE APONTA PARA GITHUB PAGES ═══ */
+function gLink(n){return BASE_URL+'#emp='+eKey(n);}
+
+function fbG(p){return new Promise(function(ok,no){var x=new XMLHttpRequest();x.open('GET',FB+'/'+p+'.json',true);x.timeout=8000;x.onreadystatechange=function(){if(x.readyState===4){if(x.status===200){try{ok(JSON.parse(x.responseText));}catch(e){no(e);}}else no(new Error(x.status));}};x.onerror=function(){no(new Error('net'));};x.ontimeout=function(){no(new Error('timeout'));};x.send();});}
+function fbP(p,d){return new Promise(function(ok,no){var x=new XMLHttpRequest();x.open('PUT',FB+'/'+p+'.json',true);x.setRequestHeader('Content-Type','application/json');x.timeout=8000;x.onreadystatechange=function(){if(x.readyState===4)ok();};x.onerror=function(){no();};x.ontimeout=function(){no();};x.send(JSON.stringify(d));});}
+
+function copyTxt(txt){
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(txt).then(function(){toast('📋 Link copiado!','ok');}).catch(function(){fallCopy(txt);});
+    }else{fallCopy(txt);}
+}
+function fallCopy(txt){
+    var ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;left:-9999px;top:0;';document.body.appendChild(ta);ta.focus();ta.select();
+    try{document.execCommand('copy');toast('📋 Link copiado!','ok');}catch(e){toast('Erro ao copiar','err');}
+    document.body.removeChild(ta);
+}
+function openWA(msg,num){
+    var url='https://api.whatsapp.com/send?text='+encodeURIComponent(msg);
+    if(num&&num.length>=12)url='https://api.whatsapp.com/send?phone='+num+'&text='+encodeURIComponent(msg);
+    window.open(url,'_blank');
+}
+
+async function load(){
+    try{
+        var d=await fbG('associados');raw=[];if(d)for(var k in d){if(d.hasOwnProperty(k)){var a=d[k];a._k=k;raw.push(a);}}
+        try{var rd=await fbG('passaportes_requests');if(rd){reqs=[];for(var k2 in rd){if(rd.hasOwnProperty(k2)){var r=rd[k2];r._k=k2;reqs.push(r);}}}}catch(e){}
+        try{var hd=await fbG('passaportes_history');if(hd){hist=[];for(var k3 in hd){if(hd.hasOwnProperty(k3)){var h=hd[k3];h._k=k3;hist.push(h);}}}}catch(e){}
+        group();online=true;lSync=new Date();upSync();return true;
+    }catch(e){console.error(e);online=false;upSync();return false;}
+}
+function group(){
+    cos={};for(var i=0;i<raw.length;i++){var a=raw[i];var emp=(a.emp||'').trim().toUpperCase();if(!emp)continue;
+    if(!cos[emp])cos[emp]={name:emp,icon:gIco(emp),staff:[]};
+    cos[emp].staff.push({id:a.id||a._k,_k:a._k,name:(a.nome||'').toUpperCase(),cpf:a.cpf||'',role:a.titulo||'',tel:a.tel||'',status:a.status==='Ativo'?'active':(a.status==='Acesso Restrito'?'restricted':'active')});}
+}
+function upSync(){var el=document.getElementById('syncB');if(!el)return;if(online){el.className='sync sync-on';el.innerHTML='<div class="sync-dot"></div><span>SINCRONIZADO</span>';}else{el.className='sync sync-off';el.innerHTML='<div class="sync-dot"></div><span>OFFLINE</span>';}}
+function hideLo(){var o=document.getElementById('lo');if(o){o.classList.add('fo');setTimeout(function(){o.style.display='none';},500);}}
+function retryLoad(){document.getElementById('loRetry').style.display='none';document.querySelector('#lo .spn').style.display='block';document.getElementById('loMsg').textContent='Reconectando...';init();}
+
+/* ═══ MENSAGENS WHATSAPP ═══ */
+function buildMsg(key){
+    var co=cos[key];if(!co)return'';
+    var lnk=gLink(key);
+    var ac=0;for(var i=0;i<co.staff.length;i++)if(co.staff[i].status==='active')ac++;
+    var lines=[
+        'PARQUE DAS AGUAS',
+        'Passaportes Empresariais',
+        '',
+        'Empresa: '+co.name,
+        'Colaboradores ativos: '+ac,
+        '',
+        'Acesse o painel exclusivo:',
+        '',
+        lnk,
+        '',
+        'Pelo link voces podem:',
+        '- Ver colaboradores vinculados',
+        '- Solicitar substituicoes',
+        '- Enviar documentos',
+        '',
+        'CDL Nova Mutum + Parque das Aguas'
+    ];
+    return lines.join('\n');
+}
+function buildMsgQuick(key){
+    var co=cos[key];if(!co)return'';
+    var lnk=gLink(key);
+    var ac=0;for(var i=0;i<co.staff.length;i++)if(co.staff[i].status==='active')ac++;
+    var lines=[
+        'PARQUE DAS AGUAS',
+        '',
+        'Link exclusivo: '+co.name,
+        'Colaboradores: '+ac,
+        '',
+        lnk,
+        '',
+        'CDL Nova Mutum + Parque das Aguas'
+    ];
+    return lines.join('\n');
+}
+
+/* ═══ LINK MODAL ═══ */
+function openLink(key){
+    curLK=key;var co=cos[key];if(!co)return;
+    document.getElementById('lEN').textContent=co.icon+' '+co.name;
+    document.getElementById('lURL').textContent=gLink(key);
+    document.getElementById('wpN').value='';
+    document.getElementById('wpS').style.display='none';
+    upMP();
+    document.getElementById('mLink').classList.add('act');
+    document.body.style.overflow='hidden';
+}
+function closeLink(){document.getElementById('mLink').classList.remove('act');document.body.style.overflow='';}
+document.getElementById('mLink').addEventListener('click',function(e){if(e.target===this)closeLink();});
+function doCopy(){copyTxt(gLink(curLK));}
+function togWp(){var s=document.getElementById('wpS');s.style.display=s.style.display==='none'?'block':'none';if(s.style.display==='block'){upMP();document.getElementById('wpN').focus();}}
+function upMP(){document.getElementById('mpv').textContent=buildMsg(curLK);}
+function doWp(){
+    var num=document.getElementById('wpN').value.replace(/\D/g,'');
+    var fn=num;if(num.length>=10&&num.length<=11)fn='55'+num;
+    openWA(buildMsg(curLK),fn);closeLink();toast('📤 WhatsApp aberto!','ok');
+}
+
+/* ═══ HOME ═══ */
+function renderHome(){
+    var g=document.getElementById('hGrid');
+    var keys=Object.keys(cos).sort(function(a,b){var aa=0,bb=0;for(var i=0;i<cos[a].staff.length;i++)if(cos[a].staff[i].status==='active')aa++;for(var j=0;j<cos[b].staff.length;j++)if(cos[b].staff[j].status==='active')bb++;return bb-aa;});
+    var h='';
+    var pc=0;for(var p=0;p<reqs.length;p++)if(reqs[p].status==='pending')pc++;
+    h+='<div class="crd adm" data-n="painel administrativo"><div class="ci">⚙️</div><h3>Painel Administrativo</h3><p>Análise e aprovação</p><div class="cb">📥 '+pc+' pendente'+(pc!==1?'s':'')+'</div></div>';
+    if(!keys.length)h+='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--t3);">📭 Nenhuma empresa</div>';
+    for(var i=0;i<keys.length;i++){
+        var k=keys[i],c=cos[k],ac=0,rs=0;
+        for(var j=0;j<c.staff.length;j++){if(c.staff[j].status==='active')ac++;if(c.staff[j].status==='restricted')rs++;}
+        h+='<div class="crd comp" data-n="'+c.name.toLowerCase()+'" data-key="'+i+'">';
+        h+='<div class="ci">'+c.icon+'</div><h3>'+c.name+'</h3><p>ACQUA CARD</p>';
+        h+='<div class="cb">👥 '+ac+' ativo'+(ac!==1?'s':'')+(rs>0?' · ⚠️ '+rs+' restrito'+(rs!==1?'s':''):'')+'</div>';
+        h+='<div class="ca">';
+        h+='<button class="cab ccp" data-act="copy" data-idx="'+i+'">📋 Copiar link</button>';
+        h+='<button class="cab cwp" data-act="wp" data-idx="'+i+'">💬 WhatsApp</button>';
+        h+='</div></div>';
+    }
+    g.innerHTML=h;
+    g._keys=keys;
+    g.onclick=function(e){
+        var btn=e.target.closest('[data-act]');
+        if(btn){
+            e.stopPropagation();
+            var idx=parseInt(btn.getAttribute('data-idx'));
+            var key=g._keys[idx];if(!key)return;
+            if(btn.getAttribute('data-act')==='copy'){
+                copyTxt(gLink(key));
+            }else if(btn.getAttribute('data-act')==='wp'){
+                openWA(buildMsgQuick(key),'');
+                toast('📤 WhatsApp aberto!','ok');
+            }
+            return;
+        }
+        var crd=e.target.closest('.comp');
+        if(crd){var ci=parseInt(crd.getAttribute('data-key'));var ky=g._keys[ci];if(ky)openComp(ky);return;}
+        var adm=e.target.closest('.adm');
+        if(adm)openAdm();
+    };
+}
+function filterHome(){var q=document.getElementById('sHome').value.toLowerCase().trim();var cards=document.querySelectorAll('#hGrid .comp');var adm=document.querySelector('#hGrid .adm');var v=0;for(var i=0;i<cards.length;i++){var m=!q||cards[i].getAttribute('data-n').indexOf(q)>=0;cards[i].classList.toggle('hid',!m);if(m)v++;}if(adm)adm.classList.toggle('hid',q&&'painel administrativo'.indexOf(q)<0);document.getElementById('sHomeCnt').textContent=q?(v===0?'Nenhuma':v+' de '+cards.length):'';}
+function goHome(){dirMode=false;location.hash='';document.getElementById('vHome').classList.remove('hdn');document.getElementById('vComp').classList.add('hdn');document.getElementById('vAdm').classList.add('hdn');document.getElementById('sHome').value='';load().then(function(){renderHome();});}
+
+/* ═══ COMPANY ═══ */
+function openComp(key){
+    curCo=key;var co=cos[key];if(!co){toast('Não encontrada','err');return;}
+    document.getElementById('vHome').classList.add('hdn');document.getElementById('vComp').classList.remove('hdn');document.getElementById('vAdm').classList.add('hdn');
+    document.getElementById('bbkC').style.display=dirMode?'none':'';
+    document.getElementById('cN').textContent=co.icon+' '+co.name;
+    document.getElementById('cC').textContent='Dados sincronizados do ACQUA CARD';
+    var ac=0,rs=0;for(var i=0;i<co.staff.length;i++){if(co.staff[i].status==='active')ac++;if(co.staff[i].status==='restricted')rs++;}
+    var pn=0;for(var j=0;j<reqs.length;j++)if(reqs[j].company===key&&reqs[j].status==='pending')pn++;
+    var sb=0;for(var k=0;k<hist.length;k++)if(hist[k].company===key)sb++;
+    document.getElementById('cTA').textContent=ac+' ativo'+(ac!==1?'s':'');
+    document.getElementById('cSync').textContent=lSync?'🔄 '+lSync.toLocaleTimeString('pt-BR'):'';
+    document.getElementById('cK').innerHTML='<div class="kc kg"><div class="kv">'+ac+'</div><div class="kl">Ativos</div></div><div class="kc kd"><div class="kv">'+rs+'</div><div class="kl">Restritos</div></div><div class="kc ko"><div class="kv">'+sb+'</div><div class="kl">Substituições</div></div><div class="kc kp"><div class="kv">'+pn+'</div><div class="kl">Pendentes</div></div>';
+    var rows='',idx=1;
+    for(var m=0;m<co.staff.length;m++){
+        var s=co.staff[m];
+        var ip=false;for(var n=0;n<reqs.length;n++)if(reqs[n].company===key&&reqs[n].staffId===s.id&&reqs[n].status==='pending'){ip=true;break;}
+        var sp=s.status==='restricted'?'<span class="pill p-rs">⚠️ Restrito</span>':(ip?'<span class="pill p-pn">⏳ Pendente</span>':'<span class="pill p-ok">● Ativo</span>');
+        var ab=s.status==='restricted'?'—':(ip?'<button class="btn b-gh b-dis" disabled>⏳</button>':'<button class="btn b-or" data-sub="'+m+'">🔄 Substituir</button>');
+        rows+='<tr'+(s.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'><td>'+idx+'</td><td><div><div class="un">'+s.name+'</div><div class="ut">'+co.name+'</div></div></td><td>'+(s.cpf||'—')+'</td><td>'+(s.role||'—')+'</td><td>'+(s.tel||'—')+'</td><td>'+sp+'</td><td>'+ab+'</td></tr>';
+        idx++;
+    }
+    if(!rows)rows='<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--t3);">Nenhum colaborador</td></tr>';
+    var tb=document.getElementById('cTbl');tb.innerHTML=rows;
+    tb.onclick=function(e){var btn=e.target.closest('[data-sub]');if(btn){var si=parseInt(btn.getAttribute('data-sub'));openSub(co.staff[si].id,key);}};
+    var hs=[];for(var p=0;p<hist.length;p++)if(hist[p].company===key)hs.push(hist[p]);
+    var hp=document.getElementById('cHP');
+    if(!hs.length){hp.classList.add('hdn');}
+    else{hp.classList.remove('hdn');var hh='';for(var q=0;q<hs.length;q++)hh+='<div class="he"><div class="ht"><span class="hn">🔴 '+hs[q].outName+' → 🟢 '+hs[q].inName+'</span><span class="hd">'+hs[q].date+'</span></div></div>';document.getElementById('cHB').innerHTML=hh;}
+}
+function openSub(sid,ck){
+    var co=cos[ck||curCo];if(!co)return;var s=null;for(var i=0;i<co.staff.length;i++)if(co.staff[i].id===sid){s=co.staff[i];break;}if(!s)return;
+    repSt={id:s.id,_k:s._k,name:s.name,cpf:s.cpf,role:s.role,ck:ck||curCo};
+    document.getElementById('mON').value=s.name;document.getElementById('mOR').value=s.role||'—';
+    var ids=['mMt','mDt','mJs','mIN','mIC','mIR','mIT'];for(var j=0;j<ids.length;j++)document.getElementById(ids[j]).value='';
+    rFile('uz1','fn1','pv1','f1');rFile('uz2','fn2','pv2','f2');fds={};
+    document.getElementById('mSub').classList.add('act');document.body.style.overflow='hidden';
+}
+function closeSub(){document.getElementById('mSub').classList.remove('act');document.body.style.overflow='';}
+document.getElementById('mSub').addEventListener('click',function(e){if(e.target===this)closeSub();});
+function sendReq(){
+    var mt=document.getElementById('mMt').value,dt=document.getElementById('mDt').value,js=document.getElementById('mJs').value;
+    var iN=document.getElementById('mIN').value.trim(),iC=document.getElementById('mIC').value.trim(),iR=document.getElementById('mIR').value.trim(),iT=document.getElementById('mIT').value.trim();
+    if(!mt)return toast('Selecione motivo','warn');if(!dt)return toast('Informe data','warn');if(js.length<30)return toast('Min 30 caracteres','warn');
+    if(!document.getElementById('f1').files.length)return toast('Anexe rescisão','warn');if(!iN||!iC||!iR||!iT)return toast('Preencha tudo','warn');
+    if(!document.getElementById('f2').files.length)return toast('Anexe contrato','warn');
+    var co=cos[repSt.ck];
+    var rq={id:Date.now(),company:repSt.ck,companyName:co?co.name:repSt.ck,staffId:repSt.id,staffFbKey:repSt._k,outName:repSt.name,outCpf:repSt.cpf,outRole:repSt.role,inName:iN.toUpperCase(),inCpf:iC,inRole:iR,inTel:iT,fireDate:dt,justification:js,rescFile:document.getElementById('f1').files[0].name,contFile:document.getElementById('f2').files[0].name,rescDataUrl:fds.r||'',contDataUrl:fds.c||'',submittedAt:new Date().toLocaleString('pt-BR'),status:'pending'};
+    reqs.push(rq);fbP('passaportes_requests/'+rq.id,rq).catch(function(){});
+    closeSub();toast('✅ Enviada!','ok');openComp(curCo);
+}
+
+/* ═══ ADMIN ═══ */
+function openAdm(){document.getElementById('vHome').classList.add('hdn');document.getElementById('vComp').classList.add('hdn');document.getElementById('vAdm').classList.remove('hdn');rAdm();}
+function aTab(t,el){var ts=['Pn','Hi','Em','Rp'];for(var i=0;i<ts.length;i++)document.getElementById('a'+ts[i]).classList.add('hdn');document.getElementById('a'+t.charAt(0).toUpperCase()+t.slice(1)).classList.remove('hdn');var all=document.querySelectorAll('.atab');for(var j=0;j<all.length;j++)all[j].classList.remove('act');el.classList.add('act');}
+
+function rAdm(){
+    var pn=[],rj=0;for(var i=0;i<reqs.length;i++){if(reqs[i].status==='pending')pn.push(reqs[i]);if(reqs[i].status==='rejected')rj++;}
+    var tE=Object.keys(cos).length,tC=0;var ks=Object.keys(cos);for(var x=0;x<ks.length;x++)for(var y=0;y<cos[ks[x]].staff.length;y++)if(cos[ks[x]].staff[y].status==='active')tC++;
+    document.getElementById('tPC').textContent=pn.length;
+    document.getElementById('aK').innerHTML='<div class="kc kd"><div class="kv">'+pn.length+'</div><div class="kl">Pendentes</div></div><div class="kc kg"><div class="kv">'+hist.length+'</div><div class="kl">Aprovadas</div></div><div class="kc ko"><div class="kv">'+rj+'</div><div class="kl">Rejeitadas</div></div><div class="kc kb"><div class="kv">'+tE+'</div><div class="kl">Empresas</div></div><div class="kc kp"><div class="kv">'+tC+'</div><div class="kl">Sócios</div></div>';
+
+    var hp='';
+    if(!pn.length)hp='<div class="pnl" style="text-align:center;padding:50px;"><div style="font-size:2.5rem;margin-bottom:10px;">✅</div><p style="color:var(--t3);">Nenhuma pendente</p></div>';
+    else for(var i2=0;i2<pn.length;i2++){var r=pn[i2];hp+='<div class="sc '+(i2===0?'urg':'')+'"><div class="sh" onclick="this.nextElementSibling.classList.toggle(\'opn\')"><div class="si2"><div style="display:flex;align-items:center;gap:8px;"><span class="pill p-pn">⏳</span><span class="se">'+r.companyName+'</span></div><div class="st">'+r.submittedAt+'</div></div><span style="color:var(--t4);">▼</span></div><div class="sb2 '+(i2===0?'opn':'')+'"><div class="scl"><div class="sco oc"><h4>🔴 Quem SAI</h4><div class="sf"><strong>Nome</strong><span>'+r.outName+'</span></div><div class="sf"><strong>CPF</strong><span>'+r.outCpf+'</span></div><div class="sf"><strong>Cargo</strong><span>'+r.outRole+'</span></div></div><div class="sco ic"><h4>🟢 Quem ENTRA</h4><div class="sf"><strong>Nome</strong><span>'+r.inName+'</span></div><div class="sf"><strong>CPF</strong><span>'+r.inCpf+'</span></div><div class="sf"><strong>Cargo</strong><span>'+r.inRole+'</span></div><div class="sf"><strong>Tel</strong><span>'+r.inTel+'</span></div></div></div><div class="sjt"><h4>📝 Justificativa</h4><p>"'+r.justification+'"</p></div><div class="abx"><h4>⚙️ Checklist</h4><div class="chi"><input type="checkbox" id="ck'+r.id+'a"><label>Rescisão ok</label></div><div class="chi"><input type="checkbox" id="ck'+r.id+'b"><label>Contrato ok</label></div><div class="chi"><input type="checkbox" id="ck'+r.id+'c"><label>Justificativa ok</label></div><div class="chi"><input type="checkbox" id="ck'+r.id+'d"><label>Dados ok</label></div><div class="ab2"><button class="btn b-gn" data-approve="'+r.id+'">✅ Aprovar</button><button class="btn b-rd" data-togglerj="'+r.id+'">❌ Rejeitar</button></div><div class="rjf" id="rj'+r.id+'"><label>Motivo:</label><textarea id="rjt'+r.id+'" placeholder="Descreva..."></textarea><div class="rfa"><button class="btn b-gh" style="font-size:.85rem;" data-cancelrj="'+r.id+'">Cancelar</button><button class="btn b-rd" style="font-size:.85rem;" data-reject="'+r.id+'">Confirmar</button></div></div></div></div></div>';}
+    var pnEl=document.getElementById('aPn');pnEl.innerHTML=hp;
+    pnEl.onclick=function(e){
+        var ap=e.target.closest('[data-approve]');if(ap){approveR(parseInt(ap.getAttribute('data-approve')));return;}
+        var trj=e.target.closest('[data-togglerj]');if(trj){document.getElementById('rj'+trj.getAttribute('data-togglerj')).classList.toggle('opn');return;}
+        var crj=e.target.closest('[data-cancelrj]');if(crj){document.getElementById('rj'+crj.getAttribute('data-cancelrj')).classList.remove('opn');return;}
+        var rjb=e.target.closest('[data-reject]');if(rjb){rejectR(parseInt(rjb.getAttribute('data-reject')));return;}
+    };
+
+    var hh='<div class="pnl"><div class="pnl-h"><div class="pnl-t">📋 Histórico</div></div><div class="pnl-b">';
+    var rjList=[];for(var j2=0;j2<reqs.length;j2++)if(reqs[j2].status==='rejected')rjList.push(reqs[j2]);
+    if(!hist.length&&!rjList.length)hh+='<div style="text-align:center;padding:40px;color:var(--t3);">Vazio</div>';
+    else{for(var j3=0;j3<hist.length;j3++)hh+='<div class="he"><div class="ht"><span class="hn">'+hist[j3].companyName+': '+hist[j3].outName+' → '+hist[j3].inName+'</span><span class="hd">'+hist[j3].date+'</span></div><span class="pill p-ok">✅</span></div>';
+    for(var j4=0;j4<rjList.length;j4++)hh+='<div class="he"><div class="ht"><span class="hn">'+rjList[j4].companyName+': '+rjList[j4].outName+' → '+rjList[j4].inName+'</span><span class="hd">'+rjList[j4].submittedAt+'</span></div><span class="pill p-rj">❌</span></div>';}
+    hh+='</div></div>';document.getElementById('aHi').innerHTML=hh;
+
+    var ee='<div class="asw"><div class="asi"><span class="asx">🔍</span><input type="text" class="asin" id="sAdmE" placeholder="Pesquisar..." oninput="fAdmE()"></div><div class="asc" id="sAdmC"></div></div>';
+    ee+='<div class="pnl"><div class="pnl-h"><div class="pnl-t">🏢 Empresas</div></div><div class="pnl-b"><table class="tbl"><thead><tr><th>Empresa</th><th>Ativos</th><th>Restritos</th><th>Link</th><th>WhatsApp</th></tr></thead><tbody id="aETbl">';
+    var sk=Object.keys(cos).sort(function(a,b){var aa=0,bb=0;for(var i5=0;i5<cos[a].staff.length;i5++)if(cos[a].staff[i5].status==='active')aa++;for(var j5=0;j5<cos[b].staff.length;j5++)if(cos[b].staff[j5].status==='active')bb++;return bb-aa;});
+    for(var m2=0;m2<sk.length;m2++){var kk=sk[m2],co2=cos[kk],a2=0,r2=0;
+    for(var n2=0;n2<co2.staff.length;n2++){if(co2.staff[n2].status==='active')a2++;if(co2.staff[n2].status==='restricted')r2++;}
+    ee+='<tr class="aer" data-n="'+co2.name.toLowerCase()+'" data-idx="'+m2+'"><td><strong>'+co2.icon+' '+co2.name+'</strong></td><td style="color:var(--ok);font-weight:700;">'+a2+'</td><td style="color:'+(r2>0?'var(--err)':'var(--t4)')+';font-weight:600;">'+r2+'</td><td><button class="btn b-gh" style="font-size:.8rem;padding:6px 12px;" data-ecopy="'+m2+'">📋 Copiar</button></td><td><button class="btn b-wp" style="font-size:.8rem;padding:6px 12px;" data-ewp="'+m2+'">💬 Enviar</button></td></tr>';}
+    ee+='</tbody></table></div></div>';
+    var emEl=document.getElementById('aEm');emEl.innerHTML=ee;
+    emEl._keys=sk;
+    emEl.onclick=function(e){
+        var cp=e.target.closest('[data-ecopy]');
+        if(cp){var ci=parseInt(cp.getAttribute('data-ecopy'));var ky=emEl._keys[ci];if(ky)copyTxt(gLink(ky));return;}
+        var wp=e.target.closest('[data-ewp]');
+        if(wp){var wi=parseInt(wp.getAttribute('data-ewp'));var wk=emEl._keys[wi];if(wk)openLink(wk);return;}
+    };
+    rReport();
+}
+
+function rReport(){
+    var keys=Object.keys(cos);var tA=0,tR=0,tG=0;var cd=[];
+    for(var i=0;i<keys.length;i++){var co=cos[keys[i]],a=0,r=0;for(var j=0;j<co.staff.length;j++){if(co.staff[j].status==='active')a++;if(co.staff[j].status==='restricted')r++;}tA+=a;tR+=r;tG+=co.staff.length;cd.push({name:co.name,icon:co.icon,a:a,r:r,t:co.staff.length});}
+    var sem=0;for(var k=0;k<raw.length;k++)if(!(raw[k].emp||'').trim())sem++;
+    var mx=1;for(var l=0;l<cd.length;l++)if(cd[l].a>mx)mx=cd[l].a;
+    var rr='<div class="rp"><div class="rp-h"><h3>📊 Relatório</h3><div class="tb2">👥 '+tA+' ativos em '+keys.length+' empresas</div></div><div class="rsm"><div class="rs rgo"><div class="rv">'+keys.length+'</div><div class="rl">Empresas</div></div><div class="rs rgn"><div class="rv">'+tA+'</div><div class="rl">Ativos</div></div><div class="rs rrd"><div class="rv">'+tR+'</div><div class="rl">Restritos</div></div><div class="rs rbl"><div class="rv">'+tG+'</div><div class="rl">Total</div></div><div class="rs rpu"><div class="rv">'+sem+'</div><div class="rl">Sem Empresa</div></div></div>';
+    cd.sort(function(a,b){return b.a-a.a;});
+    for(var m=0;m<cd.length;m++){var c=cd[m];var p=Math.round((c.a/mx)*100);rr+='<div class="sbi"><div class="sic">'+c.icon+'</div><div class="sin"><div class="sbn">'+c.name+'</div><div class="sbd">'+c.a+' ativo'+(c.a!==1?'s':'')+(c.r>0?' · <span style="color:var(--err);">'+c.r+' restrito'+(c.r!==1?'s':'')+'</span>':'')+'</div></div><div class="sbw"><div class="sb" style="width:'+p+'%"></div></div><div class="sbc">'+c.a+'</div></div>';}
+    rr+='</div>';
+    rr+='<div class="pnl"><div class="pnl-h"><div class="pnl-t">📋 Detalhamento</div></div><div class="pnl-b"><table class="tbl"><thead><tr><th>Empresa</th><th>Ativos</th><th>Restritos</th><th>Total</th><th>%</th></tr></thead><tbody>';
+    for(var n=0;n<cd.length;n++){var cc=cd[n];var pct=tA>0?((cc.a/tA)*100).toFixed(1):'0';rr+='<tr><td><strong>'+cc.icon+' '+cc.name+'</strong></td><td style="color:var(--ok);font-weight:700;">'+cc.a+'</td><td style="color:'+(cc.r>0?'var(--err)':'var(--t4)')+';font-weight:600;">'+cc.r+'</td><td>'+cc.t+'</td><td style="color:var(--gold);font-weight:700;">'+pct+'%</td></tr>';}
+    rr+='<tr style="background:var(--elev);font-weight:700;"><td>TOTAL</td><td style="color:var(--ok);">'+tA+'</td><td style="color:var(--err);">'+tR+'</td><td>'+tG+'</td><td style="color:var(--gold);">100%</td></tr></tbody></table></div></div>';
+    document.getElementById('aRp').innerHTML=rr;
+}
+function fAdmE(){var q=document.getElementById('sAdmE').value.toLowerCase().trim();var rows=document.querySelectorAll('.aer');var v=0;for(var i=0;i<rows.length;i++){var m=!q||rows[i].getAttribute('data-n').indexOf(q)>=0;rows[i].style.display=m?'':'none';if(m)v++;}document.getElementById('sAdmC').textContent=q?(v===0?'Nenhuma':'🔍 '+v+' de '+rows.length):'';}
+
+function approveR(id){
+    var r=null;for(var i=0;i<reqs.length;i++)if(reqs[i].id===id){r=reqs[i];break;}if(!r)return;
+    var cks=['a','b','c','d'];var ok=true;for(var j=0;j<cks.length;j++){var c=document.getElementById('ck'+id+cks[j]);if(!c||!c.checked){ok=false;break;}}
+    if(!ok)return toast('Marque todos','warn');
+    if(!confirm('Aprovar?\n\n'+r.outName+' → '+r.inName))return;
+    r.status='approved';
+    if(r.staffFbKey)fbP('associados/'+r.staffFbKey+'/status','Acesso Restrito').catch(function(){});
+    var na={id:'AC'+Date.now().toString(36),nome:r.inName,cpf:r.inCpf,tel:r.inTel,emp:r.companyName,titulo:r.inRole,ini:new Date().toLocaleDateString('pt-BR'),fim:'',status:'Ativo',foto:'',dt:new Date().toLocaleDateString('pt-BR')};
+    fbP('associados/NEW_'+Date.now(),na).catch(function(){});
+    var he={company:r.company,companyName:r.companyName,outName:r.outName,inName:r.inName,date:new Date().toLocaleDateString('pt-BR'),justification:r.justification,status:'approved'};
+    hist.push(he);
+    fbP('passaportes_requests/'+r.id+'/status','approved').catch(function(){});
+    fbP('passaportes_history/'+Date.now(),he).catch(function(){});
+    toast('✅ Aprovada!','ok');load().then(function(){rAdm();});
+}
+function rejectR(id){var r=null;for(var i=0;i<reqs.length;i++)if(reqs[i].id===id){r=reqs[i];break;}if(!r)return;var tx=document.getElementById('rjt'+id);if(!tx||tx.value.length<10)return toast('Min 10 car','warn');if(!confirm('Rejeitar?'))return;r.status='rejected';r.rejectReason=tx.value;fbP('passaportes_requests/'+r.id+'/status','rejected').catch(function(){});fbP('passaportes_requests/'+r.id+'/rejectReason',tx.value).catch(function(){});toast('❌ Rejeitada','err');rAdm();}
+
+/* ═══ UTILS ═══ */
+function onF(inp,zId,fnId,pvId){if(!inp.files||!inp.files[0])return;var f=inp.files[0],z=document.getElementById(zId),fn=document.getElementById(fnId),pv=document.getElementById(pvId);z.classList.add('dn');fn.textContent='✅ '+f.name;fn.style.display='block';var sk=zId==='uz1'?'r':'c';if(f.type.startsWith('image/')){var rd=new FileReader();rd.onload=function(e){pv.src=e.target.result;pv.style.display='block';fds[sk]=e.target.result;};rd.readAsDataURL(f);}else{pv.style.display='none';fds[sk]='';}}
+function rFile(zId,fnId,pvId,inId){document.getElementById(zId).classList.remove('dn');var fn=document.getElementById(fnId);fn.style.display='none';fn.textContent='';document.getElementById(pvId).style.display='none';document.getElementById(inId).value='';}
+function closeDM(){document.getElementById('dMo').classList.remove('act');}
+document.getElementById('dMo').addEventListener('click',function(e){if(e.target===this)closeDM();});
+function toast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.className='tst '+(type==='ok'?'tok':type==='err'?'ter':'twn');t.style.display='block';setTimeout(function(){t.style.display='none';},3800);}
+
+/* ═══ DEEP LINK ═══ */
+function chkDL(){var h=location.hash;if(h&&h.indexOf('#emp=')===0){var e=dKey(h.replace('#emp=',''));if(e&&cos[e]){dirMode=true;hideLo();openComp(e);return true;}}return false;}
+window.addEventListener('hashchange',function(){if(location.hash.indexOf('#emp=')===0){var e=dKey(location.hash.replace('#emp=',''));if(e&&cos[e]){dirMode=true;openComp(e);}}else if(!location.hash)goHome();});
+
+/* ═══ INIT ═══ */
+var iTO=null;
+async function init(){
+    if(iTO)clearTimeout(iTO);
+    iTO=setTimeout(function(){hideLo();document.getElementById('vHome').classList.remove('hdn');renderHome();if(!online)toast('Conexão lenta','warn');},6000);
+    try{
+        var ok=await load();clearTimeout(iTO);
+        if(chkDL()){poll();return;}
+        hideLo();document.getElementById('vHome').classList.remove('hdn');
+        if(ok&&raw.length>0){renderHome();toast('🔗 '+raw.length+' associados','ok');}
+        else{renderHome();toast(ok?'📭 Base vazia':'Falha','err');}
+        poll();
+    }catch(e){clearTimeout(iTO);hideLo();document.getElementById('vHome').classList.remove('hdn');renderHome();toast('Erro','err');poll();}
+}
+function poll(){setInterval(function(){load().then(function(){if(!document.getElementById('vHome').classList.contains('hdn'))renderHome();});},15000);}
+init();
+</script>
+</body>
+</html>
