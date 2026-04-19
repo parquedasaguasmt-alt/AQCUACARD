@@ -7,111 +7,90 @@
 <title>Totem Parceiro | Parque das Águas</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0c1821;min-height:100vh;display:flex;flex-direction:column;align-items:center;color:#fff;overflow-x:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0c1821;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;color:#fff;overflow-x:hidden}
 
-.header{text-align:center;padding:28px 20px 14px;width:100%;max-width:700px}
-.header .logo{width:110px;height:auto;margin-bottom:8px}
-.header h1{font-size:24px;font-weight:800;color:#fff;letter-spacing:1px}
-.header .subtitle{font-size:11px;color:rgba(255,255,255,.35);margin-top:4px;letter-spacing:2px;text-transform:uppercase}
-.header .mode-badge{display:inline-block;margin-top:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);padding:5px 18px;border-radius:30px;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase}
-.header .sync-status{margin-top:8px;font-size:10px;font-weight:600}
-.sync-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;animation:pulse 2s infinite}
+.header{text-align:center;padding:24px 20px 12px;width:100%;max-width:700px}
+.logo{width:100px;height:auto;margin-bottom:6px}
+.header h1{font-size:22px;font-weight:800;letter-spacing:1px}
+.header .sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:3px;letter-spacing:2px;text-transform:uppercase}
+.badge{display:inline-block;margin-top:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);padding:4px 16px;border-radius:30px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase}
+.sync{margin-top:6px;font-size:10px;font-weight:600}
+.sd{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:3px;vertical-align:middle;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-.tabs{display:flex;justify-content:center;gap:0;margin-top:18px;width:100%;max-width:600px;padding:0 20px}
-.tab-btn{flex:1;padding:13px 10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.4);font-size:13px;font-weight:600;cursor:pointer;transition:all .3s;text-align:center}
-.tab-btn:first-child{border-radius:12px 0 0 12px}
-.tab-btn:last-child{border-radius:0 12px 12px 0}
-.tab-btn.active{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25);color:#fff}
+.tabs{display:flex;margin-top:14px;width:100%;max-width:560px;padding:0 20px}
+.tb{flex:1;padding:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.35);font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:.3s}
+.tb:first-child{border-radius:10px 0 0 10px}
+.tb:last-child{border-radius:0 10px 10px 0}
+.tb.on{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25);color:#fff}
 
-.main-area{width:100%;max-width:600px;padding:0 20px;margin-top:18px;position:relative}
+.wrap{width:100%;max-width:560px;padding:0 20px;margin-top:14px;flex:1}
 
-/* CAMERA */
-.cam-wrapper{position:relative;border-radius:16px;overflow:hidden;background:#000}
-.cam-wrapper video{width:100%;display:block;border-radius:16px}
-.cam-label{text-align:center;font-size:13px;color:rgba(255,255,255,.4);padding:10px 0 8px;font-weight:600}
-.cam-status{text-align:center;font-size:12px;color:rgba(255,255,255,.3);padding:8px 0 4px}
-.scan-frame{position:absolute;top:15%;left:15%;right:15%;bottom:15%;border:2px solid rgba(34,211,238,.45);border-radius:14px;z-index:2;pointer-events:none}
-.scan-line{position:absolute;left:16%;right:16%;height:3px;background:linear-gradient(90deg,transparent,#22d3ee,transparent);top:30%;z-index:3;animation:scanAnim 2.2s ease-in-out infinite;pointer-events:none}
-@keyframes scanAnim{0%,100%{top:20%}50%{top:75%}}
+/* === CAMERA === */
+.cam-area{position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:4/3}
+.cam-area video{width:100%;height:100%;object-fit:cover;display:block}
+.cam-area canvas{display:none}
+.frame{position:absolute;top:50%;left:50%;width:220px;height:220px;margin:-110px 0 0 -110px;border:2px solid rgba(34,211,238,.5);border-radius:12px;z-index:2;pointer-events:none}
+.line{position:absolute;left:50%;width:200px;margin-left:-100px;height:3px;background:linear-gradient(90deg,transparent,#22d3ee,transparent);top:35%;z-index:3;animation:sc 2s ease-in-out infinite;pointer-events:none}
+@keyframes sc{0%,100%{top:35%}50%{top:62%}}
+.cam-label{text-align:center;font-size:12px;color:rgba(255,255,255,.35);padding:8px 0;font-weight:600}
+.cam-status{text-align:center;font-size:11px;color:rgba(255,255,255,.25);padding:4px 0}
 
-/* OVERLAY */
-.result-overlay{display:none;position:absolute;top:0;left:0;right:0;bottom:0;z-index:50;border-radius:16px;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.result-overlay.show{display:block;animation:fadeIn .3s ease}
-@keyframes fadeIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+/* === OVERLAY RESULTADO === */
+.ov{position:absolute;inset:0;z-index:20;display:none;border-radius:14px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.ov.show{display:flex;align-items:center;justify-content:center;animation:fi .3s ease}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.ov.bg-ok{background:rgba(5,46,22,.97)}
+.ov.bg-ng{background:rgba(50,10,10,.97)}
+.ov.bg-warn{background:rgba(50,30,5,.97)}
+.ov-inner{padding:28px 18px;text-align:center;width:100%}
 
-.result-overlay.valid-bg{background:linear-gradient(160deg,#071a0e,#0d3320,#14522e,#1a7a3a)}
-.result-overlay.invalid-bg{background:linear-gradient(160deg,#1a0707,#330d0d,#521414,#7a1a1a)}
-.result-overlay.blocked-bg{background:linear-gradient(160deg,#1a100a,#33200d,#523414,#7a4a1a)}
+.si{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:36px}
+.si.ok{background:#00c853;box-shadow:0 0 40px rgba(0,200,83,.3)}
+.si.ng{background:#e53e3e;box-shadow:0 0 40px rgba(229,62,62,.3)}
+.si.warn{background:#dd6b20;box-shadow:0 0 40px rgba(221,107,32,.3)}
+.st{font-size:19px;font-weight:800;text-transform:uppercase;letter-spacing:2px}
+.st.ok{color:#00e676}.st.ng{color:#fc5c65}.st.warn{color:#f6ad55}
+.mn{font-size:18px;font-weight:700;color:#fff;margin-top:10px}
+.ab{display:inline-block;margin-top:12px;background:#fff;color:#000;padding:5px 18px;border-radius:30px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.dl{margin-top:12px;display:flex;flex-direction:column;gap:4px;text-align:left;max-width:360px;margin-left:auto;margin-right:auto}
+.dr{display:flex;justify-content:space-between;padding:7px 10px;background:rgba(255,255,255,.06);border-radius:7px;font-size:12px}
+.dr .k{color:rgba(255,255,255,.45);font-weight:600}
+.dr .v{color:#fff;font-weight:500}
 
-.result-inner{padding:30px 20px;text-align:center}
+.bn{display:inline-block;margin-top:18px;padding:14px 40px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:.2s;-webkit-tap-highlight-color:transparent}
+.bn:active{transform:scale(.96);background:rgba(255,255,255,.15)}
 
-.status-icon{width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:38px}
-.status-icon.ok{background:#00c853;box-shadow:0 0 50px rgba(0,200,83,.3)}
-.status-icon.ng{background:#e53e3e;box-shadow:0 0 50px rgba(229,62,62,.3)}
-.status-icon.warn{background:#dd6b20;box-shadow:0 0 50px rgba(221,107,32,.3)}
+/* === BUSCA === */
+.search-area{display:none}
+.sbox{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px}
+.sbox label{display:block;font-size:12px;color:rgba(255,255,255,.4);margin-bottom:8px;font-weight:600}
+.sbox .iw{display:flex;gap:8px}
+.sbox input{flex:1;padding:14px 16px;border:1px solid rgba(255,255,255,.1);border-radius:10px;background:rgba(255,255,255,.06);color:#fff;font-size:16px;outline:none}
+.sbox input::placeholder{color:rgba(255,255,255,.18);font-size:14px}
+.sbox input:focus{border-color:rgba(255,255,255,.25)}
+.sbtn{padding:14px 22px;background:#fff;border:none;border-radius:10px;color:#000;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.shint{font-size:10px;color:rgba(255,255,255,.12);margin-top:6px;text-align:center}
+.sres{margin-top:12px}
+.sc{padding:24px 16px;border-radius:14px;text-align:center;margin-top:10px;animation:fi .3s}
+.sc.sv{background:rgba(0,200,83,.06);border:2px solid rgba(0,200,100,.3)}
+.sc.sb{background:rgba(221,107,32,.06);border:2px solid rgba(255,165,0,.3)}
+.sc.sn{background:rgba(229,62,62,.06);border:2px solid rgba(255,80,80,.2)}
+.ri{display:flex;justify-content:space-between;align-items:center;padding:11px 12px;background:rgba(255,255,255,.05);border-radius:8px;margin-bottom:5px;cursor:pointer;border:1px solid transparent;transition:.2s}
+.ri:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.15)}
+.ri .rn{font-weight:600;font-size:13px}
+.ba{background:rgba(0,200,100,.15);color:#00e676;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700}
+.br{background:rgba(255,165,0,.15);color:#f6ad55;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700}
+.idle{text-align:center;padding:24px;color:rgba(255,255,255,.12);margin-top:14px;font-size:12px}
 
-.status-text{font-size:20px;font-weight:800;text-transform:uppercase;letter-spacing:2px}
-.status-text.ok{color:#00e676}
-.status-text.ng{color:#fc5c65}
-.status-text.warn{color:#f6ad55}
-
-.member-name{font-size:19px;font-weight:700;color:#fff;margin-top:12px}
-.member-foto{width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 8px;display:block}
-.foto-ok{border:4px solid #00c853}
-.foto-ng{border:4px solid #e53e3e}
-.foto-warn{border:4px solid #dd6b20}
-
-.aquacard-badge{display:inline-block;margin-top:14px;background:#fff;color:#000;padding:6px 20px;border-radius:30px;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
-
-.detail-list{margin-top:14px;display:flex;flex-direction:column;gap:5px;text-align:left;max-width:380px;margin-left:auto;margin-right:auto}
-.detail-row{display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.06);border-radius:8px;font-size:13px}
-.detail-row .dl{color:rgba(255,255,255,.5);font-weight:600}
-.detail-row .dv{color:#fff;font-weight:500}
-
-.btn-new{display:inline-block;margin-top:20px;padding:14px 36px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:all .3s;letter-spacing:.5px}
-.btn-new:hover{background:rgba(255,255,255,.18);transform:scale(1.02)}
-.btn-new:active{transform:scale(.98)}
-
-/* BUSCA */
-.search-container{display:none}
-.search-box{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:24px;transition:border-color .3s}
-.search-box:focus-within{border-color:rgba(255,255,255,.2)}
-.search-box label{display:block;font-size:13px;color:rgba(255,255,255,.45);margin-bottom:10px;font-weight:600}
-.search-box .iw{display:flex;gap:10px}
-.search-box input{flex:1;padding:15px 18px;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.06);color:#fff;font-size:17px;font-weight:500;outline:none;transition:all .3s}
-.search-box input::placeholder{color:rgba(255,255,255,.2);font-size:14px}
-.search-box input:focus{border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.08)}
-.btn-search{padding:15px 26px;background:#fff;border:none;border-radius:12px;color:#000;font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap}
-.search-hint{font-size:10px;color:rgba(255,255,255,.15);margin-top:8px;text-align:center}
-
-.search-results{margin-top:14px}
-.sr-card{padding:28px 20px;border-radius:16px;text-align:center;margin-top:12px;animation:fadeIn .3s ease}
-.sr-valid{background:rgba(0,200,83,.06);border:2px solid rgba(0,200,100,.3)}
-.sr-blocked{background:rgba(221,107,32,.06);border:2px solid rgba(255,165,0,.3)}
-.sr-notfound{background:rgba(229,62,62,.06);border:2px solid rgba(255,80,80,.2)}
-
-.result-item{display:flex;justify-content:space-between;align-items:center;padding:13px 14px;background:rgba(255,255,255,.05);border-radius:10px;margin-bottom:6px;cursor:pointer;transition:all .2s;border:1px solid transparent}
-.result-item:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.15)}
-.result-item .ri-name{font-weight:600;font-size:14px}
-.badge-a{background:rgba(0,200,100,.15);color:#00e676;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase}
-.badge-r{background:rgba(255,165,0,.15);color:#f6ad55;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase}
-
-.idle-msg{text-align:center;padding:28px;color:rgba(255,255,255,.15);margin-top:16px}
-.idle-msg .icon{font-size:38px;margin-bottom:8px}
-.idle-msg p{font-size:12px}
-
-.footer{margin-top:auto;padding:22px;text-align:center;font-size:10px;color:rgba(255,255,255,.08)}
+.footer{padding:18px;text-align:center;font-size:9px;color:rgba(255,255,255,.07);margin-top:auto}
 
 @media(max-width:500px){
-.header h1{font-size:20px}
-.header .logo{width:85px}
-.search-box{padding:18px}
-.search-box .iw{flex-direction:column}
-.btn-search{padding:14px}
-.result-inner{padding:24px 16px}
-.status-text{font-size:17px}
-.member-name{font-size:16px}
+.header h1{font-size:19px}
+.logo{width:80px}
+.sbox .iw{flex-direction:column}
+.sbtn{padding:13px}
+.cam-area{aspect-ratio:3/3.2}
 }
 </style>
 </head>
@@ -120,357 +99,285 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <div class="header">
     <img src="https://parquedasaguasmt-alt.github.io/AQCUACARD/logo-parque.png" alt="Parque das Águas" class="logo" id="logoImg">
     <h1>PARQUE DAS ÁGUAS</h1>
-    <div class="subtitle">AQUACARD — Validação de Carteirinha</div>
-    <div class="mode-badge">Totem Parceiro</div>
-    <div class="sync-status">
-        <span class="sync-dot" id="syncDot" style="background:#f6e05e"></span>
-        <span id="syncText" style="color:rgba(255,255,255,.35)">Conectando...</span>
+    <div class="sub">AQUACARD — Validação de Carteirinha</div>
+    <div class="badge">Totem Parceiro</div>
+    <div class="sync">
+        <span class="sd" id="sDot" style="background:#f6e05e"></span>
+        <span id="sTxt" style="color:rgba(255,255,255,.3)">Conectando...</span>
     </div>
 </div>
 
 <div class="tabs">
-    <div class="tab-btn active" id="tabQR" onclick="switchTab('qr')">📷 QR Code</div>
-    <div class="tab-btn" id="tabSearch" onclick="switchTab('search')">🔍 Nome / CPF</div>
+    <div class="tb on" id="t1" onclick="switchTab('qr')">📷 QR Code</div>
+    <div class="tb" id="t2" onclick="switchTab('search')">🔍 Nome / CPF</div>
 </div>
 
-<div class="main-area">
+<div class="wrap">
 
-    <!-- QR TAB -->
-    <div id="qrContainer">
+    <!-- TAB QR -->
+    <div id="qrTab">
         <div class="cam-label">Aponte a câmera para o QR Code da carteirinha</div>
-        <div class="cam-wrapper" id="camWrapper">
-            <video id="camVideo" playsinline autoplay muted></video>
-            <div class="scan-frame"></div>
-            <div class="scan-line"></div>
-            <canvas id="camCanvas" style="display:none"></canvas>
-            <!-- OVERLAY SOBREPÕE O VÍDEO -->
-            <div class="result-overlay" id="resultOverlay">
-                <div class="result-inner" id="resultInner"></div>
-            </div>
+        <div class="cam-area" id="camArea">
+            <video id="vid" playsinline autoplay muted></video>
+            <canvas id="cvs"></canvas>
+            <div class="frame"></div>
+            <div class="line"></div>
+            <div class="ov" id="ov"><div class="ov-inner" id="ovIn"></div></div>
         </div>
-        <div class="cam-status" id="camStatus">Iniciando câmera...</div>
+        <div class="cam-status" id="camSt">Iniciando câmera...</div>
     </div>
 
-    <!-- SEARCH TAB -->
-    <div class="search-container" id="searchContainer">
-        <div class="search-box">
+    <!-- TAB BUSCA -->
+    <div class="search-area" id="searchTab">
+        <div class="sbox">
             <label>Validar Carteirinha Digital</label>
             <div class="iw">
-                <input type="text" id="searchInput" placeholder="Nome ou CPF..." autocomplete="off"/>
-                <button class="btn-search" onclick="buscar()">Validar</button>
+                <input type="text" id="sInput" placeholder="Nome ou CPF..." autocomplete="off"/>
+                <button class="sbtn" onclick="buscar()">Validar</button>
             </div>
-            <div class="search-hint">Pressione ENTER ou clique em Validar</div>
+            <div class="shint">Pressione ENTER ou clique em Validar</div>
         </div>
-        <div class="search-results" id="searchResults"></div>
-        <div class="idle-msg" id="idleSearch">
-            <div class="icon">💳</div>
-            <p>Busque pelo nome ou CPF para validar</p>
-        </div>
+        <div class="sres" id="sRes"></div>
+        <div class="idle" id="sIdle">💳 Busque pelo nome ou CPF para validar</div>
     </div>
 
 </div>
 
-<div class="footer">
-    Parque das Águas — AquaCard &copy; 2026 — Totem Parceiro
-</div>
+<div class="footer">Parque das Águas — AquaCard &copy; 2026 — Totem Parceiro</div>
 
 <script>
-/* ========== CONFIG ========== */
-var FB_URL = 'https://aqcuacard-default-rtdb.firebaseio.com';
-var associados = [];
-var isOnline = false;
+(function(){
+/* ===== CONFIG ===== */
+var FB='https://aqcuacard-default-rtdb.firebaseio.com';
+var assoc=[], online=false;
 
-/* Logo fallback */
-document.getElementById('logoImg').onerror = function(){ this.style.display='none'; };
+document.getElementById('logoImg').onerror=function(){this.style.display='none'};
 
-/* ========== FIREBASE ========== */
-function carregarBase() {
-    var x = new XMLHttpRequest();
-    x.open('GET', FB_URL + '/associados.json', true);
-    x.timeout = 10000;
-    x.onload = function() {
-        if (x.status === 200) {
-            try {
-                var data = JSON.parse(x.responseText);
-                associados = [];
-                if (data) { for (var k in data) { var a = data[k]; a._fbKey = k; associados.push(a); } }
-                isOnline = true;
-            } catch(e) { isOnline = false; }
-        } else { isOnline = false; }
-        updateSync();
+/* ===== FIREBASE ===== */
+function loadDB(){
+    var x=new XMLHttpRequest();
+    x.open('GET',FB+'/associados.json',true);
+    x.timeout=10000;
+    x.onload=function(){
+        if(x.status===200){try{var d=JSON.parse(x.responseText);assoc=[];if(d){for(var k in d){var a=d[k];a._k=k;assoc.push(a)}}online=true}catch(e){online=false}}else{online=false}
+        syncUI();
     };
-    x.onerror = function() { isOnline = false; updateSync(); };
-    x.ontimeout = function() { isOnline = false; updateSync(); };
+    x.onerror=x.ontimeout=function(){online=false;syncUI()};
     x.send();
 }
-
-function updateSync() {
-    var d = document.getElementById('syncDot'), t = document.getElementById('syncText');
-    if (isOnline) { d.style.background = '#68d391'; t.textContent = 'Base sincronizada'; t.style.color = '#68d391'; }
-    else { d.style.background = '#fc8181'; t.textContent = 'Offline'; t.style.color = '#fc8181'; }
+function syncUI(){
+    var d=document.getElementById('sDot'),t=document.getElementById('sTxt');
+    if(online){d.style.background='#68d391';t.textContent='Base sincronizada';t.style.color='#68d391'}
+    else{d.style.background='#fc8181';t.textContent='Offline';t.style.color='#fc8181'}
 }
+setInterval(loadDB,15000);
 
-setInterval(carregarBase, 15000);
+/* ===== UTILS ===== */
+function N(s){return(s||'').toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Z0-9 ]/g,'').trim()}
+function NC(c){return(c||'').replace(/\D/g,'')}
+function MC(c){var l=NC(c);if(l.length!==11)return c||'—';return'***.'+l.substr(3,3)+'.'+l.substr(6,3)+'-**'}
+function TS(){var n=new Date();return n.toLocaleDateString('pt-BR')+' às '+n.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
 
-/* ========== UTILS ========== */
-function norm(s) { return s.toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Z0-9 ]/g,'').trim(); }
-function normCPF(c) { return (c||'').replace(/\D/g,''); }
-function maskCPF(c) { var l=normCPF(c); if(l.length!==11) return c||'—'; return '***.' + l.substring(3,6) + '.' + l.substring(6,9) + '-**'; }
-
-function resolver(val) {
-    var a = null;
-    /* QR format: ACQUACARD|ID|NOME */
-    if (val.indexOf('ACQUACARD|') === 0) {
-        var p = val.split('|'), qid = p[1]||'', qnm = p[2]||'';
-        for (var i=0;i<associados.length;i++) { if(associados[i].id===qid){a=associados[i];break;} }
-        if(!a && qnm) { var nn=norm(qnm); for(var i=0;i<associados.length;i++){if(norm(associados[i].nome)===nn){a=associados[i];break;}} }
-        return a;
+function find(val){
+    if(val.indexOf('ACQUACARD|')===0){
+        var p=val.split('|'),id=p[1]||'',nm=p[2]||'';
+        for(var i=0;i<assoc.length;i++){if(assoc[i].id===id)return assoc[i]}
+        if(nm){var nn=N(nm);for(var i=0;i<assoc.length;i++){if(N(assoc[i].nome)===nn)return assoc[i]}}
+        return null;
     }
-    /* CPF exato */
-    var cb = normCPF(val);
-    if(/^\d{11}$/.test(cb)) { for(var i=0;i<associados.length;i++){if(normCPF(associados[i].cpf)===cb){a=associados[i];break;}} if(a) return a; }
-    /* Nome exato */
-    var nm = norm(val);
-    for(var i=0;i<associados.length;i++){if(norm(associados[i].nome)===nm){a=associados[i];break;}}
-    return a;
+    var cb=NC(val);
+    if(/^\d{11}$/.test(cb)){for(var i=0;i<assoc.length;i++){if(NC(assoc[i].cpf)===cb)return assoc[i]}}
+    var nm=N(val);
+    for(var i=0;i<assoc.length;i++){if(N(assoc[i].nome)===nm)return assoc[i]}
+    return null;
 }
 
-/* ========== CAMERA (getUserMedia + jsQR) ========== */
-var camStream = null;
-var scanning = false;
-var scanLocked = false;
+/* ===== CAMERA COM getUserMedia + jsQR ===== */
+var video=document.getElementById('vid');
+var canvas=document.getElementById('cvs');
+var ctx=canvas.getContext('2d',{willReadFrequently:true});
+var stream=null;
+var scanTimer=null;
+var blocked=false;
+var COOLDOWN=2500;
 
-function initCamera() {
-    var video = document.getElementById('camVideo');
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 640 }, height: { ideal: 480 } } })
-    .then(function(stream) {
-        camStream = stream;
-        video.srcObject = stream;
+function startCam(){
+    navigator.mediaDevices.getUserMedia({
+        video:{facingMode:'environment',width:{ideal:640},height:{ideal:480}}
+    }).then(function(s){
+        stream=s;
+        video.srcObject=s;
         video.play();
-        scanning = true;
-        document.getElementById('camStatus').textContent = '📷 Câmera ativa — aponte para o QR Code';
-        loadJsQR(function() { requestAnimationFrame(scanLoop); });
-    })
-    .catch(function(e) {
-        document.getElementById('camStatus').innerHTML = '⚠️ Câmera indisponível. Use a busca.';
+        document.getElementById('camSt').textContent='📷 Câmera ativa — aponte para o QR Code';
+        loadJsQR(function(){ startScan(); });
+    }).catch(function(){
+        document.getElementById('camSt').innerHTML='⚠️ Câmera indisponível. Use a busca.';
     });
 }
 
-function stopCamera() {
-    scanning = false;
-    if(camStream) { camStream.getTracks().forEach(function(t){t.stop();}); camStream=null; }
-}
-
-function loadJsQR(cb) {
-    if(typeof jsQR!=='undefined') return cb();
+function loadJsQR(cb){
+    if(typeof jsQR!=='undefined')return cb();
     var s=document.createElement('script');
     s.src='https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js';
     s.onload=cb;
     document.head.appendChild(s);
 }
 
-function scanLoop() {
-    if(!scanning) return;
-    if(scanLocked) { requestAnimationFrame(scanLoop); return; }
-
-    var video = document.getElementById('camVideo');
-    var canvas = document.getElementById('camCanvas');
-    var ctx = canvas.getContext('2d', { willReadFrequently: true });
-
-    if(video.readyState === video.HAVE_ENOUGH_DATA) {
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        ctx.drawImage(video, 0, 0);
-        var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        var code = jsQR(imgData.data, imgData.width, imgData.height, { inversionAttempts: 'dontInvert' });
-        if(code && code.data) {
-            scanLocked = true;
-            processarQR(code.data);
-            requestAnimationFrame(scanLoop);
-            return;
-        }
-    }
-    requestAnimationFrame(scanLoop);
+/* Scan com setInterval — mais estável que requestAnimationFrame */
+function startScan(){
+    stopScan();
+    scanTimer=setInterval(function(){
+        if(blocked)return;
+        if(video.readyState<video.HAVE_ENOUGH_DATA)return;
+        canvas.width=video.videoWidth;
+        canvas.height=video.videoHeight;
+        ctx.drawImage(video,0,0);
+        try{
+            var img=ctx.getImageData(0,0,canvas.width,canvas.height);
+            var code=jsQR(img.data,img.width,img.height,{inversionAttempts:'dontInvert'});
+            if(code&&code.data&&code.data.length>3){
+                blocked=true;
+                processQR(code.data);
+            }
+        }catch(e){}
+    },250);
 }
 
-/* ========== PROCESSAR QR ========== */
-function processarQR(texto) {
-    var assoc = resolver(texto);
-    if(assoc) {
-        showOverlay(assoc);
-    } else {
-        showOverlayNotFound(texto);
-    }
+function stopScan(){
+    if(scanTimer){clearInterval(scanTimer);scanTimer=null}
 }
 
-/* ========== OVERLAY (sobrepõe câmera) ========== */
-function showOverlay(assoc) {
-    var ov = document.getElementById('resultOverlay');
-    var inner = document.getElementById('resultInner');
-    var now = new Date();
-    var dtc = now.toLocaleDateString('pt-BR') + ' às ' + now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+function processQR(txt){
+    var a=find(txt);
+    if(a){showOv(a)}else{showOvNF(txt)}
+}
 
-    ov.className = 'result-overlay';
+/* ===== OVERLAY ===== */
+var ov=document.getElementById('ov');
+var ovIn=document.getElementById('ovIn');
 
-    if(assoc.status === 'Acesso Restrito') {
-        ov.classList.add('show','blocked-bg');
-        inner.innerHTML =
-            (assoc.foto ? '<img src="'+assoc.foto+'" class="member-foto foto-warn">' : '') +
-            '<div class="status-icon warn">⚠</div>' +
-            '<div class="status-text warn">Acesso Restrito</div>' +
-            '<div class="member-name">' + assoc.nome + '</div>' +
-            '<div style="margin-top:10px;font-size:13px;color:rgba(255,255,255,.4)">Carteirinha com restrição.<br>Procure a administração.</div>' +
-            '<button class="btn-new" onclick="novaConsulta()">🔄 Nova Consulta</button>';
-    } else {
-        ov.classList.add('show','valid-bg');
-        inner.innerHTML =
-            (assoc.foto ? '<img src="'+assoc.foto+'" class="member-foto foto-ok">' : '') +
-            '<div class="status-icon ok">✓</div>' +
-            '<div class="status-text ok">Carteirinha Válida</div>' +
-            '<div class="member-name">' + assoc.nome + '</div>' +
-            '<div class="aquacard-badge">AQUACARD ATIVO</div>' +
-            '<div class="detail-list">' +
-                '<div class="detail-row"><span class="dl">Status</span><span class="dv" style="color:#00e676;font-weight:700">' + assoc.status + '</span></div>' +
-                '<div class="detail-row"><span class="dl">CPF</span><span class="dv">' + maskCPF(assoc.cpf) + '</span></div>' +
-                (assoc.emp ? '<div class="detail-row"><span class="dl">Empresa</span><span class="dv">' + assoc.emp + '</span></div>' : '') +
-                (assoc.titulo ? '<div class="detail-row"><span class="dl">Título</span><span class="dv">' + assoc.titulo + '</span></div>' : '') +
-                (assoc.fim ? '<div class="detail-row"><span class="dl">Validade</span><span class="dv">' + assoc.fim + '</span></div>' : '') +
-                '<div class="detail-row"><span class="dl">Validação</span><span class="dv">' + dtc + '</span></div>' +
-            '</div>' +
-            '<button class="btn-new" onclick="novaConsulta()">🔄 Nova Consulta</button>';
+function showOv(a){
+    var dtc=TS();
+    ov.className='ov';
+    if(a.status==='Acesso Restrito'){
+        ov.classList.add('show','bg-warn');
+        ovIn.innerHTML=
+            '<div class="si warn">⚠</div>'+
+            '<div class="st warn">Acesso Restrito</div>'+
+            '<div class="mn">'+a.nome+'</div>'+
+            '<div style="margin-top:10px;font-size:13px;color:rgba(255,255,255,.4)">Carteirinha com restrição.<br>Procure a administração.</div>'+
+            '<div class="bn" onclick="fecharOv()">🔄 Nova Consulta</div>';
+    }else{
+        ov.classList.add('show','bg-ok');
+        ovIn.innerHTML=
+            '<div class="si ok">✓</div>'+
+            '<div class="st ok">Carteirinha Válida</div>'+
+            '<div class="mn">'+a.nome+'</div>'+
+            '<div class="ab">AQUACARD ATIVO</div>'+
+            '<div class="dl">'+
+                '<div class="dr"><span class="k">Status</span><span class="v" style="color:#00e676;font-weight:700">'+a.status+'</span></div>'+
+                '<div class="dr"><span class="k">CPF</span><span class="v">'+MC(a.cpf)+'</span></div>'+
+                (a.emp?'<div class="dr"><span class="k">Empresa</span><span class="v">'+a.emp+'</span></div>':'')+
+                (a.titulo?'<div class="dr"><span class="k">Título</span><span class="v">'+a.titulo+'</span></div>':'')+
+                (a.fim?'<div class="dr"><span class="k">Validade</span><span class="v">'+a.fim+'</span></div>':'')+
+                '<div class="dr"><span class="k">Validação</span><span class="v">'+dtc+'</span></div>'+
+            '</div>'+
+            '<div class="bn" onclick="fecharOv()">🔄 Nova Consulta</div>';
     }
 }
 
-function showOverlayNotFound(texto) {
-    var ov = document.getElementById('resultOverlay');
-    var inner = document.getElementById('resultInner');
-    ov.className = 'result-overlay show invalid-bg';
-    inner.innerHTML =
-        '<div class="status-icon ng">✕</div>' +
-        '<div class="status-text ng">Não Encontrado</div>' +
-        '<div style="font-size:13px;color:rgba(255,255,255,.3);margin-top:8px">Carteirinha não identificada na base.</div>' +
-        '<div style="font-size:10px;color:rgba(255,255,255,.15);margin-top:6px;word-break:break-all">' + texto.substring(0,80) + '</div>' +
-        '<button class="btn-new" onclick="novaConsulta()">🔄 Nova Consulta</button>';
+function showOvNF(txt){
+    ov.className='ov show bg-ng';
+    ovIn.innerHTML=
+        '<div class="si ng">✕</div>'+
+        '<div class="st ng">Não Encontrado</div>'+
+        '<div style="font-size:12px;color:rgba(255,255,255,.25);margin-top:8px">Carteirinha não identificada.</div>'+
+        '<div style="font-size:10px;color:rgba(255,255,255,.12);margin-top:4px;word-break:break-all">'+txt.substring(0,80)+'</div>'+
+        '<div class="bn" onclick="fecharOv()">🔄 Nova Consulta</div>';
 }
 
-function novaConsulta() {
-    var ov = document.getElementById('resultOverlay');
-    ov.className = 'result-overlay';
-    ov.style.display = '';
-    document.getElementById('resultInner').innerHTML = '';
-    /* Desbloqueia scan - câmera continua rodando */
-    scanLocked = false;
-    document.getElementById('camStatus').textContent = '📷 Câmera ativa — aponte para o QR Code';
-}
+/* Fechar overlay e liberar scan */
+window.fecharOv=function(){
+    ov.className='ov';
+    ovIn.innerHTML='';
+    document.getElementById('camSt').textContent='📷 Câmera ativa — aponte para o QR Code';
+    /* Cooldown para não ler o mesmo QR instantaneamente */
+    setTimeout(function(){ blocked=false; },COOLDOWN);
+};
 
-/* ========== TABS ========== */
-var currentTab = 'qr';
-function switchTab(tab) {
-    currentTab = tab;
-    document.getElementById('tabQR').classList.toggle('active', tab==='qr');
-    document.getElementById('tabSearch').classList.toggle('active', tab==='search');
-    document.getElementById('qrContainer').style.display = tab==='qr' ? 'block' : 'none';
-    document.getElementById('searchContainer').style.display = tab==='search' ? 'block' : 'none';
-
-    if(tab==='qr') {
-        novaConsulta();
-        if(!camStream) initCamera();
-    } else {
-        document.getElementById('searchInput').focus();
-        document.getElementById('searchResults').innerHTML = '';
-        document.getElementById('idleSearch').style.display = 'block';
+/* ===== TABS ===== */
+window.switchTab=function(tab){
+    document.getElementById('t1').classList.toggle('on',tab==='qr');
+    document.getElementById('t2').classList.toggle('on',tab==='search');
+    document.getElementById('qrTab').style.display=tab==='qr'?'block':'none';
+    document.getElementById('searchTab').style.display=tab==='search'?'block':'none';
+    if(tab==='qr'){
+        fecharOv();
+        if(!scanTimer)startScan();
+    }else{
+        document.getElementById('sInput').focus();
+        document.getElementById('sRes').innerHTML='';
+        document.getElementById('sIdle').style.display='block';
     }
-}
+};
 
-/* ========== BUSCA MANUAL ========== */
-function buscar() {
-    var v = document.getElementById('searchInput').value.trim();
-    if(!v) return;
-    document.getElementById('idleSearch').style.display = 'none';
-    var area = document.getElementById('searchResults');
-    var now = new Date();
-    var dtc = now.toLocaleDateString('pt-BR') + ' às ' + now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-
-    var assoc = resolver(v);
-    if(assoc) { showSearchCard(assoc, dtc); return; }
-
-    /* Busca parcial */
-    var busca = norm(v), bCPF = normCPF(v), isD = /^\d+$/.test(bCPF) && bCPF.length>=3;
-    var res = [];
-    if(isD) { res = associados.filter(function(a){ return a.cpf && normCPF(a.cpf).indexOf(bCPF)>=0; }); }
-    if(!res.length) { res = associados.filter(function(a){ return norm(a.nome).indexOf(busca)>=0; }); }
-
-    if(res.length===1) { showSearchCard(res[0], dtc); return; }
-
-    if(res.length>1) {
-        area.innerHTML = res.slice(0,15).map(function(a){
-            var bc = a.status==='Ativo'?'badge-a':'badge-r', bt = a.status==='Ativo'?'Ativo':'Restrito';
-            return '<div class="result-item" onclick="selectSearch(\''+a.id+'\')"><div class="ri-name">'+a.nome+'</div><div class="'+bc+'">'+bt+'</div></div>';
+/* ===== BUSCA ===== */
+window.buscar=function(){
+    var v=document.getElementById('sInput').value.trim();
+    if(!v)return;
+    document.getElementById('sIdle').style.display='none';
+    var area=document.getElementById('sRes');
+    var dtc=TS();
+    var a=find(v);
+    if(a){sCard(a,dtc);return}
+    var b=N(v),bc=NC(v),isD=/^\d+$/.test(bc)&&bc.length>=3,r=[];
+    if(isD){r=assoc.filter(function(x){return x.cpf&&NC(x.cpf).indexOf(bc)>=0})}
+    if(!r.length){r=assoc.filter(function(x){return N(x.nome).indexOf(b)>=0})}
+    if(r.length===1){sCard(r[0],dtc);return}
+    if(r.length>1){
+        area.innerHTML=r.slice(0,15).map(function(x){
+            var c=x.status==='Ativo'?'ba':'br',t=x.status==='Ativo'?'Ativo':'Restrito';
+            return'<div class="ri" onclick="selS(\''+x.id+'\')"><div class="rn">'+x.nome+'</div><div class="'+c+'">'+t+'</div></div>';
         }).join('');
         return;
     }
+    area.innerHTML='<div class="sc sn"><div class="si ng">✕</div><div class="st ng">Não Encontrado</div><div style="font-size:12px;color:rgba(255,255,255,.25);margin-top:6px">Nenhum associado encontrado.</div><div class="bn" onclick="limS()">🔄 Nova Consulta</div></div>';
+};
 
-    area.innerHTML = '<div class="sr-card sr-notfound"><div class="status-icon ng">✕</div><div class="status-text ng">Não Encontrado</div><div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:8px">Nenhum associado encontrado.</div><button class="btn-new" onclick="limparBusca()">🔄 Nova Consulta</button></div>';
-}
+window.selS=function(id){
+    for(var i=0;i<assoc.length;i++){if(assoc[i].id===id){sCard(assoc[i],TS());return}}
+};
 
-function selectSearch(id) {
-    for(var i=0;i<associados.length;i++) {
-        if(associados[i].id===id) {
-            var now=new Date();
-            showSearchCard(associados[i], now.toLocaleDateString('pt-BR')+' às '+now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}));
-            return;
-        }
+function sCard(a,dtc){
+    var area=document.getElementById('sRes');
+    if(a.status==='Acesso Restrito'){
+        area.innerHTML='<div class="sc sb"><div class="si warn">⚠</div><div class="st warn">Acesso Restrito</div><div class="mn">'+a.nome+'</div><div style="margin-top:8px;font-size:12px;color:rgba(255,255,255,.4)">Procure a administração.</div><div class="bn" onclick="limS()">🔄 Nova Consulta</div></div>';
+    }else{
+        area.innerHTML='<div class="sc sv"><div class="si ok">✓</div><div class="st ok">Carteirinha Válida</div><div class="mn">'+a.nome+'</div><div class="ab">AQUACARD ATIVO</div><div class="dl">'+
+            '<div class="dr"><span class="k">Status</span><span class="v" style="color:#00e676;font-weight:700">'+a.status+'</span></div>'+
+            '<div class="dr"><span class="k">CPF</span><span class="v">'+MC(a.cpf)+'</span></div>'+
+            (a.emp?'<div class="dr"><span class="k">Empresa</span><span class="v">'+a.emp+'</span></div>':'')+
+            (a.titulo?'<div class="dr"><span class="k">Título</span><span class="v">'+a.titulo+'</span></div>':'')+
+            (a.fim?'<div class="dr"><span class="k">Validade</span><span class="v">'+a.fim+'</span></div>':'')+
+            '<div class="dr"><span class="k">Validação</span><span class="v">'+dtc+'</span></div>'+
+            '</div><div class="bn" onclick="limS()">🔄 Nova Consulta</div></div>';
     }
 }
 
-function showSearchCard(assoc, dtc) {
-    var area = document.getElementById('searchResults');
-    if(assoc.status==='Acesso Restrito') {
-        area.innerHTML =
-            '<div class="sr-card sr-blocked">' +
-            (assoc.foto ? '<img src="'+assoc.foto+'" class="member-foto foto-warn">' : '') +
-            '<div class="status-icon warn">⚠</div>' +
-            '<div class="status-text warn">Acesso Restrito</div>' +
-            '<div class="member-name">'+assoc.nome+'</div>' +
-            '<div style="margin-top:10px;font-size:13px;color:rgba(255,255,255,.4)">Procure a administração.</div>' +
-            '<button class="btn-new" onclick="limparBusca()">🔄 Nova Consulta</button></div>';
-    } else {
-        area.innerHTML =
-            '<div class="sr-card sr-valid">' +
-            (assoc.foto ? '<img src="'+assoc.foto+'" class="member-foto foto-ok">' : '') +
-            '<div class="status-icon ok">✓</div>' +
-            '<div class="status-text ok">Carteirinha Válida</div>' +
-            '<div class="member-name">'+assoc.nome+'</div>' +
-            '<div class="aquacard-badge">AQUACARD ATIVO</div>' +
-            '<div class="detail-list">' +
-                '<div class="detail-row"><span class="dl">Status</span><span class="dv" style="color:#00e676;font-weight:700">'+assoc.status+'</span></div>' +
-                '<div class="detail-row"><span class="dl">CPF</span><span class="dv">'+maskCPF(assoc.cpf)+'</span></div>' +
-                (assoc.emp?'<div class="detail-row"><span class="dl">Empresa</span><span class="dv">'+assoc.emp+'</span></div>':'') +
-                (assoc.titulo?'<div class="detail-row"><span class="dl">Título</span><span class="dv">'+assoc.titulo+'</span></div>':'') +
-                (assoc.fim?'<div class="detail-row"><span class="dl">Validade</span><span class="dv">'+assoc.fim+'</span></div>':'') +
-                '<div class="detail-row"><span class="dl">Validação</span><span class="dv">'+dtc+'</span></div>' +
-            '</div>' +
-            '<button class="btn-new" onclick="limparBusca()">🔄 Nova Consulta</button></div>';
-    }
-}
+window.limS=function(){
+    document.getElementById('sInput').value='';
+    document.getElementById('sRes').innerHTML='';
+    document.getElementById('sIdle').style.display='block';
+    document.getElementById('sInput').focus();
+};
 
-function limparBusca() {
-    document.getElementById('searchInput').value = '';
-    document.getElementById('searchResults').innerHTML = '';
-    document.getElementById('idleSearch').style.display = 'block';
-    document.getElementById('searchInput').focus();
-}
+document.getElementById('sInput').addEventListener('keydown',function(e){if(e.key==='Enter')buscar()});
 
-document.getElementById('searchInput').addEventListener('keydown', function(e) {
-    if(e.key==='Enter') buscar();
-});
+/* ===== INIT ===== */
+loadDB();
+startCam();
 
-/* ========== INIT ========== */
-window.addEventListener('load', function() {
-    carregarBase();
-    initCamera();
-});
+})();
 </script>
-
 </body>
 </html>
