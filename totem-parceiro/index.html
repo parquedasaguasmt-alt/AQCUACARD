@@ -9,157 +9,155 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0c1821;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;color:#fff;overflow-x:hidden}
 
-.header{text-align:center;padding:24px 20px 12px;width:100%;max-width:700px}
-.logo{width:100px;height:auto;margin-bottom:6px}
-.header h1{font-size:22px;font-weight:800;letter-spacing:1px}
-.header .sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:3px;letter-spacing:2px;text-transform:uppercase}
-.badge{display:inline-block;margin-top:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);padding:4px 16px;border-radius:30px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase}
-.sync{margin-top:6px;font-size:10px;font-weight:600}
-.sd{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:3px;vertical-align:middle;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hd{text-align:center;padding:22px 20px 10px;width:100%;max-width:640px}
+.hd img{width:100px;height:auto;margin-bottom:6px}
+.hd h1{font-size:21px;font-weight:800;letter-spacing:1px}
+.hd .s1{font-size:10px;color:rgba(255,255,255,.28);margin-top:2px;letter-spacing:2px;text-transform:uppercase}
+.hd .bg{display:inline-block;margin-top:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);padding:4px 16px;border-radius:30px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase}
+.hd .sy{margin-top:6px;font-size:10px;font-weight:600}
+.sd{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:3px;vertical-align:middle;animation:pu 2s infinite}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.3}}
 
-.tabs{display:flex;margin-top:14px;width:100%;max-width:560px;padding:0 20px}
+.tabs{display:flex;margin-top:12px;width:100%;max-width:540px;padding:0 20px}
 .tb{flex:1;padding:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.35);font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:.3s}
 .tb:first-child{border-radius:10px 0 0 10px}
 .tb:last-child{border-radius:0 10px 10px 0}
 .tb.on{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25);color:#fff}
 
-.wrap{width:100%;max-width:560px;padding:0 20px;margin-top:14px;flex:1}
+.wrap{width:100%;max-width:540px;padding:0 20px;margin-top:14px;flex:1}
 
-/* === CAMERA === */
-.cam-area{position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:4/3}
-.cam-area video{width:100%;height:100%;object-fit:cover;display:block}
-.cam-area canvas{display:none}
-.frame{position:absolute;top:50%;left:50%;width:220px;height:220px;margin:-110px 0 0 -110px;border:2px solid rgba(34,211,238,.5);border-radius:12px;z-index:2;pointer-events:none}
-.line{position:absolute;left:50%;width:200px;margin-left:-100px;height:3px;background:linear-gradient(90deg,transparent,#22d3ee,transparent);top:35%;z-index:3;animation:sc 2s ease-in-out infinite;pointer-events:none}
-@keyframes sc{0%,100%{top:35%}50%{top:62%}}
-.cam-label{text-align:center;font-size:12px;color:rgba(255,255,255,.35);padding:8px 0;font-weight:600}
-.cam-status{text-align:center;font-size:11px;color:rgba(255,255,255,.25);padding:4px 0}
+/* camera */
+.cam-box{position:relative;background:#000;border-radius:14px;overflow:hidden;width:100%;aspect-ratio:4/3}
+.cam-box video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cam-box canvas{display:none}
+.cam-frame{position:absolute;top:50%;left:50%;width:200px;height:200px;margin:-100px 0 0 -100px;border:2px solid rgba(34,211,238,.5);border-radius:12px;z-index:3;pointer-events:none}
+.cam-line{position:absolute;left:50%;width:180px;margin-left:-90px;height:3px;background:linear-gradient(90deg,transparent,#22d3ee,transparent);top:30%;z-index:4;animation:sca 2s ease-in-out infinite;pointer-events:none}
+@keyframes sca{0%,100%{top:30%}50%{top:65%}}
+.cam-lbl{text-align:center;font-size:12px;color:rgba(255,255,255,.35);padding:8px 0;font-weight:600}
+.cam-st{text-align:center;font-size:11px;color:rgba(255,255,255,.22);padding:4px 0}
 
-/* === OVERLAY RESULTADO === */
-.ov{position:absolute;inset:0;z-index:20;display:none;border-radius:14px;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.ov.show{display:flex;align-items:center;justify-content:center;animation:fi .3s ease}
-@keyframes fi{from{opacity:0}to{opacity:1}}
-.ov.bg-ok{background:rgba(5,46,22,.97)}
-.ov.bg-ng{background:rgba(50,10,10,.97)}
-.ov.bg-warn{background:rgba(50,30,5,.97)}
-.ov-inner{padding:28px 18px;text-align:center;width:100%}
+/* overlay resultado - DENTRO da cam-box */
+.ov{position:absolute;inset:0;z-index:20;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;border-radius:14px}
+.ov.show{display:flex;align-items:center;justify-content:center;animation:fin .3s ease}
+@keyframes fin{from{opacity:0}to{opacity:1}}
+.ov.g{background:rgba(3,40,18,.97)}.ov.r{background:rgba(50,8,8,.97)}.ov.w{background:rgba(50,28,5,.97)}
+.ov-in{padding:26px 16px;text-align:center;width:100%}
 
-.si{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:36px}
-.si.ok{background:#00c853;box-shadow:0 0 40px rgba(0,200,83,.3)}
-.si.ng{background:#e53e3e;box-shadow:0 0 40px rgba(229,62,62,.3)}
-.si.warn{background:#dd6b20;box-shadow:0 0 40px rgba(221,107,32,.3)}
-.st{font-size:19px;font-weight:800;text-transform:uppercase;letter-spacing:2px}
-.st.ok{color:#00e676}.st.ng{color:#fc5c65}.st.warn{color:#f6ad55}
-.mn{font-size:18px;font-weight:700;color:#fff;margin-top:10px}
-.ab{display:inline-block;margin-top:12px;background:#fff;color:#000;padding:5px 18px;border-radius:30px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
-.dl{margin-top:12px;display:flex;flex-direction:column;gap:4px;text-align:left;max-width:360px;margin-left:auto;margin-right:auto}
+.ic{width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:34px}
+.ic.ok{background:#00c853;box-shadow:0 0 40px rgba(0,200,83,.25)}
+.ic.ng{background:#e53e3e;box-shadow:0 0 40px rgba(229,62,62,.25)}
+.ic.wn{background:#dd6b20;box-shadow:0 0 40px rgba(221,107,32,.25)}
+.tx{font-size:18px;font-weight:800;text-transform:uppercase;letter-spacing:2px}
+.tx.ok{color:#00e676}.tx.ng{color:#fc5c65}.tx.wn{color:#f6ad55}
+.nm{font-size:17px;font-weight:700;color:#fff;margin-top:10px}
+.aq{display:inline-block;margin-top:10px;background:#fff;color:#000;padding:5px 16px;border-radius:30px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.dl{margin-top:10px;display:flex;flex-direction:column;gap:4px;text-align:left;max-width:340px;margin-left:auto;margin-right:auto}
 .dr{display:flex;justify-content:space-between;padding:7px 10px;background:rgba(255,255,255,.06);border-radius:7px;font-size:12px}
-.dr .k{color:rgba(255,255,255,.45);font-weight:600}
-.dr .v{color:#fff;font-weight:500}
+.dr .k{color:rgba(255,255,255,.42);font-weight:600}.dr .v{color:#fff;font-weight:500}
 
-.bn{display:inline-block;margin-top:18px;padding:14px 40px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:.2s;-webkit-tap-highlight-color:transparent}
-.bn:active{transform:scale(.96);background:rgba(255,255,255,.15)}
+.bn{display:inline-block;margin-top:16px;padding:13px 36px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:.2s;-webkit-tap-highlight-color:transparent;user-select:none}
+.bn:active{transform:scale(.96);background:rgba(255,255,255,.16)}
 
-/* === BUSCA === */
-.search-area{display:none}
-.sbox{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px}
-.sbox label{display:block;font-size:12px;color:rgba(255,255,255,.4);margin-bottom:8px;font-weight:600}
-.sbox .iw{display:flex;gap:8px}
-.sbox input{flex:1;padding:14px 16px;border:1px solid rgba(255,255,255,.1);border-radius:10px;background:rgba(255,255,255,.06);color:#fff;font-size:16px;outline:none}
-.sbox input::placeholder{color:rgba(255,255,255,.18);font-size:14px}
-.sbox input:focus{border-color:rgba(255,255,255,.25)}
+/* busca */
+.sa{display:none}
+.sb{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px}
+.sb label{display:block;font-size:12px;color:rgba(255,255,255,.4);margin-bottom:8px;font-weight:600}
+.sb .iw{display:flex;gap:8px}
+.sb input{flex:1;padding:14px 16px;border:1px solid rgba(255,255,255,.1);border-radius:10px;background:rgba(255,255,255,.06);color:#fff;font-size:16px;outline:none}
+.sb input::placeholder{color:rgba(255,255,255,.18);font-size:14px}
+.sb input:focus{border-color:rgba(255,255,255,.25)}
 .sbtn{padding:14px 22px;background:#fff;border:none;border-radius:10px;color:#000;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
-.shint{font-size:10px;color:rgba(255,255,255,.12);margin-top:6px;text-align:center}
-.sres{margin-top:12px}
-.sc{padding:24px 16px;border-radius:14px;text-align:center;margin-top:10px;animation:fi .3s}
+.sh{font-size:10px;color:rgba(255,255,255,.1);margin-top:6px;text-align:center}
+.sr{margin-top:12px}
+.sc{padding:24px 16px;border-radius:14px;text-align:center;margin-top:10px;animation:fin .3s}
 .sc.sv{background:rgba(0,200,83,.06);border:2px solid rgba(0,200,100,.3)}
-.sc.sb{background:rgba(221,107,32,.06);border:2px solid rgba(255,165,0,.3)}
+.sc.swb{background:rgba(221,107,32,.06);border:2px solid rgba(255,165,0,.3)}
 .sc.sn{background:rgba(229,62,62,.06);border:2px solid rgba(255,80,80,.2)}
 .ri{display:flex;justify-content:space-between;align-items:center;padding:11px 12px;background:rgba(255,255,255,.05);border-radius:8px;margin-bottom:5px;cursor:pointer;border:1px solid transparent;transition:.2s}
 .ri:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.15)}
 .ri .rn{font-weight:600;font-size:13px}
 .ba{background:rgba(0,200,100,.15);color:#00e676;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700}
-.br{background:rgba(255,165,0,.15);color:#f6ad55;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700}
-.idle{text-align:center;padding:24px;color:rgba(255,255,255,.12);margin-top:14px;font-size:12px}
-
-.footer{padding:18px;text-align:center;font-size:9px;color:rgba(255,255,255,.07);margin-top:auto}
+.bw{background:rgba(255,165,0,.15);color:#f6ad55;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700}
+.idle{text-align:center;padding:24px;color:rgba(255,255,255,.1);margin-top:14px;font-size:12px}
+.ft{padding:16px;text-align:center;font-size:9px;color:rgba(255,255,255,.06);margin-top:auto}
 
 @media(max-width:500px){
-.header h1{font-size:19px}
-.logo{width:80px}
-.sbox .iw{flex-direction:column}
+.hd h1{font-size:18px}
+.hd img{width:80px}
+.sb .iw{flex-direction:column}
 .sbtn{padding:13px}
-.cam-area{aspect-ratio:3/3.2}
+.cam-box{aspect-ratio:3/3.5}
 }
 </style>
 </head>
 <body>
 
-<div class="header">
-    <img src="https://parquedasaguasmt-alt.github.io/AQCUACARD/logo-parque.png" alt="Parque das Águas" class="logo" id="logoImg">
+<div class="hd">
+    <img src="https://parquedasaguasmt-alt.github.io/AQCUACARD/logo-parque.png" alt="Parque das Águas" onerror="this.style.display='none'">
     <h1>PARQUE DAS ÁGUAS</h1>
-    <div class="sub">AQUACARD — Validação de Carteirinha</div>
-    <div class="badge">Totem Parceiro</div>
-    <div class="sync">
+    <div class="s1">AQUACARD — Validação de Carteirinha</div>
+    <div class="bg">Totem Parceiro</div>
+    <div class="sy">
         <span class="sd" id="sDot" style="background:#f6e05e"></span>
         <span id="sTxt" style="color:rgba(255,255,255,.3)">Conectando...</span>
     </div>
 </div>
 
 <div class="tabs">
-    <div class="tb on" id="t1" onclick="switchTab('qr')">📷 QR Code</div>
-    <div class="tb" id="t2" onclick="switchTab('search')">🔍 Nome / CPF</div>
+    <div class="tb on" id="t1" onclick="APP.switchTab('qr')">📷 QR Code</div>
+    <div class="tb" id="t2" onclick="APP.switchTab('search')">🔍 Nome / CPF</div>
 </div>
 
 <div class="wrap">
-
-    <!-- TAB QR -->
     <div id="qrTab">
-        <div class="cam-label">Aponte a câmera para o QR Code da carteirinha</div>
-        <div class="cam-area" id="camArea">
+        <div class="cam-lbl">Aponte a câmera para o QR Code da carteirinha</div>
+        <div class="cam-box" id="camBox">
             <video id="vid" playsinline autoplay muted></video>
             <canvas id="cvs"></canvas>
-            <div class="frame"></div>
-            <div class="line"></div>
-            <div class="ov" id="ov"><div class="ov-inner" id="ovIn"></div></div>
+            <div class="cam-frame"></div>
+            <div class="cam-line" id="camLine"></div>
+            <div class="ov" id="ov"><div class="ov-in" id="ovIn"></div></div>
         </div>
-        <div class="cam-status" id="camSt">Iniciando câmera...</div>
+        <div class="cam-st" id="camSt">Iniciando câmera...</div>
     </div>
 
-    <!-- TAB BUSCA -->
-    <div class="search-area" id="searchTab">
-        <div class="sbox">
+    <div class="sa" id="searchTab">
+        <div class="sb">
             <label>Validar Carteirinha Digital</label>
             <div class="iw">
                 <input type="text" id="sInput" placeholder="Nome ou CPF..." autocomplete="off"/>
-                <button class="sbtn" onclick="buscar()">Validar</button>
+                <button class="sbtn" onclick="APP.buscar()">Validar</button>
             </div>
-            <div class="shint">Pressione ENTER ou clique em Validar</div>
+            <div class="sh">Pressione ENTER ou clique em Validar</div>
         </div>
-        <div class="sres" id="sRes"></div>
-        <div class="idle" id="sIdle">💳 Busque pelo nome ou CPF para validar</div>
+        <div class="sr" id="sRes"></div>
+        <div class="idle" id="sIdle">💳 Busque pelo nome ou CPF</div>
     </div>
-
 </div>
 
-<div class="footer">Parque das Águas — AquaCard &copy; 2026 — Totem Parceiro</div>
+<div class="ft">Parque das Águas — AquaCard © 2026</div>
 
 <script>
-(function(){
-/* ===== CONFIG ===== */
+var APP=(function(){
+
 var FB='https://aqcuacard-default-rtdb.firebaseio.com';
-var assoc=[], online=false;
+var assoc=[];
+var online=false;
 
-document.getElementById('logoImg').onerror=function(){this.style.display='none'};
-
-/* ===== FIREBASE ===== */
+/* ===== DB ===== */
 function loadDB(){
     var x=new XMLHttpRequest();
     x.open('GET',FB+'/associados.json',true);
-    x.timeout=10000;
+    x.timeout=12000;
     x.onload=function(){
-        if(x.status===200){try{var d=JSON.parse(x.responseText);assoc=[];if(d){for(var k in d){var a=d[k];a._k=k;assoc.push(a)}}online=true}catch(e){online=false}}else{online=false}
+        if(x.status===200){
+            try{
+                var d=JSON.parse(x.responseText);
+                assoc=[];
+                if(d){for(var k in d){var a=d[k];a._k=k;assoc.push(a)}}
+                online=true;
+            }catch(e){online=false}
+        }else{online=false}
         syncUI();
     };
     x.onerror=x.ontimeout=function(){online=false;syncUI()};
@@ -170,7 +168,6 @@ function syncUI(){
     if(online){d.style.background='#68d391';t.textContent='Base sincronizada';t.style.color='#68d391'}
     else{d.style.background='#fc8181';t.textContent='Offline';t.style.color='#fc8181'}
 }
-setInterval(loadDB,15000);
 
 /* ===== UTILS ===== */
 function N(s){return(s||'').toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Z0-9 ]/g,'').trim()}
@@ -192,88 +189,103 @@ function find(val){
     return null;
 }
 
-/* ===== CAMERA COM getUserMedia + jsQR ===== */
+/* ===== CAMERA ===== */
 var video=document.getElementById('vid');
 var canvas=document.getElementById('cvs');
 var ctx=canvas.getContext('2d',{willReadFrequently:true});
-var stream=null;
-var scanTimer=null;
-var blocked=false;
-var COOLDOWN=2500;
+var camStream=null;
+var scanInterval=null;
+var jsQRLoaded=false;
+var resultShowing=false;
 
-function startCam(){
+function initCam(){
     navigator.mediaDevices.getUserMedia({
         video:{facingMode:'environment',width:{ideal:640},height:{ideal:480}}
     }).then(function(s){
-        stream=s;
+        camStream=s;
         video.srcObject=s;
-        video.play();
-        document.getElementById('camSt').textContent='📷 Câmera ativa — aponte para o QR Code';
-        loadJsQR(function(){ startScan(); });
-    }).catch(function(){
-        document.getElementById('camSt').innerHTML='⚠️ Câmera indisponível. Use a busca.';
+        video.onloadedmetadata=function(){
+            video.play().then(function(){
+                document.getElementById('camSt').textContent='📷 Câmera ativa — aponte para o QR Code';
+                loadJsQR(function(){
+                    jsQRLoaded=true;
+                    beginScan();
+                });
+            });
+        };
+    }).catch(function(err){
+        console.log('Cam error:',err);
+        document.getElementById('camSt').innerHTML='⚠️ Câmera indisponível. Use a aba Busca.';
     });
 }
 
 function loadJsQR(cb){
-    if(typeof jsQR!=='undefined')return cb();
+    if(jsQRLoaded||typeof jsQR!=='undefined'){jsQRLoaded=true;return cb()}
     var s=document.createElement('script');
     s.src='https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js';
-    s.onload=cb;
+    s.onload=function(){jsQRLoaded=true;cb()};
+    s.onerror=function(){document.getElementById('camSt').textContent='Erro ao carregar leitor QR'};
     document.head.appendChild(s);
 }
 
-/* Scan com setInterval — mais estável que requestAnimationFrame */
-function startScan(){
-    stopScan();
-    scanTimer=setInterval(function(){
-        if(blocked)return;
-        if(video.readyState<video.HAVE_ENOUGH_DATA)return;
+function beginScan(){
+    endScan();
+    scanInterval=setInterval(doScan,300);
+}
+
+function endScan(){
+    if(scanInterval){clearInterval(scanInterval);scanInterval=null}
+}
+
+function doScan(){
+    /* Se resultado está na tela, não processa */
+    if(resultShowing) return;
+    /* Se vídeo não está pronto, pula */
+    if(!video.videoWidth||video.readyState<video.HAVE_ENOUGH_DATA) return;
+    try{
         canvas.width=video.videoWidth;
         canvas.height=video.videoHeight;
-        ctx.drawImage(video,0,0);
-        try{
-            var img=ctx.getImageData(0,0,canvas.width,canvas.height);
-            var code=jsQR(img.data,img.width,img.height,{inversionAttempts:'dontInvert'});
-            if(code&&code.data&&code.data.length>3){
-                blocked=true;
-                processQR(code.data);
-            }
-        }catch(e){}
-    },250);
+        ctx.drawImage(video,0,0,canvas.width,canvas.height);
+        var img=ctx.getImageData(0,0,canvas.width,canvas.height);
+        var code=jsQR(img.data,img.width,img.height,{inversionAttempts:'dontInvert'});
+        if(code&&code.data&&code.data.length>2){
+            resultShowing=true;
+            handleQR(code.data);
+        }
+    }catch(e){/* ignora erros de frame */}
 }
 
-function stopScan(){
-    if(scanTimer){clearInterval(scanTimer);scanTimer=null}
-}
-
-function processQR(txt){
+function handleQR(txt){
     var a=find(txt);
-    if(a){showOv(a)}else{showOvNF(txt)}
+    if(a) showOverlay(a);
+    else showOverlayNF(txt);
 }
 
 /* ===== OVERLAY ===== */
 var ov=document.getElementById('ov');
 var ovIn=document.getElementById('ovIn');
+var camLine=document.getElementById('camLine');
 
-function showOv(a){
+function showOverlay(a){
     var dtc=TS();
+    camLine.style.display='none';
     ov.className='ov';
+
     if(a.status==='Acesso Restrito'){
-        ov.classList.add('show','bg-warn');
+        ov.classList.add('show','w');
         ovIn.innerHTML=
-            '<div class="si warn">⚠</div>'+
-            '<div class="st warn">Acesso Restrito</div>'+
-            '<div class="mn">'+a.nome+'</div>'+
-            '<div style="margin-top:10px;font-size:13px;color:rgba(255,255,255,.4)">Carteirinha com restrição.<br>Procure a administração.</div>'+
-            '<div class="bn" onclick="fecharOv()">🔄 Nova Consulta</div>';
+            '<div class="ic wn">⚠</div>'+
+            '<div class="tx wn">Acesso Restrito</div>'+
+            '<div class="nm">'+a.nome+'</div>'+
+            '<div style="margin-top:10px;font-size:12px;color:rgba(255,255,255,.4)">Carteirinha com restrição.<br>Procure a administração.</div>'+
+            '<div class="bn" onclick="APP.nova()">🔄 Nova Consulta</div>';
     }else{
-        ov.classList.add('show','bg-ok');
+        ov.classList.add('show','g');
         ovIn.innerHTML=
-            '<div class="si ok">✓</div>'+
-            '<div class="st ok">Carteirinha Válida</div>'+
-            '<div class="mn">'+a.nome+'</div>'+
-            '<div class="ab">AQUACARD ATIVO</div>'+
+            '<div class="ic ok">✓</div>'+
+            '<div class="tx ok">Carteirinha Válida</div>'+
+            '<div class="nm">'+a.nome+'</div>'+
+            '<div class="aq">AQUACARD ATIVO</div>'+
             '<div class="dl">'+
                 '<div class="dr"><span class="k">Status</span><span class="v" style="color:#00e676;font-weight:700">'+a.status+'</span></div>'+
                 '<div class="dr"><span class="k">CPF</span><span class="v">'+MC(a.cpf)+'</span></div>'+
@@ -282,100 +294,117 @@ function showOv(a){
                 (a.fim?'<div class="dr"><span class="k">Validade</span><span class="v">'+a.fim+'</span></div>':'')+
                 '<div class="dr"><span class="k">Validação</span><span class="v">'+dtc+'</span></div>'+
             '</div>'+
-            '<div class="bn" onclick="fecharOv()">🔄 Nova Consulta</div>';
+            '<div class="bn" onclick="APP.nova()">🔄 Nova Consulta</div>';
     }
 }
 
-function showOvNF(txt){
-    ov.className='ov show bg-ng';
+function showOverlayNF(txt){
+    camLine.style.display='none';
+    ov.className='ov show r';
     ovIn.innerHTML=
-        '<div class="si ng">✕</div>'+
-        '<div class="st ng">Não Encontrado</div>'+
+        '<div class="ic ng">✕</div>'+
+        '<div class="tx ng">Não Encontrado</div>'+
         '<div style="font-size:12px;color:rgba(255,255,255,.25);margin-top:8px">Carteirinha não identificada.</div>'+
-        '<div style="font-size:10px;color:rgba(255,255,255,.12);margin-top:4px;word-break:break-all">'+txt.substring(0,80)+'</div>'+
-        '<div class="bn" onclick="fecharOv()">🔄 Nova Consulta</div>';
+        '<div style="font-size:9px;color:rgba(255,255,255,.1);margin-top:4px;word-break:break-all">'+txt.substring(0,80)+'</div>'+
+        '<div class="bn" onclick="APP.nova()">🔄 Nova Consulta</div>';
 }
 
-/* Fechar overlay e liberar scan */
-window.fecharOv=function(){
+function nova(){
+    /* Esconde overlay */
     ov.className='ov';
     ovIn.innerHTML='';
+    camLine.style.display='block';
     document.getElementById('camSt').textContent='📷 Câmera ativa — aponte para o QR Code';
-    /* Cooldown para não ler o mesmo QR instantaneamente */
-    setTimeout(function(){ blocked=false; },COOLDOWN);
-};
+
+    /* Libera scan após cooldown para evitar releitura do mesmo QR */
+    setTimeout(function(){
+        resultShowing=false;
+    },2000);
+}
 
 /* ===== TABS ===== */
-window.switchTab=function(tab){
+function switchTab(tab){
     document.getElementById('t1').classList.toggle('on',tab==='qr');
     document.getElementById('t2').classList.toggle('on',tab==='search');
     document.getElementById('qrTab').style.display=tab==='qr'?'block':'none';
     document.getElementById('searchTab').style.display=tab==='search'?'block':'none';
+
     if(tab==='qr'){
-        fecharOv();
-        if(!scanTimer)startScan();
+        nova();
+        if(!scanInterval&&jsQRLoaded) beginScan();
     }else{
         document.getElementById('sInput').focus();
         document.getElementById('sRes').innerHTML='';
         document.getElementById('sIdle').style.display='block';
     }
-};
+}
 
 /* ===== BUSCA ===== */
-window.buscar=function(){
+function buscar(){
     var v=document.getElementById('sInput').value.trim();
-    if(!v)return;
+    if(!v) return;
     document.getElementById('sIdle').style.display='none';
     var area=document.getElementById('sRes');
     var dtc=TS();
     var a=find(v);
     if(a){sCard(a,dtc);return}
+
     var b=N(v),bc=NC(v),isD=/^\d+$/.test(bc)&&bc.length>=3,r=[];
     if(isD){r=assoc.filter(function(x){return x.cpf&&NC(x.cpf).indexOf(bc)>=0})}
     if(!r.length){r=assoc.filter(function(x){return N(x.nome).indexOf(b)>=0})}
     if(r.length===1){sCard(r[0],dtc);return}
     if(r.length>1){
-        area.innerHTML=r.slice(0,15).map(function(x){
-            var c=x.status==='Ativo'?'ba':'br',t=x.status==='Ativo'?'Ativo':'Restrito';
-            return'<div class="ri" onclick="selS(\''+x.id+'\')"><div class="rn">'+x.nome+'</div><div class="'+c+'">'+t+'</div></div>';
+        area.innerHTML=r.slice(0,15).map(function(x,idx){
+            var c=x.status==='Ativo'?'ba':'bw',t=x.status==='Ativo'?'Ativo':'Restrito';
+            return'<div class="ri" data-id="'+x.id+'" onclick="APP.selS(this.dataset.id)"><div class="rn">'+x.nome+'</div><div class="'+c+'">'+t+'</div></div>';
         }).join('');
         return;
     }
-    area.innerHTML='<div class="sc sn"><div class="si ng">✕</div><div class="st ng">Não Encontrado</div><div style="font-size:12px;color:rgba(255,255,255,.25);margin-top:6px">Nenhum associado encontrado.</div><div class="bn" onclick="limS()">🔄 Nova Consulta</div></div>';
-};
+    area.innerHTML='<div class="sc sn"><div class="ic ng">✕</div><div class="tx ng">Não Encontrado</div><div style="font-size:12px;color:rgba(255,255,255,.2);margin-top:6px">Nenhum associado encontrado.</div><div class="bn" onclick="APP.limS()">🔄 Nova Consulta</div></div>';
+}
 
-window.selS=function(id){
+function selS(id){
     for(var i=0;i<assoc.length;i++){if(assoc[i].id===id){sCard(assoc[i],TS());return}}
-};
+}
 
 function sCard(a,dtc){
     var area=document.getElementById('sRes');
     if(a.status==='Acesso Restrito'){
-        area.innerHTML='<div class="sc sb"><div class="si warn">⚠</div><div class="st warn">Acesso Restrito</div><div class="mn">'+a.nome+'</div><div style="margin-top:8px;font-size:12px;color:rgba(255,255,255,.4)">Procure a administração.</div><div class="bn" onclick="limS()">🔄 Nova Consulta</div></div>';
+        area.innerHTML='<div class="sc swb"><div class="ic wn">⚠</div><div class="tx wn">Acesso Restrito</div><div class="nm">'+a.nome+'</div><div style="margin-top:8px;font-size:12px;color:rgba(255,255,255,.35)">Procure a administração.</div><div class="bn" onclick="APP.limS()">🔄 Nova Consulta</div></div>';
     }else{
-        area.innerHTML='<div class="sc sv"><div class="si ok">✓</div><div class="st ok">Carteirinha Válida</div><div class="mn">'+a.nome+'</div><div class="ab">AQUACARD ATIVO</div><div class="dl">'+
+        area.innerHTML='<div class="sc sv"><div class="ic ok">✓</div><div class="tx ok">Carteirinha Válida</div><div class="nm">'+a.nome+'</div><div class="aq">AQUACARD ATIVO</div><div class="dl">'+
             '<div class="dr"><span class="k">Status</span><span class="v" style="color:#00e676;font-weight:700">'+a.status+'</span></div>'+
             '<div class="dr"><span class="k">CPF</span><span class="v">'+MC(a.cpf)+'</span></div>'+
             (a.emp?'<div class="dr"><span class="k">Empresa</span><span class="v">'+a.emp+'</span></div>':'')+
             (a.titulo?'<div class="dr"><span class="k">Título</span><span class="v">'+a.titulo+'</span></div>':'')+
             (a.fim?'<div class="dr"><span class="k">Validade</span><span class="v">'+a.fim+'</span></div>':'')+
             '<div class="dr"><span class="k">Validação</span><span class="v">'+dtc+'</span></div>'+
-            '</div><div class="bn" onclick="limS()">🔄 Nova Consulta</div></div>';
+            '</div><div class="bn" onclick="APP.limS()">🔄 Nova Consulta</div></div>';
     }
 }
 
-window.limS=function(){
+function limS(){
     document.getElementById('sInput').value='';
     document.getElementById('sRes').innerHTML='';
     document.getElementById('sIdle').style.display='block';
     document.getElementById('sInput').focus();
-};
+}
 
 document.getElementById('sInput').addEventListener('keydown',function(e){if(e.key==='Enter')buscar()});
 
 /* ===== INIT ===== */
 loadDB();
-startCam();
+setInterval(loadDB,15000);
+initCam();
+
+/* API pública */
+return{
+    nova:nova,
+    switchTab:switchTab,
+    buscar:buscar,
+    selS:selS,
+    limS:limS
+};
 
 })();
 </script>
