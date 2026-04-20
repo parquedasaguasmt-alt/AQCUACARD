@@ -249,7 +249,7 @@
     <div class="etb"><div><div class="en" id="cN"></div><div class="ec" id="cC"></div></div><div class="em"><div class="mi">👥 <strong id="cTA"></strong></div><div class="mi">📅 Vigência <strong>2026</strong></div><span class="pill p-ok">● Ativo</span></div></div>
     <div class="cnt"><div class="kr" id="cK"></div>
         <div class="rules"><h4>📌 Regras de Substituição</h4><ul><li>Passaportes = <strong>sócios ACQUA CARD</strong></li><li>Substituição só por <strong>desligamento</strong></li><li><strong>Quem sai:</strong> rescisão obrigatória</li><li><strong>Quem entra:</strong> contrato obrigatório</li></ul><div class="dreq"><div class="drc out"><div class="di">🔴</div><div class="dt">Quem SAI</div><div class="ds">Rescisão</div></div><div class="drc in"><div class="di">🟢</div><div class="dt">Quem ENTRA</div><div class="ds">Contrato</div></div></div></div>
-        <div class="pnl"><div class="pnl-h"><div class="pnl-t">👥 Colaboradores</div><div id="cSync" style="font-size:.78rem;color:var(--t4);"></div></div><div class="pnl-b"><div style="overflow-x:auto;"><table class="tbl"><thead><tr><th>#</th><th>Colaborador</th><th>CPF</th><th>Cargo</th><th>Telefone</th><th>Status</th><th>Ações</th></tr></thead><tbody id="cTbl"></tbody></table></div></div></div>
+        <div class="pnl"><div class="pnl-h"><div class="pnl-t">👥 Colaboradores</div><div id="cSync" style="font-size:.78rem;color:var(--t4);"></div></div><div class="pnl-b"><div style="overflow-x:auto;"><table class="tbl"><thead><tr><th>#</th><th>Colaborador</th><th>CPF</th><th>Telefone</th><th>Status</th><th>Ações</th></tr></thead><tbody id="cTbl"></tbody></table></div></div></div>
         <div class="pnl hdn" id="cHP"><div class="pnl-h"><div class="pnl-t">📜 Histórico</div></div><div class="pnl-b" id="cHB"></div></div>
     </div>
 </div>
@@ -267,14 +267,12 @@
             <div class="alrt"><strong>⚠️ Documentação obrigatória</strong>Rescisão + Contrato</div>
             <div class="fst">🔴 Colaborador que sai</div>
             <div class="fld"><label>Nome</label><input id="mON" class="f-ro f-out" readonly></div>
-            <div class="fld"><label>Cargo</label><input id="mOR" class="f-ro f-out" readonly></div>
             <div class="fld"><label>Motivo <span class="rq">*</span></label><select id="mMt"><option value="">Selecione...</option><option value="desligamento">Desligamento</option></select></div>
             <div class="fld"><label>Data <span class="rq">*</span></label><input type="date" id="mDt"></div>
-            <div class="fld"><label>Justificativa <span class="rq">*</span></label><textarea id="mJs" placeholder="Descreva..."></textarea><div class="hn2">Mín. 30 caracteres</div></div>
             <div class="fld"><label>📄 Rescisão <span class="rq">*</span></label><div class="uz" id="uz1" onclick="document.getElementById('f1').click()"><div class="ui">🔴 📄</div><p>Clique para anexar</p><div class="uf" id="fn1"></div></div><input type="file" id="f1" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="onF(this,'uz1','fn1','pv1')"><img id="pv1" class="ipv"></div>
             <hr class="dl">
             <div class="fst">🟢 Novo colaborador</div>
-            <div class="fg"><div class="fld"><label>Nome <span class="rq">*</span></label><input id="mIN"></div><div class="fld"><label>CPF <span class="rq">*</span></label><input id="mIC" placeholder="000.000.000-00"></div><div class="fld"><label>Cargo <span class="rq">*</span></label><input id="mIR"></div><div class="fld"><label>Telefone <span class="rq">*</span></label><input id="mIT" placeholder="(65) 99999-9999"></div></div>
+            <div class="fg"><div class="fld"><label>Nome <span class="rq">*</span></label><input id="mIN"></div><div class="fld"><label>CPF <span class="rq">*</span></label><input id="mIC" placeholder="000.000.000-00"></div><div class="fld"><label>Telefone <span class="rq">*</span></label><input id="mIT" placeholder="(65) 99999-9999"></div></div>
             <div class="fld"><label>📋 Contrato <span class="rq">*</span></label><div class="uz" id="uz2" onclick="document.getElementById('f2').click()"><div class="ui">🟢 📋</div><p>Clique para anexar</p><div class="uf" id="fn2"></div></div><input type="file" id="f2" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="onF(this,'uz2','fn2','pv2')"><img id="pv2" class="ipv"></div>
         </div>
         <div class="md-a"><button class="btn b-gh" onclick="closeSub()">Cancelar</button><button class="btn b-gn b-lg" onclick="sendReq()">✅ Enviar</button></div>
@@ -308,7 +306,6 @@
 <div class="ftr">🌊 <strong>Parque das Águas</strong> — Passaportes Empresariais | CDL Nova Mutum</div>
 
 <script>
-/* ═══ URL BASE FIXA — GITHUB PAGES ═══ */
 var BASE_URL='https://parquedasaguasmt-alt.github.io/AQCUACARD/linkempresa.html';
 
 var FB='https://aqcuacard-default-rtdb.firebaseio.com';
@@ -320,8 +317,6 @@ var ICO=[{k:['SUPERMERCADO','MERCADO','ATACAD'],i:'🛒'},{k:['AGRO','FAZENDA','
 function gIco(n){var u=(n||'').toUpperCase();for(var i=0;i<ICO.length;i++)for(var j=0;j<ICO[i].k.length;j++)if(u.indexOf(ICO[i].k[j])>=0)return ICO[i].i;return'🏢';}
 function eKey(n){return btoa(unescape(encodeURIComponent((n||'').trim().toUpperCase()))).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');}
 function dKey(h){try{return decodeURIComponent(escape(atob(h.replace(/-/g,'+').replace(/_/g,'/'))));}catch(e){return null;}}
-
-/* ═══ LINK SEMPRE APONTA PARA GITHUB PAGES ═══ */
 function gLink(n){return BASE_URL+'#emp='+eKey(n);}
 
 function fbG(p){return new Promise(function(ok,no){var x=new XMLHttpRequest();x.open('GET',FB+'/'+p+'.json',true);x.timeout=8000;x.onreadystatechange=function(){if(x.readyState===4){if(x.status===200){try{ok(JSON.parse(x.responseText));}catch(e){no(e);}}else no(new Error(x.status));}};x.onerror=function(){no(new Error('net'));};x.ontimeout=function(){no(new Error('timeout'));};x.send();});}
@@ -360,7 +355,6 @@ function upSync(){var el=document.getElementById('syncB');if(!el)return;if(onlin
 function hideLo(){var o=document.getElementById('lo');if(o){o.classList.add('fo');setTimeout(function(){o.style.display='none';},500);}}
 function retryLoad(){document.getElementById('loRetry').style.display='none';document.querySelector('#lo .spn').style.display='block';document.getElementById('loMsg').textContent='Reconectando...';init();}
 
-/* ═══ MENSAGENS WHATSAPP ═══ */
 function buildMsg(key){
     var co=cos[key];if(!co)return'';
     var lnk=gLink(key);
@@ -402,7 +396,6 @@ function buildMsgQuick(key){
     return lines.join('\n');
 }
 
-/* ═══ LINK MODAL ═══ */
 function openLink(key){
     curLK=key;var co=cos[key];if(!co)return;
     document.getElementById('lEN').textContent=co.icon+' '+co.name;
@@ -424,7 +417,6 @@ function doWp(){
     openWA(buildMsg(curLK),fn);closeLink();toast('📤 WhatsApp aberto!','ok');
 }
 
-/* ═══ HOME ═══ */
 function renderHome(){
     var g=document.getElementById('hGrid');
     var keys=Object.keys(cos).sort(function(a,b){var aa=0,bb=0;for(var i=0;i<cos[a].staff.length;i++)if(cos[a].staff[i].status==='active')aa++;for(var j=0;j<cos[b].staff.length;j++)if(cos[b].staff[j].status==='active')bb++;return bb-aa;});
@@ -468,7 +460,6 @@ function renderHome(){
 function filterHome(){var q=document.getElementById('sHome').value.toLowerCase().trim();var cards=document.querySelectorAll('#hGrid .comp');var adm=document.querySelector('#hGrid .adm');var v=0;for(var i=0;i<cards.length;i++){var m=!q||cards[i].getAttribute('data-n').indexOf(q)>=0;cards[i].classList.toggle('hid',!m);if(m)v++;}if(adm)adm.classList.toggle('hid',q&&'painel administrativo'.indexOf(q)<0);document.getElementById('sHomeCnt').textContent=q?(v===0?'Nenhuma':v+' de '+cards.length):'';}
 function goHome(){dirMode=false;location.hash='';document.getElementById('vHome').classList.remove('hdn');document.getElementById('vComp').classList.add('hdn');document.getElementById('vAdm').classList.add('hdn');document.getElementById('sHome').value='';load().then(function(){renderHome();});}
 
-/* ═══ COMPANY ═══ */
 function openComp(key){
     curCo=key;var co=cos[key];if(!co){toast('Não encontrada','err');return;}
     document.getElementById('vHome').classList.add('hdn');document.getElementById('vComp').classList.remove('hdn');document.getElementById('vAdm').classList.add('hdn');
@@ -487,10 +478,10 @@ function openComp(key){
         var ip=false;for(var n=0;n<reqs.length;n++)if(reqs[n].company===key&&reqs[n].staffId===s.id&&reqs[n].status==='pending'){ip=true;break;}
         var sp=s.status==='restricted'?'<span class="pill p-rs">⚠️ Restrito</span>':(ip?'<span class="pill p-pn">⏳ Pendente</span>':'<span class="pill p-ok">● Ativo</span>');
         var ab=s.status==='restricted'?'—':(ip?'<button class="btn b-gh b-dis" disabled>⏳</button>':'<button class="btn b-or" data-sub="'+m+'">🔄 Substituir</button>');
-        rows+='<tr'+(s.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'><td>'+idx+'</td><td><div><div class="un">'+s.name+'</div><div class="ut">'+co.name+'</div></div></td><td>'+(s.cpf||'—')+'</td><td>'+(s.role||'—')+'</td><td>'+(s.tel||'—')+'</td><td>'+sp+'</td><td>'+ab+'</td></tr>';
+        rows+='<tr'+(s.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'><td>'+idx+'</td><td><div><div class="un">'+s.name+'</div><div class="ut">'+co.name+'</div></div></td><td>'+(s.cpf||'—')+'</td><td>'+(s.tel||'—')+'</td><td>'+sp+'</td><td>'+ab+'</td></tr>';
         idx++;
     }
-    if(!rows)rows='<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--t3);">Nenhum colaborador</td></tr>';
+    if(!rows)rows='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--t3);">Nenhum colaborador</td></tr>';
     var tb=document.getElementById('cTbl');tb.innerHTML=rows;
     tb.onclick=function(e){var btn=e.target.closest('[data-sub]');if(btn){var si=parseInt(btn.getAttribute('data-sub'));openSub(co.staff[si].id,key);}};
     var hs=[];for(var p=0;p<hist.length;p++)if(hist[p].company===key)hs.push(hist[p]);
@@ -501,26 +492,25 @@ function openComp(key){
 function openSub(sid,ck){
     var co=cos[ck||curCo];if(!co)return;var s=null;for(var i=0;i<co.staff.length;i++)if(co.staff[i].id===sid){s=co.staff[i];break;}if(!s)return;
     repSt={id:s.id,_k:s._k,name:s.name,cpf:s.cpf,role:s.role,ck:ck||curCo};
-    document.getElementById('mON').value=s.name;document.getElementById('mOR').value=s.role||'—';
-    var ids=['mMt','mDt','mJs','mIN','mIC','mIR','mIT'];for(var j=0;j<ids.length;j++)document.getElementById(ids[j]).value='';
+    document.getElementById('mON').value=s.name;
+    var ids=['mMt','mDt','mIN','mIC','mIT'];for(var j=0;j<ids.length;j++)document.getElementById(ids[j]).value='';
     rFile('uz1','fn1','pv1','f1');rFile('uz2','fn2','pv2','f2');fds={};
     document.getElementById('mSub').classList.add('act');document.body.style.overflow='hidden';
 }
 function closeSub(){document.getElementById('mSub').classList.remove('act');document.body.style.overflow='';}
 document.getElementById('mSub').addEventListener('click',function(e){if(e.target===this)closeSub();});
 function sendReq(){
-    var mt=document.getElementById('mMt').value,dt=document.getElementById('mDt').value,js=document.getElementById('mJs').value;
-    var iN=document.getElementById('mIN').value.trim(),iC=document.getElementById('mIC').value.trim(),iR=document.getElementById('mIR').value.trim(),iT=document.getElementById('mIT').value.trim();
-    if(!mt)return toast('Selecione motivo','warn');if(!dt)return toast('Informe data','warn');if(js.length<30)return toast('Min 30 caracteres','warn');
-    if(!document.getElementById('f1').files.length)return toast('Anexe rescisão','warn');if(!iN||!iC||!iR||!iT)return toast('Preencha tudo','warn');
+    var mt=document.getElementById('mMt').value,dt=document.getElementById('mDt').value;
+    var iN=document.getElementById('mIN').value.trim(),iC=document.getElementById('mIC').value.trim(),iT=document.getElementById('mIT').value.trim();
+    if(!mt)return toast('Selecione motivo','warn');if(!dt)return toast('Informe data','warn');
+    if(!document.getElementById('f1').files.length)return toast('Anexe rescisão','warn');if(!iN||!iC||!iT)return toast('Preencha tudo','warn');
     if(!document.getElementById('f2').files.length)return toast('Anexe contrato','warn');
     var co=cos[repSt.ck];
-    var rq={id:Date.now(),company:repSt.ck,companyName:co?co.name:repSt.ck,staffId:repSt.id,staffFbKey:repSt._k,outName:repSt.name,outCpf:repSt.cpf,outRole:repSt.role,inName:iN.toUpperCase(),inCpf:iC,inRole:iR,inTel:iT,fireDate:dt,justification:js,rescFile:document.getElementById('f1').files[0].name,contFile:document.getElementById('f2').files[0].name,rescDataUrl:fds.r||'',contDataUrl:fds.c||'',submittedAt:new Date().toLocaleString('pt-BR'),status:'pending'};
+    var rq={id:Date.now(),company:repSt.ck,companyName:co?co.name:repSt.ck,staffId:repSt.id,staffFbKey:repSt._k,outName:repSt.name,outCpf:repSt.cpf,outRole:repSt.role,inName:iN.toUpperCase(),inCpf:iC,inRole:'',inTel:iT,fireDate:dt,justification:'',rescFile:document.getElementById('f1').files[0].name,contFile:document.getElementById('f2').files[0].name,rescDataUrl:fds.r||'',contDataUrl:fds.c||'',submittedAt:new Date().toLocaleString('pt-BR'),status:'pending'};
     reqs.push(rq);fbP('passaportes_requests/'+rq.id,rq).catch(function(){});
     closeSub();toast('✅ Enviada!','ok');openComp(curCo);
 }
 
-/* ═══ ADMIN ═══ */
 function openAdm(){document.getElementById('vHome').classList.add('hdn');document.getElementById('vComp').classList.add('hdn');document.getElementById('vAdm').classList.remove('hdn');rAdm();}
 function aTab(t,el){var ts=['Pn','Hi','Em','Rp'];for(var i=0;i<ts.length;i++)document.getElementById('a'+ts[i]).classList.add('hdn');document.getElementById('a'+t.charAt(0).toUpperCase()+t.slice(1)).classList.remove('hdn');var all=document.querySelectorAll('.atab');for(var j=0;j<all.length;j++)all[j].classList.remove('act');el.classList.add('act');}
 
@@ -532,7 +522,7 @@ function rAdm(){
 
     var hp='';
     if(!pn.length)hp='<div class="pnl" style="text-align:center;padding:50px;"><div style="font-size:2.5rem;margin-bottom:10px;">✅</div><p style="color:var(--t3);">Nenhuma pendente</p></div>';
-    else for(var i2=0;i2<pn.length;i2++){var r=pn[i2];hp+='<div class="sc '+(i2===0?'urg':'')+'"><div class="sh" onclick="this.nextElementSibling.classList.toggle(\'opn\')"><div class="si2"><div style="display:flex;align-items:center;gap:8px;"><span class="pill p-pn">⏳</span><span class="se">'+r.companyName+'</span></div><div class="st">'+r.submittedAt+'</div></div><span style="color:var(--t4);">▼</span></div><div class="sb2 '+(i2===0?'opn':'')+'"><div class="scl"><div class="sco oc"><h4>🔴 Quem SAI</h4><div class="sf"><strong>Nome</strong><span>'+r.outName+'</span></div><div class="sf"><strong>CPF</strong><span>'+r.outCpf+'</span></div><div class="sf"><strong>Cargo</strong><span>'+r.outRole+'</span></div></div><div class="sco ic"><h4>🟢 Quem ENTRA</h4><div class="sf"><strong>Nome</strong><span>'+r.inName+'</span></div><div class="sf"><strong>CPF</strong><span>'+r.inCpf+'</span></div><div class="sf"><strong>Cargo</strong><span>'+r.inRole+'</span></div><div class="sf"><strong>Tel</strong><span>'+r.inTel+'</span></div></div></div><div class="sjt"><h4>📝 Justificativa</h4><p>"'+r.justification+'"</p></div><div class="abx"><h4>⚙️ Checklist</h4><div class="chi"><input type="checkbox" id="ck'+r.id+'a"><label>Rescisão ok</label></div><div class="chi"><input type="checkbox" id="ck'+r.id+'b"><label>Contrato ok</label></div><div class="chi"><input type="checkbox" id="ck'+r.id+'c"><label>Justificativa ok</label></div><div class="chi"><input type="checkbox" id="ck'+r.id+'d"><label>Dados ok</label></div><div class="ab2"><button class="btn b-gn" data-approve="'+r.id+'">✅ Aprovar</button><button class="btn b-rd" data-togglerj="'+r.id+'">❌ Rejeitar</button></div><div class="rjf" id="rj'+r.id+'"><label>Motivo:</label><textarea id="rjt'+r.id+'" placeholder="Descreva..."></textarea><div class="rfa"><button class="btn b-gh" style="font-size:.85rem;" data-cancelrj="'+r.id+'">Cancelar</button><button class="btn b-rd" style="font-size:.85rem;" data-reject="'+r.id+'">Confirmar</button></div></div></div></div></div>';}
+    else for(var i2=0;i2<pn.length;i2++){var r=pn[i2];hp+='<div class="sc '+(i2===0?'urg':'')+'"><div class="sh" onclick="this.nextElementSibling.classList.toggle(\'opn\')"><div class="si2"><div style="display:flex;align-items:center;gap:8px;"><span class="pill p-pn">⏳</span><span class="se">'+r.companyName+'</span></div><div class="st">'+r.submittedAt+'</div></div><span style="color:var(--t4);">▼</span></div><div class="sb2 '+(i2===0?'opn':'')+'"><div class="scl"><div class="sco oc"><h4>🔴 Quem SAI</h4><div class="sf"><strong>Nome</strong><span>'+r.outName+'</span></div><div class="sf"><strong>CPF</strong><span>'+r.outCpf+'</span></div></div><div class="sco ic"><h4>🟢 Quem ENTRA</h4><div class="sf"><strong>Nome</strong><span>'+r.inName+'</span></div><div class="sf"><strong>CPF</strong><span>'+r.inCpf+'</span></div><div class="sf"><strong>Tel</strong><span>'+r.inTel+'</span></div></div></div><div class="abx"><h4>⚙️ Checklist</h4><div class="chi"><input type="checkbox" id="ck'+r.id+'a"><label>Rescisão ok</label></div><div class="chi"><input type="checkbox" id="ck'+r.id+'b"><label>Contrato ok</label></div><div class="chi"><input type="checkbox" id="ck'+r.id+'c"><label>Dados ok</label></div><div class="ab2"><button class="btn b-gn" data-approve="'+r.id+'">✅ Aprovar</button><button class="btn b-rd" data-togglerj="'+r.id+'">❌ Rejeitar</button></div><div class="rjf" id="rj'+r.id+'"><label>Motivo:</label><textarea id="rjt'+r.id+'" placeholder="Descreva..."></textarea><div class="rfa"><button class="btn b-gh" style="font-size:.85rem;" data-cancelrj="'+r.id+'">Cancelar</button><button class="btn b-rd" style="font-size:.85rem;" data-reject="'+r.id+'">Confirmar</button></div></div></div></div></div>';}
     var pnEl=document.getElementById('aPn');pnEl.innerHTML=hp;
     pnEl.onclick=function(e){
         var ap=e.target.closest('[data-approve]');if(ap){approveR(parseInt(ap.getAttribute('data-approve')));return;}
@@ -584,14 +574,14 @@ function fAdmE(){var q=document.getElementById('sAdmE').value.toLowerCase().trim
 
 function approveR(id){
     var r=null;for(var i=0;i<reqs.length;i++)if(reqs[i].id===id){r=reqs[i];break;}if(!r)return;
-    var cks=['a','b','c','d'];var ok=true;for(var j=0;j<cks.length;j++){var c=document.getElementById('ck'+id+cks[j]);if(!c||!c.checked){ok=false;break;}}
+    var cks=['a','b','c'];var ok=true;for(var j=0;j<cks.length;j++){var c=document.getElementById('ck'+id+cks[j]);if(!c||!c.checked){ok=false;break;}}
     if(!ok)return toast('Marque todos','warn');
     if(!confirm('Aprovar?\n\n'+r.outName+' → '+r.inName))return;
     r.status='approved';
     if(r.staffFbKey)fbP('associados/'+r.staffFbKey+'/status','Acesso Restrito').catch(function(){});
     var na={id:'AC'+Date.now().toString(36),nome:r.inName,cpf:r.inCpf,tel:r.inTel,emp:r.companyName,titulo:r.inRole,ini:new Date().toLocaleDateString('pt-BR'),fim:'',status:'Ativo',foto:'',dt:new Date().toLocaleDateString('pt-BR')};
     fbP('associados/NEW_'+Date.now(),na).catch(function(){});
-    var he={company:r.company,companyName:r.companyName,outName:r.outName,inName:r.inName,date:new Date().toLocaleDateString('pt-BR'),justification:r.justification,status:'approved'};
+    var he={company:r.company,companyName:r.companyName,outName:r.outName,inName:r.inName,date:new Date().toLocaleDateString('pt-BR'),status:'approved'};
     hist.push(he);
     fbP('passaportes_requests/'+r.id+'/status','approved').catch(function(){});
     fbP('passaportes_history/'+Date.now(),he).catch(function(){});
@@ -599,18 +589,15 @@ function approveR(id){
 }
 function rejectR(id){var r=null;for(var i=0;i<reqs.length;i++)if(reqs[i].id===id){r=reqs[i];break;}if(!r)return;var tx=document.getElementById('rjt'+id);if(!tx||tx.value.length<10)return toast('Min 10 car','warn');if(!confirm('Rejeitar?'))return;r.status='rejected';r.rejectReason=tx.value;fbP('passaportes_requests/'+r.id+'/status','rejected').catch(function(){});fbP('passaportes_requests/'+r.id+'/rejectReason',tx.value).catch(function(){});toast('❌ Rejeitada','err');rAdm();}
 
-/* ═══ UTILS ═══ */
 function onF(inp,zId,fnId,pvId){if(!inp.files||!inp.files[0])return;var f=inp.files[0],z=document.getElementById(zId),fn=document.getElementById(fnId),pv=document.getElementById(pvId);z.classList.add('dn');fn.textContent='✅ '+f.name;fn.style.display='block';var sk=zId==='uz1'?'r':'c';if(f.type.startsWith('image/')){var rd=new FileReader();rd.onload=function(e){pv.src=e.target.result;pv.style.display='block';fds[sk]=e.target.result;};rd.readAsDataURL(f);}else{pv.style.display='none';fds[sk]='';}}
 function rFile(zId,fnId,pvId,inId){document.getElementById(zId).classList.remove('dn');var fn=document.getElementById(fnId);fn.style.display='none';fn.textContent='';document.getElementById(pvId).style.display='none';document.getElementById(inId).value='';}
 function closeDM(){document.getElementById('dMo').classList.remove('act');}
 document.getElementById('dMo').addEventListener('click',function(e){if(e.target===this)closeDM();});
 function toast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.className='tst '+(type==='ok'?'tok':type==='err'?'ter':'twn');t.style.display='block';setTimeout(function(){t.style.display='none';},3800);}
 
-/* ═══ DEEP LINK ═══ */
 function chkDL(){var h=location.hash;if(h&&h.indexOf('#emp=')===0){var e=dKey(h.replace('#emp=',''));if(e&&cos[e]){dirMode=true;hideLo();openComp(e);return true;}}return false;}
 window.addEventListener('hashchange',function(){if(location.hash.indexOf('#emp=')===0){var e=dKey(location.hash.replace('#emp=',''));if(e&&cos[e]){dirMode=true;openComp(e);}}else if(!location.hash)goHome();});
 
-/* ═══ INIT ═══ */
 var iTO=null;
 async function init(){
     if(iTO)clearTimeout(iTO);
