@@ -87,8 +87,6 @@ td{padding:10px;border-bottom:1px solid #edf2f7}tr:hover td{background:#f7fafc}
 .foto-upload:hover{border-color:#0a4c7a;background:#f7fafc}
 .foto-mini{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #e2e8f0}
 .foto-mini-ph{width:36px;height:36px;border-radius:50%;background:#edf2f7;display:flex;align-items:center;justify-content:center;font-size:16px;color:#a0aec0}
-
-/* ACQUA CARD */
 .acqua-card{width:540px;height:320px;border-radius:16px;position:relative;overflow:hidden;margin:0 auto;box-shadow:0 8px 32px rgba(10,76,122,.25);background:linear-gradient(170deg,#e8f4f8,#d0ecf4,#b8e0f0)}
 .acqua-card .waves-svg{position:absolute;bottom:0;left:0;width:100%;height:60%;z-index:1}
 .acqua-card .foto-box{position:absolute;top:16px;left:18px;z-index:4;width:118px;height:138px;border-radius:10px;overflow:hidden;border:3px solid rgba(255,255,255,.8);box-shadow:0 4px 14px rgba(0,0,0,.15);background:#cdd8e0}
@@ -238,7 +236,6 @@ function contarJ(){var c=(document.getElementById('delJust').value||'').trim().l
 function confDel(logId){var just=(document.getElementById('delJust').value||'').trim();if(just.length<15){toast('Min 15!','er');return;}var reg=null;for(var i=0;i<logAc.length;i++)if(logAc[i].id===logId){reg=logAc[i];break;}if(!reg){toast('Erro','er');fecharModal();return;}if(!confirm('Confirma?'))return;fbSaveDel({id:'DEL'+Date.now(),logId:reg.id,nome:reg.nome,dtAcesso:reg.dt,hrAcesso:reg.hr,tipoAcesso:reg.tp,justificativa:just,dtExclusao:hoje(),hrExclusao:agora()});fbRemoveLog(reg);fecharModal();toast('Removido!');setTimeout(buscarAcessoParaDeletar,500);}
 function renderDelLog(){var card=document.getElementById('delLogCard');if(!delLog.length){card.style.display='none';return;}card.style.display='block';document.getElementById('delLogList').innerHTML=delLog.slice().reverse().slice(0,30).map(function(d){return'<div class="del-log"><div class="dl-icon">&#128465;</div><div class="dl-info"><div class="dl-nome">'+d.nome+'</div><div class="dl-dt">'+d.dtAcesso+' '+d.hrAcesso+' | Excluido: '+d.dtExclusao+' '+d.hrExclusao+'</div><div class="dl-just">"'+d.justificativa+'"</div></div></div>';}).join('');}
 
-/* ===== CARTEIRINHA - SOLUCAO DEFINITIVA COM CANVAS ===== */
 var cartAssocAtual=null;
 function buscarCart(){var q=document.getElementById('inpCart').value.trim().toLowerCase(),box=document.getElementById('cartList');if(!q){box.innerHTML='';return;}box.innerHTML=db.filter(function(a){return a.nome.toLowerCase().indexOf(q)>=0;}).slice(0,8).map(function(a){return'<div style="padding:8px;border-bottom:1px solid #edf2f7;cursor:pointer;display:flex;align-items:center;gap:8px" onclick="gerarCart(\''+a.id+'\')">'+fotoHTML(a.foto)+'<strong>'+a.nome+'</strong> '+badge(a.status)+'</div>';}).join('');}
 
@@ -254,8 +251,13 @@ var ctx=canvas.getContext('2d');
 var imgRatio=img.width/img.height;
 var boxRatio=boxW/boxH;
 var sx=0,sy=0,sw=img.width,sh=img.height;
-if(imgRatio>boxRatio){sw=img.height*boxRatio;sx=(img.width-sw)/2;}
-else{sh=img.width/boxRatio;sy=0;}
+if(imgRatio>boxRatio){
+sw=img.height*boxRatio;
+sx=(img.width-sw)/2;
+}else{
+sh=img.width/boxRatio;
+sy=(img.height-sh)*0.25;
+}
 ctx.drawImage(img,sx,sy,sw,sh,0,0,canvas.width,canvas.height);
 containerEl.innerHTML='';
 containerEl.appendChild(canvas);
