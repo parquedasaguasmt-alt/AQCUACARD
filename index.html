@@ -7,6 +7,24 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f4f8;color:#2d3748}
+
+/* ===== LOGIN SCREEN ===== */
+.login-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#0a4c7a,#0891b2,#22d3ee);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.login-overlay.hidden{display:none}
+.login-box{background:rgba(255,255,255,.12);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:40px 36px;max-width:380px;width:92%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.login-box .login-icon{font-size:56px;margin-bottom:10px}
+.login-box h1{color:#fff;font-size:24px;font-weight:800;letter-spacing:2px;margin-bottom:4px}
+.login-box .login-sub{color:rgba(255,255,255,.7);font-size:12px;margin-bottom:28px}
+.login-box input[type=password]{width:100%;padding:14px 18px;border:2px solid rgba(255,255,255,.2);border-radius:12px;background:rgba(255,255,255,.1);color:#fff;font-size:16px;font-family:inherit;text-align:center;letter-spacing:3px;outline:none;transition:all .3s}
+.login-box input[type=password]::placeholder{color:rgba(255,255,255,.4);letter-spacing:1px}
+.login-box input[type=password]:focus{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.15)}
+.login-box .login-btn{width:100%;padding:14px;border:none;border-radius:12px;background:#fff;color:#0a4c7a;font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;transition:all .3s;font-family:inherit}
+.login-box .login-btn:hover{background:#f0f4f8;transform:translateY(-1px)}
+.login-box .login-btn:active{transform:scale(.98)}
+.login-error{color:#fca5a5;font-size:12px;font-weight:600;margin-top:12px;min-height:18px;transition:all .3s}
+.login-shake{animation:loginShake .5s ease}
+@keyframes loginShake{0%,100%{transform:translateX(0)}15%,45%,75%{transform:translateX(-8px)}30%,60%,90%{transform:translateX(8px)}}
+
 .hdr{background:linear-gradient(135deg,#0a4c7a,#0891b2,#22d3ee);color:#fff;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
 .hdr h1{font-size:18px;letter-spacing:1px}.hdr p{font-size:11px;opacity:.8}
 .hdr-stats{display:flex;gap:12px}
@@ -126,6 +144,20 @@ td{padding:10px;border-bottom:1px solid #edf2f7}tr:hover td{background:#f7fafc}
 </style>
 </head>
 <body>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div class="login-overlay" id="loginScreen">
+<div class="login-box">
+<div class="login-icon">🏊</div>
+<h1>ACQUA CARD</h1>
+<div class="login-sub">Passaporte 3 Parques — Acesso Restrito</div>
+<input type="password" id="loginSenha" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')tentarLogin()">
+<button class="login-btn" onclick="tentarLogin()">🔓 Entrar</button>
+<div class="login-error" id="loginErro"></div>
+</div>
+</div>
+
+<div id="appContent" style="display:none">
 <div class="hdr"><div><h1>&#127946; ACQUA CARD</h1><p>Passaporte 3 Parques</p><div id="syncStatus" style="margin-top:6px"></div></div><div class="hdr-stats"><div class="st"><div class="n" id="sT">0</div><div class="l">Associados</div></div><div class="st"><div class="n" id="sA">0</div><div class="l">Ativos</div></div><div class="st"><div class="n" id="sHoje">0</div><div class="l">Acessos Hoje</div></div></div></div>
 <div class="tabs"><button class="tb act" data-t="busca">&#128269; Buscar</button><button class="tb" data-t="cadastro">&#10133; Cadastrar</button><button class="tb" data-t="importar">&#128228; Importar</button><button class="tb" data-t="todos">&#128203; Todos</button><button class="tb" data-t="acesso">&#127382; Acesso</button><button class="tb" data-t="frequencia">&#128202; Frequencia</button><button class="tb" data-t="carteirinha">&#127380; Cards</button><button class="tb" data-t="backup">&#128190; Backup</button></div>
 <div class="wrap">
@@ -138,11 +170,49 @@ td{padding:10px;border-bottom:1px solid #edf2f7}tr:hover td{background:#f7fafc}
 <div class="pnl" id="p-carteirinha"><div class="cd"><h3>&#127380; Gerar Acqua Card</h3><input type="text" id="inpCart" placeholder="Nome..." oninput="buscarCart()"><div id="cartList" style="margin-top:8px"></div></div><div class="cd" id="cartArea" style="display:none"><div id="cartRender" class="print-area" style="margin:20px 0"></div><div style="text-align:center;display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn bp" onclick="window.print()">&#128424; Imprimir</button><button class="btn bg" onclick="baixarCartImagem()">&#128229; Baixar Imagem</button><button class="btn bwp" onclick="enviarCartWP()">&#128242; Enviar no WhatsApp</button></div></div></div>
 <div class="pnl" id="p-backup"><div class="cd"><h3>&#128190; Backup & Nuvem</h3><div class="alert-g" id="cloudStatusMsg">Conectando...</div><div class="bkp-info" id="bkpInfo"></div><div style="margin-top:16px"><button class="btn bdr" onclick="exportarBackup()" style="width:100%;justify-content:center;padding:14px 20px;font-size:14px">Exportar Backup Local</button></div></div><div class="cd"><h3>&#128465; Apagar Acesso</h3><div class="alert-y">Justificativa obrigatoria (min 15 caracteres).</div><input type="text" id="delBuscaNome" placeholder="Buscar associado..." oninput="buscarAcessoParaDeletar()"><div id="delResultados" style="margin-top:12px"></div></div><div class="cd" id="delLogCard" style="display:none"><h3>Historico de Exclusoes</h3><div id="delLogList"></div></div></div>
 </div>
+</div>
+
 <div class="totem-bg" id="totemBg"><button class="totem-exit" onclick="sairTotem()">&#10005; Sair</button><div style="text-align:center;margin-bottom:30px"><h1 style="color:#22d3ee;font-size:32px">ACQUA CARD</h1><p style="color:#7dd3fc">PASSAPORTE 3 PARQUES</p></div><div class="totem-status wait" id="totemStatus"><div style="font-size:80px">&#128247;</div><div style="font-size:28px;font-weight:900;margin-top:10px">Aguardando...</div><div style="font-size:16px;opacity:.8">QR Code</div></div><canvas id="totemCanvas" style="display:none"></canvas><video id="totemVideo" playsinline style="display:none"></video></div>
 <div class="modal-bg" id="modalBg" onclick="if(event.target===this)fecharModal()"><div class="modal"><h2 id="mTit"></h2><div id="mBody"></div><div style="margin-top:16px;text-align:right"><button class="btn bs" onclick="fecharModal()">Fechar</button></div></div></div>
 <div class="toast-box" id="toastBox"></div>
 
 <script>
+/* ===== LOGIN SYSTEM ===== */
+var SENHA_ACQUA='PARQUE3308';
+var autenticado=false;
+
+function tentarLogin(){
+    var inp=document.getElementById('loginSenha');
+    var erro=document.getElementById('loginErro');
+    var box=document.querySelector('.login-box');
+    if(inp.value===SENHA_ACQUA){
+        autenticado=true;
+        sessionStorage.setItem('acqua_auth','1');
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('appContent').style.display='block';
+        erro.textContent='';
+    }else{
+        erro.textContent='⚠️ Senha incorreta';
+        box.classList.add('login-shake');
+        inp.value='';
+        inp.focus();
+        setTimeout(function(){box.classList.remove('login-shake');},500);
+    }
+}
+
+function checarSessao(){
+    if(sessionStorage.getItem('acqua_auth')==='1'){
+        autenticado=true;
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('appContent').style.display='block';
+    }else{
+        document.getElementById('loginSenha').focus();
+    }
+}
+
+checarSessao();
+
+/* ===== APP ORIGINAL ===== */
 var WP_NUMERO='5565996210387',db=[],logAc=[],delLog=[],isOnline=false,fbOk=false;
 var FB_URL='https://aqcuacard-default-rtdb.firebaseio.com';
 function qrUrl(t,s){return'https://api.qrserver.com/v1/create-qr-code/?size='+s+'x'+s+'&data='+encodeURIComponent(t)+'&format=png&margin=4&color=0c4a6e&bgcolor=ffffff&ecc=H';}
