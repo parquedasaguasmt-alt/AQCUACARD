@@ -226,6 +226,19 @@
         .dmc img{max-width:100%;max-height:65vh;border-radius:10px;border:1px solid var(--bd)}
         .bcl{background:var(--elev);border:1px solid var(--bd);color:var(--t2);padding:7px 16px;border-radius:6px;cursor:pointer;font-size:.85rem;font-weight:600;font-family:inherit;transition:all .2s}
         .bcl:hover{background:var(--hover);color:var(--t1)}
+        /* FOTO UPLOAD AREA */
+        .foto-up{border:2px dashed var(--bd2);border-radius:14px;padding:20px;text-align:center;cursor:pointer;transition:all .25s;background:var(--elev);display:flex;flex-direction:column;align-items:center;gap:10px}
+        .foto-up:hover{border-color:var(--acc);background:var(--acc-d)}
+        .foto-up.done{border-color:var(--ok-b);background:var(--ok-d)}
+        .foto-up .foto-circle{width:100px;height:100px;border-radius:50%;background:var(--hover);border:3px dashed var(--bd2);display:flex;align-items:center;justify-content:center;font-size:2.5rem;overflow:hidden;transition:all .25s}
+        .foto-up.done .foto-circle{border-style:solid;border-color:var(--ok-b)}
+        .foto-up .foto-circle img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+        .foto-up .foto-txt{font-size:.85rem;color:var(--t3);font-weight:600}
+        .foto-up.done .foto-txt{color:var(--ok)}
+        .foto-up .foto-hint{font-size:.72rem;color:var(--t4)}
+        /* FOTO THUMB NO ADMIN */
+        .foto-thumb{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--ok-b)}
+        .foto-thumb-ph{width:48px;height:48px;border-radius:50%;background:var(--hover);display:flex;align-items:center;justify-content:center;font-size:1.2rem;border:2px solid var(--bd)}
         @media(max-width:768px){.fg,.scl,.dreq{grid-template-columns:1fr;flex-direction:column}.grid{grid-template-columns:1fr}.hdr{padding:0 14px;gap:8px}.etb{flex-direction:column;text-align:center}.em{flex-direction:column;gap:6px}.sbi .sbw{display:none}.lar{flex-direction:column}}
     </style>
 </head>
@@ -248,7 +261,7 @@
     <div class="hdr"><img class="logo" src="https://parquedasaguasmt-alt.github.io/AQCUACARD/logo-parque.png" onerror="this.style.display='none'" alt=""><div class="dv"></div><span class="tt">Passaportes Empresariais</span><span class="et">ACQUA CARD</span><div class="sp"></div><button class="bbk" id="bbkC" onclick="goHome()">← Voltar</button></div>
     <div class="etb"><div><div class="en" id="cN"></div><div class="ec" id="cC"></div></div><div class="em"><div class="mi">👥 <strong id="cTA"></strong></div><div class="mi">📅 Vigência <strong>2026</strong></div><span class="pill p-ok">● Ativo</span></div></div>
     <div class="cnt"><div class="kr" id="cK"></div>
-        <div class="rules"><h4>📌 Regras de Substituição</h4><ul><li>Passaportes = <strong>sócios ACQUA CARD</strong></li><li>Substituição só por <strong>desligamento</strong></li><li><strong>Quem sai:</strong> rescisão obrigatória</li><li><strong>Quem entra:</strong> contrato obrigatório</li></ul><div class="dreq"><div class="drc out"><div class="di">🔴</div><div class="dt">Quem SAI</div><div class="ds">Rescisão</div></div><div class="drc in"><div class="di">🟢</div><div class="dt">Quem ENTRA</div><div class="ds">Contrato</div></div></div></div>
+        <div class="rules"><h4>📌 Regras de Substituição</h4><ul><li>Passaportes = <strong>sócios ACQUA CARD</strong></li><li>Substituição só por <strong>desligamento</strong></li><li><strong>Quem sai:</strong> rescisão obrigatória</li><li><strong>Quem entra:</strong> contrato obrigatório</li><li><strong>Foto de rosto</strong> obrigatória para carteirinha</li></ul><div class="dreq"><div class="drc out"><div class="di">🔴</div><div class="dt">Quem SAI</div><div class="ds">Rescisão</div></div><div class="drc in"><div class="di">🟢</div><div class="dt">Quem ENTRA</div><div class="ds">Contrato + Foto</div></div></div></div>
         <div class="pnl"><div class="pnl-h"><div class="pnl-t">👥 Colaboradores</div><div id="cSync" style="font-size:.78rem;color:var(--t4);"></div></div><div class="pnl-b"><div style="overflow-x:auto;"><table class="tbl"><thead><tr><th>#</th><th>Colaborador</th><th>CPF</th><th>Telefone</th><th>Status</th><th>Ações</th></tr></thead><tbody id="cTbl"></tbody></table></div></div></div>
         <div class="pnl hdn" id="cHP"><div class="pnl-h"><div class="pnl-t">📜 Histórico</div></div><div class="pnl-b" id="cHB"></div></div>
     </div>
@@ -264,7 +277,7 @@
     <div class="md">
         <div class="md-h"><h2>🔄 Solicitar Substituição</h2><p>Preencha todos os campos</p></div>
         <div class="md-c">
-            <div class="alrt"><strong>⚠️ Documentação obrigatória</strong>Rescisão + Contrato</div>
+            <div class="alrt"><strong>⚠️ Documentação obrigatória</strong>Rescisão + Contrato + Foto de rosto</div>
             <div class="fst">🔴 Colaborador que sai</div>
             <div class="fld"><label>Nome</label><input id="mON" class="f-ro f-out" readonly></div>
             <div class="fld"><label>Motivo <span class="rq">*</span></label><select id="mMt"><option value="">Selecione...</option><option value="desligamento">Desligamento</option></select></div>
@@ -272,6 +285,15 @@
             <div class="fld"><label>📄 Rescisão <span class="rq">*</span></label><div class="uz" id="uz1" onclick="document.getElementById('f1').click()"><div class="ui">🔴 📄</div><p>Clique para anexar</p><div class="uf" id="fn1"></div></div><input type="file" id="f1" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="onF(this,'uz1','fn1','pv1')"><img id="pv1" class="ipv"></div>
             <hr class="dl">
             <div class="fst">🟢 Novo colaborador</div>
+            <div class="fld">
+                <label>📸 Foto de Rosto <span class="rq">*</span></label>
+                <div class="foto-up" id="fotoUpArea" onclick="document.getElementById('f3').click()">
+                    <div class="foto-circle" id="fotoCircle">👤</div>
+                    <div class="foto-txt" id="fotoTxt">Clique para enviar a foto</div>
+                    <div class="foto-hint">Obrigatória para confecção da carteirinha ACQUA CARD</div>
+                </div>
+                <input type="file" id="f3" accept=".jpg,.jpeg,.png" style="display:none" onchange="onFoto(this)">
+            </div>
             <div class="fg"><div class="fld"><label>Nome <span class="rq">*</span></label><input id="mIN"></div><div class="fld"><label>CPF <span class="rq">*</span></label><input id="mIC" placeholder="000.000.000-00"></div><div class="fld"><label>Telefone <span class="rq">*</span></label><input id="mIT" placeholder="(65) 99999-9999"></div></div>
             <div class="fld"><label>📋 Contrato <span class="rq">*</span></label><div class="uz" id="uz2" onclick="document.getElementById('f2').click()"><div class="ui">🟢 📋</div><p>Clique para anexar</p><div class="uf" id="fn2"></div></div><input type="file" id="f2" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="onF(this,'uz2','fn2','pv2')"><img id="pv2" class="ipv"></div>
         </div>
@@ -312,6 +334,7 @@ var FB='https://aqcuacard-default-rtdb.firebaseio.com';
 var raw=[],cos={},reqs=[],hist=[];
 var curCo=null,repSt=null,fds={},online=false,lSync=null;
 var curLK='',dirMode=false;
+var fotoData='';
 
 var ICO=[{k:['SUPERMERCADO','MERCADO','ATACAD'],i:'🛒'},{k:['AGRO','FAZENDA','RURAL','SEMENTE','SAFRA'],i:'🌾'},{k:['CLINICA','SAUDE','HOSPITAL','MEDIC','FARMA','ODONTO','DENT'],i:'🏥'},{k:['CONSTRU','ENGENHARIA','OBRA'],i:'🏗️'},{k:['RESTAUR','LANCHE','PIZZA','ALIMENT','PADARIA'],i:'🍽️'},{k:['ESCOLA','EDUCA','COLEGIO','CURSO'],i:'🎓'},{k:['ADVOG','JURID','DIREITO'],i:'⚖️'},{k:['CONTAB','CONTAD','FISCAL'],i:'📊'},{k:['MAQUINA','TRATOR','MECANICA','PECAS'],i:'⚙️'},{k:['TRANSPORTE','LOGISTIC','FRETE'],i:'🚛'},{k:['HOTEL','POUSADA','TURISMO'],i:'🏨'},{k:['LOJA','COMERCIO','VAREJO','MAGAZINE'],i:'🏪'},{k:['IMOBIL','IMOVEIS','CORRET'],i:'🏠'},{k:['POSTO','COMBUSTIVEL','GASOLINA'],i:'⛽'},{k:['TECNOLOGIA','SISTEMA','SOFTWARE','TI','INFORM'],i:'💻'},{k:['BANCO','FINANC','CRED','SEGUR'],i:'🏦'},{k:['VETERI','ANIMAL','PET'],i:'🐾'},{k:['BELEZA','SALAO','ESTETICA'],i:'💇'},{k:['ACADEMIA','FITNESS','GYM','ESPORTE'],i:'🏋️'},{k:['CDL','ASSOCIA','SINDICATO','COOPERATIVA'],i:'🏛️'},{k:['FARMACIA','DROGA'],i:'💊'},{k:['OTICA','OPTICA'],i:'👓'},{k:['MOVEIS','COLCH','DECOR'],i:'🛋️'},{k:['ELETR','CELULAR','PHONE'],i:'📱'},{k:['AUTO','CARRO','VEICUL','REVENDA'],i:'🚗'}];
 function gIco(n){var u=(n||'').toUpperCase();for(var i=0;i<ICO.length;i++)for(var j=0;j<ICO[i].k.length;j++)if(u.indexOf(ICO[i].k[j])>=0)return ICO[i].i;return'🏢';}
@@ -495,18 +518,51 @@ function openSub(sid,ck){
     document.getElementById('mON').value=s.name;
     var ids=['mMt','mDt','mIN','mIC','mIT'];for(var j=0;j<ids.length;j++)document.getElementById(ids[j]).value='';
     rFile('uz1','fn1','pv1','f1');rFile('uz2','fn2','pv2','f2');fds={};
+    fotoData='';resetFoto();
     document.getElementById('mSub').classList.add('act');document.body.style.overflow='hidden';
 }
 function closeSub(){document.getElementById('mSub').classList.remove('act');document.body.style.overflow='';}
 document.getElementById('mSub').addEventListener('click',function(e){if(e.target===this)closeSub();});
+
+/* ═══ FOTO DE ROSTO ═══ */
+function onFoto(inp){
+    if(!inp.files||!inp.files[0])return;
+    var f=inp.files[0];
+    if(!f.type.startsWith('image/')){toast('Apenas imagens','warn');inp.value='';return;}
+    if(f.size>5*1024*1024){toast('Máximo 5MB','warn');inp.value='';return;}
+    var rd=new FileReader();
+    rd.onload=function(e){
+        fotoData=e.target.result;
+        var area=document.getElementById('fotoUpArea');
+        var circle=document.getElementById('fotoCircle');
+        var txt=document.getElementById('fotoTxt');
+        area.classList.add('done');
+        circle.innerHTML='<img src="'+fotoData+'" alt="Foto">';
+        txt.textContent='✅ Foto anexada — clique para trocar';
+    };
+    rd.readAsDataURL(f);
+}
+function resetFoto(){
+    fotoData='';
+    document.getElementById('f3').value='';
+    var area=document.getElementById('fotoUpArea');
+    var circle=document.getElementById('fotoCircle');
+    var txt=document.getElementById('fotoTxt');
+    area.classList.remove('done');
+    circle.innerHTML='👤';
+    txt.textContent='Clique para enviar a foto';
+}
+
 function sendReq(){
     var mt=document.getElementById('mMt').value,dt=document.getElementById('mDt').value;
     var iN=document.getElementById('mIN').value.trim(),iC=document.getElementById('mIC').value.trim(),iT=document.getElementById('mIT').value.trim();
     if(!mt)return toast('Selecione motivo','warn');if(!dt)return toast('Informe data','warn');
-    if(!document.getElementById('f1').files.length)return toast('Anexe rescisão','warn');if(!iN||!iC||!iT)return toast('Preencha tudo','warn');
+    if(!document.getElementById('f1').files.length)return toast('Anexe rescisão','warn');
+    if(!fotoData)return toast('📸 Anexe a foto de rosto','warn');
+    if(!iN||!iC||!iT)return toast('Preencha tudo','warn');
     if(!document.getElementById('f2').files.length)return toast('Anexe contrato','warn');
     var co=cos[repSt.ck];
-    var rq={id:Date.now(),company:repSt.ck,companyName:co?co.name:repSt.ck,staffId:repSt.id,staffFbKey:repSt._k,outName:repSt.name,outCpf:repSt.cpf,outRole:repSt.role,inName:iN.toUpperCase(),inCpf:iC,inRole:'',inTel:iT,fireDate:dt,justification:'',rescFile:document.getElementById('f1').files[0].name,contFile:document.getElementById('f2').files[0].name,rescDataUrl:fds.r||'',contDataUrl:fds.c||'',submittedAt:new Date().toLocaleString('pt-BR'),status:'pending'};
+    var rq={id:Date.now(),company:repSt.ck,companyName:co?co.name:repSt.ck,staffId:repSt.id,staffFbKey:repSt._k,outName:repSt.name,outCpf:repSt.cpf,outRole:repSt.role,inName:iN.toUpperCase(),inCpf:iC,inRole:'',inTel:iT,inFoto:fotoData,fireDate:dt,justification:'',rescFile:document.getElementById('f1').files[0].name,contFile:document.getElementById('f2').files[0].name,rescDataUrl:fds.r||'',contDataUrl:fds.c||'',submittedAt:new Date().toLocaleString('pt-BR'),status:'pending'};
     reqs.push(rq);fbP('passaportes_requests/'+rq.id,rq).catch(function(){});
     closeSub();toast('✅ Enviada!','ok');openComp(curCo);
 }
@@ -522,7 +578,9 @@ function rAdm(){
 
     var hp='';
     if(!pn.length)hp='<div class="pnl" style="text-align:center;padding:50px;"><div style="font-size:2.5rem;margin-bottom:10px;">✅</div><p style="color:var(--t3);">Nenhuma pendente</p></div>';
-    else for(var i2=0;i2<pn.length;i2++){var r=pn[i2];hp+='<div class="sc '+(i2===0?'urg':'')+'"><div class="sh" onclick="this.nextElementSibling.classList.toggle(\'opn\')"><div class="si2"><div style="display:flex;align-items:center;gap:8px;"><span class="pill p-pn">⏳</span><span class="se">'+r.companyName+'</span></div><div class="st">'+r.submittedAt+'</div></div><span style="color:var(--t4);">▼</span></div><div class="sb2 '+(i2===0?'opn':'')+'"><div class="scl"><div class="sco oc"><h4>🔴 Quem SAI</h4><div class="sf"><strong>Nome</strong><span>'+r.outName+'</span></div><div class="sf"><strong>CPF</strong><span>'+r.outCpf+'</span></div></div><div class="sco ic"><h4>🟢 Quem ENTRA</h4><div class="sf"><strong>Nome</strong><span>'+r.inName+'</span></div><div class="sf"><strong>CPF</strong><span>'+r.inCpf+'</span></div><div class="sf"><strong>Tel</strong><span>'+r.inTel+'</span></div></div></div><div class="abx"><h4>⚙️ Checklist</h4><div class="chi"><input type="checkbox" id="ck'+r.id+'a"><label>Rescisão ok</label></div><div class="chi"><input type="checkbox" id="ck'+r.id+'b"><label>Contrato ok</label></div><div class="chi"><input type="checkbox" id="ck'+r.id+'c"><label>Dados ok</label></div><div class="ab2"><button class="btn b-gn" data-approve="'+r.id+'">✅ Aprovar</button><button class="btn b-rd" data-togglerj="'+r.id+'">❌ Rejeitar</button></div><div class="rjf" id="rj'+r.id+'"><label>Motivo:</label><textarea id="rjt'+r.id+'" placeholder="Descreva..."></textarea><div class="rfa"><button class="btn b-gh" style="font-size:.85rem;" data-cancelrj="'+r.id+'">Cancelar</button><button class="btn b-rd" style="font-size:.85rem;" data-reject="'+r.id+'">Confirmar</button></div></div></div></div></div>';}
+    else for(var i2=0;i2<pn.length;i2++){var r=pn[i2];
+        var fotoHtml=r.inFoto?'<img src="'+r.inFoto+'" class="foto-thumb" alt="Foto">':'<div class="foto-thumb-ph">👤</div>';
+        hp+='<div class="sc '+(i2===0?'urg':'')+'"><div class="sh" onclick="this.nextElementSibling.classList.toggle(\'opn\')"><div class="si2"><div style="display:flex;align-items:center;gap:8px;"><span class="pill p-pn">⏳</span><span class="se">'+r.companyName+'</span></div><div class="st">'+r.submittedAt+'</div></div><span style="color:var(--t4);">▼</span></div><div class="sb2 '+(i2===0?'opn':'')+'"><div class="scl"><div class="sco oc"><h4>🔴 Quem SAI</h4><div class="sf"><strong>Nome</strong><span>'+r.outName+'</span></div><div class="sf"><strong>CPF</strong><span>'+r.outCpf+'</span></div></div><div class="sco ic"><h4>🟢 Quem ENTRA</h4><div style="text-align:center;margin-bottom:12px;">'+fotoHtml+'</div><div class="sf"><strong>Nome</strong><span>'+r.inName+'</span></div><div class="sf"><strong>CPF</strong><span>'+r.inCpf+'</span></div><div class="sf"><strong>Tel</strong><span>'+r.inTel+'</span></div><div class="sf"><strong>Foto</strong><span style="color:'+(r.inFoto?'var(--ok)':'var(--err)')+';">'+(r.inFoto?'✅ Anexada':'❌ Sem foto')+'</span></div></div></div><div class="abx"><h4>⚙️ Checklist</h4><div class="chi"><input type="checkbox" id="ck'+r.id+'a"><label>Rescisão ok</label></div><div class="chi"><input type="checkbox" id="ck'+r.id+'b"><label>Contrato ok</label></div><div class="chi"><input type="checkbox" id="ck'+r.id+'c"><label>Dados ok</label></div><div class="chi"><input type="checkbox" id="ck'+r.id+'d"><label>Foto de rosto ok</label></div><div class="ab2"><button class="btn b-gn" data-approve="'+r.id+'">✅ Aprovar</button><button class="btn b-rd" data-togglerj="'+r.id+'">❌ Rejeitar</button></div><div class="rjf" id="rj'+r.id+'"><label>Motivo:</label><textarea id="rjt'+r.id+'" placeholder="Descreva..."></textarea><div class="rfa"><button class="btn b-gh" style="font-size:.85rem;" data-cancelrj="'+r.id+'">Cancelar</button><button class="btn b-rd" style="font-size:.85rem;" data-reject="'+r.id+'">Confirmar</button></div></div></div></div></div>';}
     var pnEl=document.getElementById('aPn');pnEl.innerHTML=hp;
     pnEl.onclick=function(e){
         var ap=e.target.closest('[data-approve]');if(ap){approveR(parseInt(ap.getAttribute('data-approve')));return;}
@@ -574,12 +632,12 @@ function fAdmE(){var q=document.getElementById('sAdmE').value.toLowerCase().trim
 
 function approveR(id){
     var r=null;for(var i=0;i<reqs.length;i++)if(reqs[i].id===id){r=reqs[i];break;}if(!r)return;
-    var cks=['a','b','c'];var ok=true;for(var j=0;j<cks.length;j++){var c=document.getElementById('ck'+id+cks[j]);if(!c||!c.checked){ok=false;break;}}
+    var cks=['a','b','c','d'];var ok=true;for(var j=0;j<cks.length;j++){var c=document.getElementById('ck'+id+cks[j]);if(!c||!c.checked){ok=false;break;}}
     if(!ok)return toast('Marque todos','warn');
     if(!confirm('Aprovar?\n\n'+r.outName+' → '+r.inName))return;
     r.status='approved';
     if(r.staffFbKey)fbP('associados/'+r.staffFbKey+'/status','Acesso Restrito').catch(function(){});
-    var na={id:'AC'+Date.now().toString(36),nome:r.inName,cpf:r.inCpf,tel:r.inTel,emp:r.companyName,titulo:r.inRole,ini:new Date().toLocaleDateString('pt-BR'),fim:'',status:'Ativo',foto:'',dt:new Date().toLocaleDateString('pt-BR')};
+    var na={id:'AC'+Date.now().toString(36),nome:r.inName,cpf:r.inCpf,tel:r.inTel,emp:r.companyName,titulo:r.inRole,ini:new Date().toLocaleDateString('pt-BR'),fim:'',status:'Ativo',foto:r.inFoto||'',dt:new Date().toLocaleDateString('pt-BR')};
     fbP('associados/NEW_'+Date.now(),na).catch(function(){});
     var he={company:r.company,companyName:r.companyName,outName:r.outName,inName:r.inName,date:new Date().toLocaleDateString('pt-BR'),status:'approved'};
     hist.push(he);
