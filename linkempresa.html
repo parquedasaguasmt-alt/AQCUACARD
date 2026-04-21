@@ -10,6 +10,26 @@
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.6}
         ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px}
+
+        /* ===== LOGIN SCREEN ===== */
+        .login-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column}
+        .login-overlay.hidden{display:none}
+        .login-box{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:44px 38px;max-width:400px;width:92%;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.65);position:relative;overflow:hidden}
+        .login-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+        .login-box .login-logo{height:60px;margin-bottom:16px;opacity:.9}
+        .login-box h1{font-size:1.5rem;font-weight:800;margin-bottom:4px;background:linear-gradient(135deg,#fff,var(--gold-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .login-box .login-sub{color:var(--t3);font-size:.85rem;margin-bottom:28px}
+        .login-box input[type=password]{width:100%;padding:14px 18px;border:1px solid var(--bd);border-radius:12px;background:var(--inp);color:var(--t1);font-size:1rem;font-family:inherit;text-align:center;letter-spacing:3px;outline:none;transition:all .3s}
+        .login-box input[type=password]::placeholder{color:var(--t4);letter-spacing:1px}
+        .login-box input[type=password]:focus{border-color:var(--gold-b);background:var(--elev)}
+        .login-box .login-btn{width:100%;padding:14px;border:none;border-radius:12px;background:var(--gold);color:var(--bg);font-size:.95rem;font-weight:700;cursor:pointer;margin-top:14px;transition:all .3s;font-family:inherit;letter-spacing:.5px}
+        .login-box .login-btn:hover{background:#e0b85e;transform:translateY(-1px)}
+        .login-box .login-btn:active{transform:scale(.98)}
+        .login-error{color:var(--err);font-size:.82rem;font-weight:600;margin-top:14px;min-height:20px;transition:all .3s}
+        .login-shake{animation:loginShake .5s ease}
+        @keyframes loginShake{0%,100%{transform:translateX(0)}15%,45%,75%{transform:translateX(-8px)}30%,60%,90%{transform:translateX(8px)}}
+        .login-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 14px;border-radius:16px;font-size:.72rem;font-weight:700;margin-top:18px;background:var(--gold-d);color:var(--gold);border:1px solid var(--gold-b)}
+
         .home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;position:relative;overflow:hidden}
         .home::before{content:'';position:absolute;top:-300px;right:-300px;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(212,168,83,.03),transparent 70%)}
         .deco{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.25}
@@ -23,6 +43,11 @@
         .sync-dot{width:8px;height:8px;border-radius:50%;animation:pulse 2s infinite}
         .sync-on .sync-dot{background:var(--ok)}.sync-off .sync-dot{background:var(--err)}
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+        .user-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 16px;border-radius:16px;font-size:.78rem;font-weight:700;margin-bottom:12px}
+        .user-badge.admin{background:var(--gold-d);color:var(--gold);border:1px solid var(--gold-b)}
+        .user-badge.cdl{background:var(--blue-d);color:var(--blue);border:1px solid var(--blue-b)}
+        .logout-btn{background:var(--elev);border:1px solid var(--bd);color:var(--t3);padding:5px 14px;border-radius:8px;font-size:.75rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;margin-bottom:16px}
+        .logout-btn:hover{background:var(--hover);color:var(--err);border-color:var(--err-b)}
         .srch-w{max-width:1080px;width:100%;position:relative;z-index:1;margin-bottom:22px}
         .srch-i{position:relative}.srch-i .si{position:absolute;left:18px;top:50%;transform:translateY(-50%);opacity:.4;pointer-events:none}
         .srch{width:100%;padding:16px 20px 16px 50px;border:1px solid var(--bd);border-radius:var(--r);background:var(--card);color:var(--t1);font-size:.95rem;font-family:inherit;font-weight:500;outline:none;transition:all .3s}
@@ -226,7 +251,6 @@
         .dmc img{max-width:100%;max-height:65vh;border-radius:10px;border:1px solid var(--bd)}
         .bcl{background:var(--elev);border:1px solid var(--bd);color:var(--t2);padding:7px 16px;border-radius:6px;cursor:pointer;font-size:.85rem;font-weight:600;font-family:inherit;transition:all .2s}
         .bcl:hover{background:var(--hover);color:var(--t1)}
-        /* FOTO */
         .foto-up{border:2px dashed var(--bd2);border-radius:14px;padding:20px;text-align:center;cursor:pointer;transition:all .25s;background:var(--elev);display:flex;flex-direction:column;align-items:center;gap:10px}
         .foto-up:hover{border-color:var(--acc);background:var(--acc-d)}
         .foto-up.done{border-color:var(--ok-b);background:var(--ok-d)}
@@ -238,7 +262,6 @@
         .foto-up .foto-hint{font-size:.72rem;color:var(--t4)}
         .foto-thumb{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--ok-b)}
         .foto-thumb-ph{width:48px;height:48px;border-radius:50%;background:var(--hover);display:flex;align-items:center;justify-content:center;font-size:1.2rem;border:2px solid var(--bd)}
-        /* DOCS SECTION */
         .docs-section{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:18px;margin-bottom:18px}
         .docs-section h4{font-size:.88rem;font-weight:700;color:var(--blue);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:6px}
         .doc-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--elev);border:1px solid var(--bd);border-radius:8px;margin-bottom:8px;transition:all .2s}
@@ -258,6 +281,22 @@
     </style>
 </head>
 <body>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div class="login-overlay" id="loginScreen">
+    <div class="login-box">
+        <img class="login-logo" src="https://parquedasaguasmt-alt.github.io/AQCUACARD/logo-parque.png" onerror="this.style.display='none'" alt="">
+        <h1>Passaportes Empresariais</h1>
+        <div class="login-sub">CDL Nova Mutum × Parque das Águas</div>
+        <input type="password" id="loginSenha" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')tentarLogin()">
+        <button class="login-btn" onclick="tentarLogin()">🔓 Entrar</button>
+        <div class="login-error" id="loginErro"></div>
+        <div class="login-badge">🔗 Integrado com ACQUA CARD</div>
+    </div>
+</div>
+
+<div id="appContent" style="display:none">
+
 <div class="lov" id="lo"><div class="spn"></div><p id="loMsg">Conectando ao ACQUA CARD...</p><button class="rbtn" id="loRetry" onclick="retryLoad()">🔄 Tentar novamente</button></div>
 <div class="tst" id="toast"></div>
 
@@ -266,6 +305,8 @@
     <img class="logo-h" src="https://parquedasaguasmt-alt.github.io/AQCUACARD/logo-parque.png" onerror="this.style.display='none'" alt="">
     <h1>Passaportes Empresariais</h1>
     <p class="sub">Parceria CDL Nova Mutum × Parque das Águas</p>
+    <div id="userBadge"></div>
+    <button class="logout-btn" onclick="fazerLogout()">🚪 Sair</button>
     <div class="sync" id="syncB"><div class="sync-dot"></div><span>Conectando...</span></div>
     <div class="env">🔗 INTEGRADO COM ACQUA CARD</div>
     <div class="srch-w"><div class="srch-i"><span class="si">🔍</span><input type="text" class="srch" id="sHome" placeholder="Pesquisar empresa..." oninput="filterHome()"></div><div class="srch-c" id="sHomeCnt"></div></div>
@@ -342,7 +383,84 @@
 
 <div class="ftr">🌊 <strong>Parque das Águas</strong> — Passaportes Empresariais | CDL Nova Mutum</div>
 
+</div><!-- fim appContent -->
+
 <script>
+/* ===== LOGIN SYSTEM ===== */
+var SENHA_ADMIN='PARQUE3308';
+var SENHA_CDL='CDLPARQUE';
+var userRole=''; // 'admin' ou 'cdl'
+
+function tentarLogin(){
+    var inp=document.getElementById('loginSenha');
+    var erro=document.getElementById('loginErro');
+    var box=document.querySelector('.login-box');
+    var val=inp.value.trim();
+    if(val===SENHA_ADMIN){
+        userRole='admin';
+        sessionStorage.setItem('pass_auth','admin');
+        ativarApp();
+    }else if(val===SENHA_CDL){
+        userRole='cdl';
+        sessionStorage.setItem('pass_auth','cdl');
+        ativarApp();
+    }else{
+        erro.textContent='⚠️ Senha incorreta';
+        box.classList.add('login-shake');
+        inp.value='';
+        inp.focus();
+        setTimeout(function(){box.classList.remove('login-shake');},500);
+    }
+}
+
+function ativarApp(){
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('appContent').style.display='block';
+    document.getElementById('loginErro').textContent='';
+    atualizarBadgeUsuario();
+    init();
+}
+
+function atualizarBadgeUsuario(){
+    var el=document.getElementById('userBadge');
+    if(userRole==='admin'){
+        el.innerHTML='<div class="user-badge admin">⚙️ Admin — Bruna</div>';
+    }else{
+        el.innerHTML='<div class="user-badge cdl">🏛️ CDL Nova Mutum</div>';
+    }
+}
+
+function fazerLogout(){
+    sessionStorage.removeItem('pass_auth');
+    userRole='';
+    document.getElementById('appContent').style.display='none';
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('loginSenha').value='';
+    document.getElementById('loginSenha').focus();
+    document.getElementById('vHome').classList.add('hdn');
+    document.getElementById('vComp').classList.add('hdn');
+    document.getElementById('vAdm').classList.add('hdn');
+}
+
+function checarSessao(){
+    var s=sessionStorage.getItem('pass_auth');
+    if(s==='admin'||s==='cdl'){
+        userRole=s;
+        ativarApp();
+        return true;
+    }
+    /* Checa se é link direto de empresa */
+    if(location.hash&&location.hash.indexOf('#emp=')===0){
+        /* Link direto não precisa de login */
+        return false;
+    }
+    document.getElementById('loginSenha').focus();
+    return false;
+}
+
+function isAdmin(){return userRole==='admin';}
+
+/* ===== APP ORIGINAL ===== */
 var BASE_URL='https://parquedasaguasmt-alt.github.io/AQCUACARD/linkempresa.html';
 var FB='https://aqcuacard-default-rtdb.firebaseio.com';
 var raw=[],cos={},reqs=[],hist=[];
@@ -396,12 +514,17 @@ function renderHome(){
     var keys=Object.keys(cos).sort(function(a,b){var aa=0,bb=0;for(var i=0;i<cos[a].staff.length;i++)if(cos[a].staff[i].status==='active')aa++;for(var j=0;j<cos[b].staff.length;j++)if(cos[b].staff[j].status==='active')bb++;return bb-aa;});
     var h='';
     var pc=0;for(var p=0;p<reqs.length;p++)if(reqs[p].status==='pending')pc++;
-    h+='<div class="crd adm" data-n="painel administrativo"><div class="ci">⚙️</div><h3>Painel Administrativo</h3><p>Análise e aprovação</p><div class="cb">📥 '+pc+' pendente'+(pc!==1?'s':'')+'</div></div>';
+
+    /* PAINEL ADMIN - só aparece para admin */
+    if(isAdmin()){
+        h+='<div class="crd adm" data-n="painel administrativo"><div class="ci">⚙️</div><h3>Painel Administrativo</h3><p>Análise e aprovação</p><div class="cb">📥 '+pc+' pendente'+(pc!==1?'s':'')+'</div></div>';
+    }
+
     if(!keys.length)h+='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--t3);">📭 Nenhuma empresa</div>';
     for(var i=0;i<keys.length;i++){var k=keys[i],c=cos[k],ac=0,rs=0;for(var j=0;j<c.staff.length;j++){if(c.staff[j].status==='active')ac++;if(c.staff[j].status==='restricted')rs++;}
     h+='<div class="crd comp" data-n="'+c.name.toLowerCase()+'" data-key="'+i+'"><div class="ci">'+c.icon+'</div><h3>'+c.name+'</h3><p>ACQUA CARD</p><div class="cb">👥 '+ac+' ativo'+(ac!==1?'s':'')+(rs>0?' · ⚠️ '+rs+' restrito'+(rs!==1?'s':''):'')+'</div><div class="ca"><button class="cab ccp" data-act="copy" data-idx="'+i+'">📋 Copiar link</button><button class="cab cwp" data-act="wp" data-idx="'+i+'">💬 WhatsApp</button></div></div>';}
     g.innerHTML=h;g._keys=keys;
-    g.onclick=function(e){var btn=e.target.closest('[data-act]');if(btn){e.stopPropagation();var idx=parseInt(btn.getAttribute('data-idx'));var key=g._keys[idx];if(!key)return;if(btn.getAttribute('data-act')==='copy')copyTxt(gLink(key));else if(btn.getAttribute('data-act')==='wp'){openWA(buildMsgQuick(key),'');toast('📤 WhatsApp aberto!','ok');}return;}var crd=e.target.closest('.comp');if(crd){var ci=parseInt(crd.getAttribute('data-key'));var ky=g._keys[ci];if(ky)openComp(ky);return;}var adm=e.target.closest('.adm');if(adm)openAdm();};
+    g.onclick=function(e){var btn=e.target.closest('[data-act]');if(btn){e.stopPropagation();var idx=parseInt(btn.getAttribute('data-idx'));var key=g._keys[idx];if(!key)return;if(btn.getAttribute('data-act')==='copy')copyTxt(gLink(key));else if(btn.getAttribute('data-act')==='wp'){openWA(buildMsgQuick(key),'');toast('📤 WhatsApp aberto!','ok');}return;}var crd=e.target.closest('.comp');if(crd){var ci=parseInt(crd.getAttribute('data-key'));var ky=g._keys[ci];if(ky)openComp(ky);return;}var adm=e.target.closest('.adm');if(adm&&isAdmin())openAdm();};
 }
 function filterHome(){var q=document.getElementById('sHome').value.toLowerCase().trim();var cards=document.querySelectorAll('#hGrid .comp');var adm=document.querySelector('#hGrid .adm');var v=0;for(var i=0;i<cards.length;i++){var m=!q||cards[i].getAttribute('data-n').indexOf(q)>=0;cards[i].classList.toggle('hid',!m);if(m)v++;}if(adm)adm.classList.toggle('hid',q&&'painel administrativo'.indexOf(q)<0);document.getElementById('sHomeCnt').textContent=q?(v===0?'Nenhuma':v+' de '+cards.length):'';}
 function goHome(){dirMode=false;location.hash='';document.getElementById('vHome').classList.remove('hdn');document.getElementById('vComp').classList.add('hdn');document.getElementById('vAdm').classList.add('hdn');document.getElementById('sHome').value='';load().then(function(){renderHome();});}
@@ -465,17 +588,18 @@ function sendReq(){
     closeSub();toast('✅ Enviada!','ok');openComp(curCo);
 }
 
-function openAdm(){document.getElementById('vHome').classList.add('hdn');document.getElementById('vComp').classList.add('hdn');document.getElementById('vAdm').classList.remove('hdn');rAdm();}
+function openAdm(){
+    if(!isAdmin()){toast('⚠️ Acesso restrito','warn');return;}
+    document.getElementById('vHome').classList.add('hdn');document.getElementById('vComp').classList.add('hdn');document.getElementById('vAdm').classList.remove('hdn');rAdm();
+}
 function aTab(t,el){var ts=['Pn','Hi','Em','Rp'];for(var i=0;i<ts.length;i++)document.getElementById('a'+ts[i]).classList.add('hdn');document.getElementById('a'+t.charAt(0).toUpperCase()+t.slice(1)).classList.remove('hdn');var all=document.querySelectorAll('.atab');for(var j=0;j<all.length;j++)all[j].classList.remove('act');el.classList.add('act');}
 
-/* ═══ VISUALIZAR DOCUMENTO ═══ */
 function viewDoc(dataUrl,title){
     if(!dataUrl){toast('Documento não disponível','warn');return;}
     document.getElementById('dMoT').textContent='📎 '+title;
     document.getElementById('dMoB').innerHTML='<img src="'+dataUrl+'" alt="'+title+'" style="max-width:100%;max-height:65vh;border-radius:10px;border:1px solid var(--bd);">';
     document.getElementById('dMo').classList.add('act');
 }
-/* Guarda refs das reqs para acesso por ID */
 function getReqById(id){for(var i=0;i<reqs.length;i++)if(reqs[i].id===id)return reqs[i];return null;}
 
 function rAdm(){
@@ -597,7 +721,20 @@ async function init(){
     try{var ok=await load();clearTimeout(iTO);if(chkDL()){poll();return;}hideLo();document.getElementById('vHome').classList.remove('hdn');if(ok&&raw.length>0){renderHome();toast('🔗 '+raw.length+' associados','ok');}else{renderHome();toast(ok?'📭 Base vazia':'Falha','err');}poll();}catch(e){clearTimeout(iTO);hideLo();document.getElementById('vHome').classList.remove('hdn');renderHome();toast('Erro','err');poll();}
 }
 function poll(){setInterval(function(){load().then(function(){if(!document.getElementById('vHome').classList.contains('hdn'))renderHome();});},15000);}
-init();
+
+/* ===== INICIALIZAÇÃO ===== */
+/* Checa se é link direto de empresa (não precisa login) */
+if(location.hash&&location.hash.indexOf('#emp=')===0){
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('appContent').style.display='block';
+    userRole='direct';
+    init();
+}else{
+    /* Checa sessão salva */
+    if(!checarSessao()){
+        document.getElementById('loginSenha').focus();
+    }
+}
 </script>
 </body>
 </html>
