@@ -8,7 +8,6 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f4f8;color:#2d3748}
 
-/* ===== LOGIN SCREEN ===== */
 .login-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#0a4c7a,#0891b2,#22d3ee);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column}
 .login-overlay.hidden{display:none}
 .login-box{background:rgba(255,255,255,.12);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:40px 36px;max-width:380px;width:92%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)}
@@ -53,13 +52,15 @@ td{padding:10px;border-bottom:1px solid #edf2f7}tr:hover td{background:#f7fafc}
 .bi{display:inline-block;padding:2px 8px;background:#e2e8f0;color:#4a5568;border-radius:16px;font-size:10px;font-weight:600}
 .brs{display:inline-block;padding:2px 8px;background:#fed7d7;color:#742a2a;border-radius:16px;font-size:10px;font-weight:600}
 .bemp{display:inline-block;padding:2px 8px;background:#e9d8fd;color:#553c9a;border-radius:16px;font-size:10px;font-weight:600}
+.bvc{display:inline-block;padding:2px 8px;background:#fefcbf;color:#744210;border-radius:16px;font-size:10px;font-weight:600}
+.bvn{display:inline-block;padding:2px 8px;background:#fed7d7;color:#742a2a;border-radius:16px;font-size:10px;font-weight:600}
 .nr{text-align:center;padding:30px;color:#a0aec0;font-size:13px}
 .fg{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fg .full{grid-column:1/-1}
 .fl{font-size:11px;font-weight:600;color:#4a5568;margin-bottom:4px}
 .sm{font-size:15px;cursor:pointer;background:none;border:none;padding:4px 6px;border-radius:4px}.sm:hover{background:#edf2f7}
 .toast-box{position:fixed;top:12px;right:12px;z-index:9999}
 .toast{padding:10px 18px;border-radius:8px;color:#fff;font-size:12px;font-weight:600;margin-bottom:6px;animation:si .3s ease}
-.t-ok{background:#38a169}.t-er{background:#e53e3e}.t-in{background:#0a4c7a}
+.t-ok{background:#38a169}.t-er{background:#e53e3e}.t-in{background:#0a4c7a}.t-wr{background:#dd6b20}
 @keyframes si{from{transform:translateX(80px);opacity:0}to{transform:translateX(0);opacity:1}}
 .modal-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:1000;justify-content:center;align-items:center}
 .modal-bg.act{display:flex}
@@ -70,6 +71,7 @@ td{padding:10px;border-bottom:1px solid #edf2f7}tr:hover td{background:#f7fafc}
 .alert-g{background:#f0fff4;border:1px solid #9ae6b4;border-radius:8px;padding:10px 16px;font-size:12px;color:#22543d;margin-bottom:12px}
 .alert-r{background:#fff5f5;border:1px solid #feb2b2;border-radius:8px;padding:10px 16px;font-size:12px;color:#742a2a;margin-bottom:12px}
 .alert-y{background:#fffff0;border:1px solid #f6e05e;border-radius:8px;padding:10px 16px;font-size:12px;color:#744210;margin-bottom:12px;line-height:1.7}
+.alert-o{background:#fffaf0;border:1px solid #fbd38d;border-radius:8px;padding:10px 16px;font-size:12px;color:#7b341e;margin-bottom:12px;line-height:1.7}
 .fchips{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
 .fchip{padding:5px 12px;border-radius:16px;font-size:11px;font-weight:600;cursor:pointer;border:2px solid #e2e8f0;background:#fff;color:#4a5568}
 .fchip:hover{border-color:#0a4c7a}.fchip.act{background:#0a4c7a;color:#fff;border-color:#0a4c7a}
@@ -139,13 +141,17 @@ td{padding:10px;border-bottom:1px solid #edf2f7}tr:hover td{background:#f7fafc}
 .del-log{font-size:11px;padding:8px 12px;border-bottom:1px solid #edf2f7;display:flex;align-items:flex-start;gap:8px}
 .del-log .dl-icon{color:#e53e3e;font-size:14px;flex-shrink:0;margin-top:1px}.del-log .dl-info{flex:1}.del-log .dl-nome{font-weight:700;color:#2d3748}.del-log .dl-dt{color:#a0aec0;font-size:10px}.del-log .dl-just{color:#718096;font-style:italic;margin-top:2px;font-size:10px}
 .char-count{font-size:10px;text-align:right;margin-top:2px;font-weight:600}.char-count.ok{color:#38a169}.char-count.ng{color:#e53e3e}
+.venc-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid #edf2f7;font-size:12px}
+.venc-item .vi-days{min-width:70px;font-weight:800;font-size:11px;text-align:center;padding:3px 8px;border-radius:6px}
+.venc-item .vi-days.expired{background:#fed7d7;color:#742a2a}
+.venc-item .vi-days.soon{background:#fefcbf;color:#744210}
+.venc-item .vi-days.ok{background:#c6f6d5;color:#22543d}
 @media(max-width:600px){.acqua-card{width:100%;max-width:540px;height:auto;aspect-ratio:54/32}.acqua-card .foto-box{width:90px;height:108px}.acqua-card .brand{left:118px;right:88px}.acqua-card .brand .ttl{font-size:20px}.acqua-card .qr-area{width:72px;height:72px}.fg{grid-template-columns:1fr}.kpi-grid{grid-template-columns:1fr 1fr}.hdr{padding:14px 16px}.hdr h1{font-size:15px}.tb{padding:10px 12px;font-size:11px}}
 @media print{body *{visibility:hidden}.print-area,.print-area *{visibility:visible}.print-area{position:absolute;left:50%;top:20px;transform:translateX(-50%)}}
 </style>
 </head>
 <body>
 
-<!-- ===== LOGIN SCREEN ===== -->
 <div class="login-overlay" id="loginScreen">
 <div class="login-box">
 <div class="login-icon">🏊</div>
@@ -158,16 +164,17 @@ td{padding:10px;border-bottom:1px solid #edf2f7}tr:hover td{background:#f7fafc}
 </div>
 
 <div id="appContent" style="display:none">
-<div class="hdr"><div><h1>&#127946; ACQUA CARD</h1><p>Passaporte 3 Parques</p><div id="syncStatus" style="margin-top:6px"></div></div><div class="hdr-stats"><div class="st"><div class="n" id="sT">0</div><div class="l">Associados</div></div><div class="st"><div class="n" id="sA">0</div><div class="l">Ativos</div></div><div class="st"><div class="n" id="sHoje">0</div><div class="l">Acessos Hoje</div></div></div></div>
-<div class="tabs"><button class="tb act" data-t="busca">&#128269; Buscar</button><button class="tb" data-t="cadastro">&#10133; Cadastrar</button><button class="tb" data-t="importar">&#128228; Importar</button><button class="tb" data-t="todos">&#128203; Todos</button><button class="tb" data-t="acesso">&#127382; Acesso</button><button class="tb" data-t="frequencia">&#128202; Frequencia</button><button class="tb" data-t="carteirinha">&#127380; Cards</button><button class="tb" data-t="backup">&#128190; Backup</button></div>
+<div class="hdr"><div><h1>&#127946; ACQUA CARD</h1><p>Passaporte 3 Parques</p><div id="syncStatus" style="margin-top:6px"></div></div><div class="hdr-stats"><div class="st"><div class="n" id="sT">0</div><div class="l">Associados</div></div><div class="st"><div class="n" id="sA">0</div><div class="l">Ativos</div></div><div class="st" id="stVenc" style="display:none"><div class="n" id="sV" style="color:#fbd38d">0</div><div class="l">Vencendo</div></div><div class="st"><div class="n" id="sHoje">0</div><div class="l">Acessos Hoje</div></div></div></div>
+<div class="tabs"><button class="tb act" data-t="busca">&#128269; Buscar</button><button class="tb" data-t="cadastro">&#10133; Cadastrar</button><button class="tb" data-t="importar">&#128228; Importar</button><button class="tb" data-t="todos">&#128203; Todos</button><button class="tb" data-t="acesso">&#127382; Acesso</button><button class="tb" data-t="frequencia">&#128202; Frequencia</button><button class="tb" data-t="carteirinha">&#127380; Cards</button><button class="tb" data-t="vigencia">&#128197; Vigência</button><button class="tb" data-t="backup">&#128190; Backup</button></div>
 <div class="wrap">
-<div class="pnl act" id="p-busca"><div class="cd"><h3>&#128269; Pesquisar</h3><div style="display:flex;gap:8px"><input type="text" id="inpBusca" placeholder="Nome, CPF, empresa..." style="flex:1" oninput="buscar()"><button class="btn bp" onclick="buscar()">Buscar</button></div></div><div class="cd"><div style="overflow-x:auto"><table><thead><tr><th></th><th>Nome</th><th>CPF</th><th>Empresa</th><th>Status</th><th>Acoes</th></tr></thead><tbody id="tbBusca"><tr><td colspan="6"><div class="nr">Digite algo</div></td></tr></tbody></table></div></div></div>
-<div class="pnl" id="p-cadastro"><div class="cd"><h3>&#10133; Cadastrar</h3><div class="fg"><div class="full"><div class="fl">Foto</div><div class="foto-upload" onclick="document.getElementById('cFoto').click()"><div style="width:64px;height:64px;border-radius:8px;background:#edf2f7;display:flex;align-items:center;justify-content:center;font-size:28px;color:#a0aec0" id="cFotoPh">&#128100;</div><div style="font-size:12px;color:#718096"><strong>Adicionar foto</strong></div></div><input type="file" id="cFoto" accept="image/*" style="display:none" onchange="previewFotoCad(this)"></div><div class="full"><div class="fl">Nome *</div><input type="text" id="cNome"></div><div><div class="fl">CPF</div><input type="text" id="cCPF" maxlength="14" oninput="maskCPF(this)"></div><div><div class="fl">Telefone</div><input type="text" id="cTel" maxlength="15" oninput="maskTel(this)"></div><div><div class="fl">Empresa</div><input type="text" id="cEmp"></div><div><div class="fl">Titulo</div><input type="text" id="cTitulo"></div><div><div class="fl">Entrada</div><input type="text" id="cIni" maxlength="10" oninput="maskData(this)"></div><div><div class="fl">Fim Contrato</div><input type="text" id="cVenc" maxlength="10" oninput="maskData(this)"></div><div><div class="fl">Status</div><select id="cSt"><option value="Ativo">Ativo</option><option value="Acesso Restrito">Acesso Restrito</option></select></div></div><div style="margin-top:14px;text-align:right"><button class="btn bg" onclick="cadastrar()">&#9989; Cadastrar</button></div></div></div>
+<div class="pnl act" id="p-busca"><div class="cd"><h3>&#128269; Pesquisar</h3><div style="display:flex;gap:8px"><input type="text" id="inpBusca" placeholder="Nome, CPF, empresa..." style="flex:1" oninput="buscar()"><button class="btn bp" onclick="buscar()">Buscar</button></div></div><div class="cd"><div style="overflow-x:auto"><table><thead><tr><th></th><th>Nome</th><th>CPF</th><th>Empresa</th><th>Vigência</th><th>Status</th><th>Acoes</th></tr></thead><tbody id="tbBusca"><tr><td colspan="7"><div class="nr">Digite algo</div></td></tr></tbody></table></div></div></div>
+<div class="pnl" id="p-cadastro"><div class="cd"><h3>&#10133; Cadastrar</h3><div class="fg"><div class="full"><div class="fl">Foto</div><div class="foto-upload" onclick="document.getElementById('cFoto').click()"><div style="width:64px;height:64px;border-radius:8px;background:#edf2f7;display:flex;align-items:center;justify-content:center;font-size:28px;color:#a0aec0" id="cFotoPh">&#128100;</div><div style="font-size:12px;color:#718096"><strong>Adicionar foto</strong></div></div><input type="file" id="cFoto" accept="image/*" style="display:none" onchange="previewFotoCad(this)"></div><div class="full"><div class="fl">Nome *</div><input type="text" id="cNome"></div><div><div class="fl">CPF</div><input type="text" id="cCPF" maxlength="14" oninput="maskCPF(this)"></div><div><div class="fl">Telefone</div><input type="text" id="cTel" maxlength="15" oninput="maskTel(this)"></div><div><div class="fl">Empresa</div><input type="text" id="cEmp"></div><div><div class="fl">Titulo</div><input type="text" id="cTitulo"></div><div><div class="fl">Entrada</div><input type="text" id="cIni" maxlength="10" oninput="maskData(this)"></div><div><div class="fl">Fim Contrato</div><input type="text" id="cVenc" maxlength="10" oninput="maskData(this)"></div><div><div class="fl">Status</div><select id="cSt"><option value="Ativo">Ativo</option><option value="Acesso Restrito">Acesso Restrito</option></select></div></div><div class="alert-o" style="margin-top:12px">⏰ <strong>Vigência automática:</strong> Quando a data de "Fim Contrato" for atingida, o associado será automaticamente restrito.</div><div style="margin-top:14px;text-align:right"><button class="btn bg" onclick="cadastrar()">&#9989; Cadastrar</button></div></div></div>
 <div class="pnl" id="p-importar"><div class="cd"><h3>&#128228; Importar</h3><div class="alert-i">Encontra nomes, CPF e datas automaticamente</div><div class="drop-zone" id="dropZone" onclick="document.getElementById('fileImport').click()"><div style="font-size:40px">&#128195;</div><div style="font-size:14px;font-weight:700">Clique ou arraste</div><input type="file" id="fileImport" accept=".csv,.xls,.xlsx" style="display:none" onchange="handleFile(this)"></div><div style="margin-top:16px"><div class="fl">Ou cole:</div><textarea id="txtImport" rows="4" placeholder="Cole dados..."></textarea><div style="margin-top:8px;text-align:right"><button class="btn bo" onclick="processarTexto()">Processar</button></div></div></div><div class="cd" id="debugCard" style="display:none"><h3>Diagnostico</h3><div id="debugContent"></div></div><div class="cd" id="impPreview" style="display:none"><h3>Preview</h3><div id="impDetected" class="alert-g"></div><div class="imp-stats" id="impStats"></div><div class="imp-preview" id="impTable"></div><div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end"><button class="btn bs" onclick="cancelarImport()">Cancelar</button><button class="btn bg" onclick="confirmarImport()">Confirmar</button></div></div></div>
-<div class="pnl" id="p-todos"><div class="cd"><h3>&#128203; Base Completa</h3><div class="fchips"><div class="fchip act" data-f="todos">Todos</div><div class="fchip" data-f="Ativo">Ativos</div><div class="fchip" data-f="Acesso Restrito">Restritos</div></div><div style="display:flex;gap:8px;margin-bottom:12px"><input type="text" id="inpFiltro" placeholder="Filtrar..." style="flex:1" oninput="renderTodos()"><button class="btn bs" onclick="exportCSV()">CSV</button></div><div style="overflow-x:auto"><table><thead><tr><th></th><th>Nome</th><th>CPF</th><th>Empresa</th><th>Status</th><th>Acoes</th></tr></thead><tbody id="tbTodos"></tbody></table></div></div></div>
+<div class="pnl" id="p-todos"><div class="cd"><h3>&#128203; Base Completa</h3><div class="fchips"><div class="fchip act" data-f="todos">Todos</div><div class="fchip" data-f="Ativo">Ativos</div><div class="fchip" data-f="Acesso Restrito">Restritos</div><div class="fchip" data-f="vencendo">⚠️ Vencendo</div></div><div style="display:flex;gap:8px;margin-bottom:12px"><input type="text" id="inpFiltro" placeholder="Filtrar..." style="flex:1" oninput="renderTodos()"><button class="btn bs" onclick="exportCSV()">CSV</button></div><div style="overflow-x:auto"><table><thead><tr><th></th><th>Nome</th><th>CPF</th><th>Empresa</th><th>Vigência</th><th>Status</th><th>Acoes</th></tr></thead><tbody id="tbTodos"></tbody></table></div></div></div>
 <div class="pnl" id="p-acesso"><div class="cd"><h3>&#127382; Controle de Acesso</h3><div class="alert-i">Escaneie o QR Code ou digite o nome.</div><div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap"><button class="btn bcy" onclick="iniciarTotem()">&#128250; Totem</button><button class="btn bp" onclick="registroManual()">Manual</button><button class="btn bo" onclick="iniciarCameraAcesso()">QR Code</button></div><div style="display:flex;gap:8px;margin-bottom:16px"><input type="text" id="inpAcesso" placeholder="Nome ou QR Code..." style="flex:1" onkeydown="if(event.key==='Enter')processarAcesso()"><button class="btn bg" onclick="processarAcesso()">Entrada</button></div><div class="qr-reader-area" id="acessoReaderArea" style="display:none"><video id="acessoVideo" playsinline></video><div class="scan-frame"></div><div class="scan-line"></div></div><canvas id="acessoCanvas" style="display:none"></canvas><div class="cd" id="acessoResult" style="display:none;margin:0"></div></div><div class="cd"><h3>Hoje <span style="font-size:11px;color:#a0aec0" id="horaAtual"></span></h3><div class="kpi-grid"><div class="kpi"><div class="kn" id="kHoje" style="color:#38a169">0</div><div class="kl">Entradas</div></div><div class="kpi"><div class="kn" id="kPico" style="color:#d69e2e">-</div><div class="kl">Pico</div></div><div class="kpi"><div class="kn" id="kUlt" style="color:#3182ce">-</div><div class="kl">Ultima</div></div></div><div class="live-feed" id="liveFeed"><div class="nr">Nenhum acesso</div></div></div><div class="cd"><h3>WhatsApp</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn bwp" onclick="enviarWP()">Enviar</button><button class="btn bs" onclick="copiarRel()">Copiar</button></div></div></div>
 <div class="pnl" id="p-frequencia"><div class="cd"><h3>&#128202; Frequencia</h3><div class="fg" style="margin-bottom:12px"><div><div class="fl">De</div><input type="date" id="freqDe"></div><div><div class="fl">Ate</div><input type="date" id="freqAte"></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn bp" onclick="calcFreq()">Analisar</button><button class="btn bwp" onclick="freqWP()">WhatsApp</button><button class="btn bs" onclick="freqCSV()">CSV</button></div></div><div class="cd" id="freqResult" style="display:none"><div class="kpi-grid" id="freqKPIs"></div><div id="freqHoras"></div><div style="margin-top:16px"><h3 style="margin-bottom:10px">Ranking</h3><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Nome</th><th>Acessos</th><th>Ultimo</th><th></th></tr></thead><tbody id="freqRank"></tbody></table></div></div></div><div class="cd"><h3>Historico Individual</h3><input type="text" id="freqIndiv" placeholder="Nome..." oninput="buscarIndiv()"><div id="freqIndivR" style="margin-top:12px"></div></div></div>
 <div class="pnl" id="p-carteirinha"><div class="cd"><h3>&#127380; Gerar Acqua Card</h3><input type="text" id="inpCart" placeholder="Nome..." oninput="buscarCart()"><div id="cartList" style="margin-top:8px"></div></div><div class="cd" id="cartArea" style="display:none"><div id="cartRender" class="print-area" style="margin:20px 0"></div><div style="text-align:center;display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn bp" onclick="window.print()">&#128424; Imprimir</button><button class="btn bg" onclick="baixarCartImagem()">&#128229; Baixar Imagem</button><button class="btn bwp" onclick="enviarCartWP()">&#128242; Enviar no WhatsApp</button></div></div></div>
+<div class="pnl" id="p-vigencia"><div class="cd"><h3>📅 Controle de Vigência</h3><div class="alert-o">⏰ Associados com contrato vencido são <strong>automaticamente restritos</strong>. Contratos vencendo nos próximos 30 dias aparecem como alerta.</div><div class="kpi-grid" id="vigKPIs"></div></div><div class="cd" id="vigVencidos" style="display:none"><h3 style="color:#e53e3e">🔴 Contratos Vencidos — Restritos Automaticamente</h3><div id="vigVencidosList" style="margin-top:10px"></div></div><div class="cd" id="vigProximos" style="display:none"><h3 style="color:#dd6b20">🟡 Vencendo nos Próximos 30 Dias</h3><div id="vigProximosList" style="margin-top:10px"></div></div><div class="cd" id="vigAtivos" style="display:none"><h3 style="color:#38a169">🟢 Contratos em Dia</h3><div id="vigAtivosList" style="margin-top:10px"></div></div></div>
 <div class="pnl" id="p-backup"><div class="cd"><h3>&#128190; Backup & Nuvem</h3><div class="alert-g" id="cloudStatusMsg">Conectando...</div><div class="bkp-info" id="bkpInfo"></div><div style="margin-top:16px"><button class="btn bdr" onclick="exportarBackup()" style="width:100%;justify-content:center;padding:14px 20px;font-size:14px">Exportar Backup Local</button></div></div><div class="cd"><h3>&#128465; Apagar Acesso</h3><div class="alert-y">Justificativa obrigatoria (min 15 caracteres).</div><input type="text" id="delBuscaNome" placeholder="Buscar associado..." oninput="buscarAcessoParaDeletar()"><div id="delResultados" style="margin-top:12px"></div></div><div class="cd" id="delLogCard" style="display:none"><h3>Historico de Exclusoes</h3><div id="delLogList"></div></div></div>
 </div>
 </div>
@@ -177,7 +184,6 @@ td{padding:10px;border-bottom:1px solid #edf2f7}tr:hover td{background:#f7fafc}
 <div class="toast-box" id="toastBox"></div>
 
 <script>
-/* ===== LOGIN SYSTEM ===== */
 var SENHA_ACQUA='PARQUE3308';
 var autenticado=false;
 
@@ -186,33 +192,17 @@ function tentarLogin(){
     var erro=document.getElementById('loginErro');
     var box=document.querySelector('.login-box');
     if(inp.value===SENHA_ACQUA){
-        autenticado=true;
-        sessionStorage.setItem('acqua_auth','1');
+        autenticado=true;sessionStorage.setItem('acqua_auth','1');
         document.getElementById('loginScreen').classList.add('hidden');
-        document.getElementById('appContent').style.display='block';
-        erro.textContent='';
+        document.getElementById('appContent').style.display='block';erro.textContent='';
     }else{
-        erro.textContent='⚠️ Senha incorreta';
-        box.classList.add('login-shake');
-        inp.value='';
-        inp.focus();
-        setTimeout(function(){box.classList.remove('login-shake');},500);
+        erro.textContent='⚠️ Senha incorreta';box.classList.add('login-shake');
+        inp.value='';inp.focus();setTimeout(function(){box.classList.remove('login-shake');},500);
     }
 }
-
-function checarSessao(){
-    if(sessionStorage.getItem('acqua_auth')==='1'){
-        autenticado=true;
-        document.getElementById('loginScreen').classList.add('hidden');
-        document.getElementById('appContent').style.display='block';
-    }else{
-        document.getElementById('loginSenha').focus();
-    }
-}
-
+function checarSessao(){if(sessionStorage.getItem('acqua_auth')==='1'){autenticado=true;document.getElementById('loginScreen').classList.add('hidden');document.getElementById('appContent').style.display='block';}else{document.getElementById('loginSenha').focus();}}
 checarSessao();
 
-/* ===== APP ORIGINAL ===== */
 var WP_NUMERO='5565996210387',db=[],logAc=[],delLog=[],isOnline=false,fbOk=false;
 var FB_URL='https://aqcuacard-default-rtdb.firebaseio.com';
 function qrUrl(t,s){return'https://api.qrserver.com/v1/create-qr-code/?size='+s+'x'+s+'&data='+encodeURIComponent(t)+'&format=png&margin=4&color=0c4a6e&bgcolor=ffffff&ecc=H';}
@@ -236,13 +226,121 @@ function ehTelefone(v){var d=String(v||'').replace(/\D/g,'');return d.length>=10
 function gid(){return'AC'+Date.now().toString(36)+Math.random().toString(36).substr(2,4);}
 function find(id){for(var i=0;i<db.length;i++)if(db[i].id===id)return db[i];return null;}
 
+/* ===== VIGÊNCIA AUTOMÁTICA ===== */
+function parseDateBR(str){
+    if(!str)return null;
+    str=String(str).trim();
+    var m;
+    if((m=str.match(/^(\d{2})\/(\d{2})\/(\d{4})$/)))return new Date(parseInt(m[3]),parseInt(m[2])-1,parseInt(m[1]),23,59,59);
+    if((m=str.match(/^(\d{4})[-\/](\d{2})[-\/](\d{2})/)))return new Date(parseInt(m[1]),parseInt(m[2])-1,parseInt(m[3]),23,59,59);
+    return null;
+}
+
+function diasAteVencimento(a){
+    var d=parseDateBR(a.fim);
+    if(!d)return null;
+    var hj=new Date();hj.setHours(0,0,0,0);
+    var dt=new Date(d);dt.setHours(0,0,0,0);
+    return Math.ceil((dt-hj)/(1000*60*60*24));
+}
+
+function vigenciaBadge(a){
+    var dias=diasAteVencimento(a);
+    if(dias===null)return'<span class="bi">Sem data</span>';
+    if(dias<0)return'<span class="bvn">Vencido '+Math.abs(dias)+'d</span>';
+    if(dias===0)return'<span class="bvn">Vence hoje</span>';
+    if(dias<=30)return'<span class="bvc">'+dias+'d restantes</span>';
+    return'<span class="ba">'+dias+'d</span>';
+}
+
+var vigChecked={}; /* evita toast repetido por sessão */
+
+function verificarVigencias(){
+    var hj=new Date();hj.setHours(23,59,59,999);
+    var alterados=0;
+    for(var i=0;i<db.length;i++){
+        var a=db[i];
+        if(a.status!=='Ativo')continue;
+        var dtFim=parseDateBR(a.fim);
+        if(!dtFim)continue;
+        if(hj>dtFim){
+            a.status='Acesso Restrito';
+            fbSaveAssoc(a);
+            alterados++;
+            if(!vigChecked[a.id]){
+                vigChecked[a.id]=true;
+            }
+        }
+    }
+    if(alterados>0){
+        toast('⏰ '+alterados+' contrato'+(alterados>1?'s':'')+' vencido'+(alterados>1?'s':'')+' → Restrito'+(alterados>1?'s':''),'wr');
+    }
+    stats();
+    renderVigencia();
+}
+
+function renderVigencia(){
+    var vencidos=[],proximos=[],emDia=[],semData=0;
+    for(var i=0;i<db.length;i++){
+        var a=db[i];
+        var dias=diasAteVencimento(a);
+        if(dias===null){semData++;continue;}
+        if(dias<0)vencidos.push({a:a,dias:dias});
+        else if(dias<=30)proximos.push({a:a,dias:dias});
+        else emDia.push({a:a,dias:dias});
+    }
+    vencidos.sort(function(x,y){return x.dias-y.dias;});
+    proximos.sort(function(x,y){return x.dias-y.dias;});
+    emDia.sort(function(x,y){return x.dias-y.dias;});
+
+    /* KPIs */
+    document.getElementById('vigKPIs').innerHTML=
+        '<div class="kpi"><div class="kn" style="color:#e53e3e">'+vencidos.length+'</div><div class="kl">Vencidos</div></div>'+
+        '<div class="kpi"><div class="kn" style="color:#dd6b20">'+proximos.length+'</div><div class="kl">Vencendo 30d</div></div>'+
+        '<div class="kpi"><div class="kn" style="color:#38a169">'+emDia.length+'</div><div class="kl">Em dia</div></div>'+
+        '<div class="kpi"><div class="kn" style="color:#a0aec0">'+semData+'</div><div class="kl">Sem data</div></div>';
+
+    /* Header badge */
+    var vencendo=proximos.length;
+    var stV=document.getElementById('stVenc');
+    if(vencendo>0||vencidos.length>0){stV.style.display='';document.getElementById('sV').textContent=vencendo+vencidos.length;}
+    else{stV.style.display='none';}
+
+    /* Vencidos */
+    var vEl=document.getElementById('vigVencidos');
+    if(vencidos.length){
+        vEl.style.display='';
+        document.getElementById('vigVencidosList').innerHTML=vencidos.map(function(v){
+            return'<div class="venc-item"><div class="vi-days expired">'+Math.abs(v.dias)+'d atrás</div>'+fotoHTML(v.a.foto)+'<div style="flex:1"><strong>'+v.a.nome+'</strong><br><span style="font-size:10px;color:#718096">'+(v.a.emp||'—')+' · Fim: '+(v.a.fim||'—')+'</span></div>'+badge(v.a.status)+'<button class="sm" onclick="editar(\''+v.a.id+'\')">&#9998;</button></div>';
+        }).join('');
+    }else vEl.style.display='none';
+
+    /* Próximos */
+    var pEl=document.getElementById('vigProximos');
+    if(proximos.length){
+        pEl.style.display='';
+        document.getElementById('vigProximosList').innerHTML=proximos.map(function(v){
+            return'<div class="venc-item"><div class="vi-days soon">'+v.dias+'d</div>'+fotoHTML(v.a.foto)+'<div style="flex:1"><strong>'+v.a.nome+'</strong><br><span style="font-size:10px;color:#718096">'+(v.a.emp||'—')+' · Fim: '+(v.a.fim||'—')+'</span></div>'+badge(v.a.status)+'<button class="sm" onclick="editar(\''+v.a.id+'\')">&#9998;</button></div>';
+        }).join('');
+    }else pEl.style.display='none';
+
+    /* Em dia */
+    var aEl=document.getElementById('vigAtivos');
+    if(emDia.length){
+        aEl.style.display='';
+        document.getElementById('vigAtivosList').innerHTML=emDia.slice(0,50).map(function(v){
+            return'<div class="venc-item"><div class="vi-days ok">'+v.dias+'d</div>'+fotoHTML(v.a.foto)+'<div style="flex:1"><strong>'+v.a.nome+'</strong><br><span style="font-size:10px;color:#718096">'+(v.a.emp||'—')+' · Fim: '+(v.a.fim||'—')+'</span></div>'+badge(v.a.status)+'</div>';
+        }).join('')+(emDia.length>50?'<div class="nr">... e mais '+(emDia.length-50)+'</div>':'');
+    }else aEl.style.display='none';
+}
+
 function updateSyncUI(){var el=document.getElementById('syncStatus'),cm=document.getElementById('cloudStatusMsg');if(isOnline){el.innerHTML='<div class="sync-badge sync-on"><div class="sync-dot on"></div>SINCRONIZADO</div>';if(cm){cm.innerHTML='<strong>&#9989; Conectado!</strong> Dados sincronizados.';cm.className='alert-g';}}else{el.innerHTML='<div class="sync-badge sync-off"><div class="sync-dot off"></div>OFFLINE</div>';if(cm){cm.innerHTML='<strong>&#9888; Offline</strong>';cm.className='alert-y';}}}
 function fbGet(p,cb){var x=new XMLHttpRequest();x.open('GET',FB_URL+'/'+p+'.json',true);x.timeout=8000;x.onload=function(){if(x.status===200)try{cb(null,JSON.parse(x.responseText))}catch(e){cb(e)}else cb(new Error(x.status))};x.onerror=function(){cb(new Error('Net'))};x.ontimeout=function(){cb(new Error('T'))};x.send();}
 function fbPut(p,d,cb){var x=new XMLHttpRequest();x.open('PUT',FB_URL+'/'+p+'.json',true);x.setRequestHeader('Content-Type','application/json');x.timeout=8000;x.onload=function(){if(cb)cb(null)};x.onerror=function(){if(cb)cb(new Error('Net'))};x.send(JSON.stringify(d));}
 function fbPost(p,d,cb){var x=new XMLHttpRequest();x.open('POST',FB_URL+'/'+p+'.json',true);x.setRequestHeader('Content-Type','application/json');x.timeout=8000;x.onload=function(){if(cb)try{cb(null,JSON.parse(x.responseText))}catch(e){cb(e)}};x.onerror=function(){if(cb)cb(new Error('Net'))};x.send(JSON.stringify(d));}
 function fbDelete(p,cb){var x=new XMLHttpRequest();x.open('DELETE',FB_URL+'/'+p+'.json',true);x.timeout=8000;x.onload=function(){if(cb)cb(null)};x.onerror=function(){if(cb)cb(new Error('Net'))};x.send();}
-function carregarDados(){var done=0;function ck(){done++;if(done>=3){isOnline=true;fbOk=true;updateSyncUI();stats();atualizarFeed();}}fbGet('associados',function(e,d){if(!e&&d){db=[];for(var k in d){var a=d[k];a._fbKey=k;db.push(a);}stats();}ck();});fbGet('acessos',function(e,d){if(!e&&d){logAc=[];for(var k in d){var l=d[k];l._fbKey=k;logAc.push(l);}stats();atualizarFeed();}ck();});fbGet('exclusoes',function(e,d){if(!e&&d){delLog=[];for(var k in d)delLog.push(d[k]);renderDelLog();}ck();});}
-function startPolling(){setInterval(function(){fbGet('associados',function(e,d){if(!e&&d){db=[];for(var k in d){var a=d[k];a._fbKey=k;db.push(a);}stats();isOnline=true;updateSyncUI();}else{isOnline=false;updateSyncUI();}});fbGet('acessos',function(e,d){if(!e&&d){logAc=[];for(var k in d){var l=d[k];l._fbKey=k;logAc.push(l);}stats();atualizarFeed();}});fbGet('exclusoes',function(e,d){if(!e&&d){delLog=[];for(var k in d)delLog.push(d[k]);renderDelLog();}});},10000);}
+function carregarDados(){var done=0;function ck(){done++;if(done>=3){isOnline=true;fbOk=true;updateSyncUI();stats();atualizarFeed();verificarVigencias();}}fbGet('associados',function(e,d){if(!e&&d){db=[];for(var k in d){var a=d[k];a._fbKey=k;db.push(a);}stats();}ck();});fbGet('acessos',function(e,d){if(!e&&d){logAc=[];for(var k in d){var l=d[k];l._fbKey=k;logAc.push(l);}stats();atualizarFeed();}ck();});fbGet('exclusoes',function(e,d){if(!e&&d){delLog=[];for(var k in d)delLog.push(d[k]);renderDelLog();}ck();});}
+function startPolling(){setInterval(function(){fbGet('associados',function(e,d){if(!e&&d){db=[];for(var k in d){var a=d[k];a._fbKey=k;db.push(a);}stats();isOnline=true;updateSyncUI();verificarVigencias();}else{isOnline=false;updateSyncUI();}});fbGet('acessos',function(e,d){if(!e&&d){logAc=[];for(var k in d){var l=d[k];l._fbKey=k;logAc.push(l);}stats();atualizarFeed();}});fbGet('exclusoes',function(e,d){if(!e&&d){delLog=[];for(var k in d)delLog.push(d[k]);renderDelLog();}});},10000);}
 function fbSaveAssoc(a){var o={};for(var k in a)if(k!=='_fbKey')o[k]=a[k];if(a._fbKey)fbPut('associados/'+a._fbKey,o);else{fbPost('associados',o,function(e,r){if(!e&&r&&r.name)a._fbKey=r.name;});db.push(a);}stats();}
 function fbRemoveAssoc(a){if(a._fbKey)fbDelete('associados/'+a._fbKey);db=db.filter(function(x){return x.id!==a.id;});stats();}
 function fbSaveLog(l){var o={};for(var k in l)if(k!=='_fbKey')o[k]=l[k];fbPost('acessos',o,function(e,r){if(!e&&r&&r.name)l._fbKey=r.name;});logAc.push(l);stats();atualizarFeed();}
@@ -254,18 +352,18 @@ function previewFotoCad(inp){if(!inp.files||!inp.files[0])return;var rd=new File
 var editFotoData=null;
 function previewFotoEdit(inp){if(!inp.files||!inp.files[0])return;var rd=new FileReader();rd.onload=function(ev){editFotoData=ev.target.result;var el=document.getElementById('eFotoImg');if(el&&el.tagName==='IMG')el.src=editFotoData;else if(el)el.outerHTML='<img src="'+editFotoData+'" style="width:80px;height:80px;border-radius:10px;object-fit:cover" id="eFotoImg">';};rd.readAsDataURL(inp.files[0]);}
 var filtSt='todos';
-document.querySelectorAll('.tb').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.tb').forEach(function(x){x.classList.remove('act');});document.querySelectorAll('.pnl').forEach(function(p){p.classList.remove('act');});b.classList.add('act');document.getElementById('p-'+b.getAttribute('data-t')).classList.add('act');if(b.getAttribute('data-t')==='todos')renderTodos();if(b.getAttribute('data-t')==='acesso')atualizarFeed();if(b.getAttribute('data-t')==='backup')atualizarBackupInfo();pararCameraAcesso();});});
+document.querySelectorAll('.tb').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.tb').forEach(function(x){x.classList.remove('act');});document.querySelectorAll('.pnl').forEach(function(p){p.classList.remove('act');});b.classList.add('act');document.getElementById('p-'+b.getAttribute('data-t')).classList.add('act');if(b.getAttribute('data-t')==='todos')renderTodos();if(b.getAttribute('data-t')==='acesso')atualizarFeed();if(b.getAttribute('data-t')==='backup')atualizarBackupInfo();if(b.getAttribute('data-t')==='vigencia')renderVigencia();pararCameraAcesso();});});
 document.querySelectorAll('.fchip').forEach(function(c){c.addEventListener('click',function(){document.querySelectorAll('.fchip').forEach(function(x){x.classList.remove('act');});c.classList.add('act');filtSt=c.getAttribute('data-f');renderTodos();});});
-function buscar(){var q=document.getElementById('inpBusca').value.trim().toLowerCase(),tb=document.getElementById('tbBusca');if(!q){tb.innerHTML='<tr><td colspan="6"><div class="nr">Digite algo</div></td></tr>';return;}var r=db.filter(function(a){return a.nome.toLowerCase().indexOf(q)>=0||(a.cpf||'').indexOf(q)>=0||(a.emp||'').toLowerCase().indexOf(q)>=0;});if(!r.length){tb.innerHTML='<tr><td colspan="6"><div class="nr">Nenhum</div></td></tr>';return;}tb.innerHTML=r.map(function(a){return'<tr><td>'+fotoHTML(a.foto)+'</td><td><strong>'+a.nome+'</strong></td><td style="font-size:10px">'+(a.cpf||'-')+'</td><td>'+empB(a.emp)+'</td><td>'+badge(a.status)+'</td><td><button class="sm" onclick="ver(\''+a.id+'\')">&#128065;</button><button class="sm" onclick="editar(\''+a.id+'\')">&#9998;</button><button class="sm" onclick="gerarCart(\''+a.id+'\')">&#127380;</button><button class="sm" onclick="excluir(\''+a.id+'\')">&#128465;</button></td></tr>';}).join('');}
+function buscar(){var q=document.getElementById('inpBusca').value.trim().toLowerCase(),tb=document.getElementById('tbBusca');if(!q){tb.innerHTML='<tr><td colspan="7"><div class="nr">Digite algo</div></td></tr>';return;}var r=db.filter(function(a){return a.nome.toLowerCase().indexOf(q)>=0||(a.cpf||'').indexOf(q)>=0||(a.emp||'').toLowerCase().indexOf(q)>=0;});if(!r.length){tb.innerHTML='<tr><td colspan="7"><div class="nr">Nenhum</div></td></tr>';return;}tb.innerHTML=r.map(function(a){return'<tr><td>'+fotoHTML(a.foto)+'</td><td><strong>'+a.nome+'</strong></td><td style="font-size:10px">'+(a.cpf||'-')+'</td><td>'+empB(a.emp)+'</td><td>'+vigenciaBadge(a)+'</td><td>'+badge(a.status)+'</td><td><button class="sm" onclick="ver(\''+a.id+'\')">&#128065;</button><button class="sm" onclick="editar(\''+a.id+'\')">&#9998;</button><button class="sm" onclick="gerarCart(\''+a.id+'\')">&#127380;</button><button class="sm" onclick="excluir(\''+a.id+'\')">&#128465;</button></td></tr>';}).join('');}
 function cadastrar(){var n=document.getElementById('cNome').value.trim();if(!n){toast('Nome!','er');return;}fbSaveAssoc({id:gid(),nome:n.toUpperCase(),cpf:document.getElementById('cCPF').value.trim(),tel:document.getElementById('cTel').value.trim(),emp:document.getElementById('cEmp').value.trim().toUpperCase(),titulo:document.getElementById('cTitulo').value.trim(),ini:document.getElementById('cIni').value.trim(),fim:document.getElementById('cVenc').value.trim(),status:document.getElementById('cSt').value,foto:cadFotoData||'',dt:hoje()});cadFotoData='';['cNome','cCPF','cTel','cEmp','cTitulo','cIni','cVenc'].forEach(function(id){document.getElementById(id).value='';});var ph=document.getElementById('cFotoImg');if(ph)ph.outerHTML='<div style="width:64px;height:64px;border-radius:8px;background:#edf2f7;display:flex;align-items:center;justify-content:center;font-size:28px;color:#a0aec0" id="cFotoPh">&#128100;</div>';toast('Cadastrado!');}
-function renderTodos(){var tb=document.getElementById('tbTodos'),f=(document.getElementById('inpFiltro').value||'').toLowerCase();var L=db.filter(function(a){if(filtSt!=='todos'&&a.status!==filtSt)return false;if(f&&a.nome.toLowerCase().indexOf(f)<0&&(a.emp||'').toLowerCase().indexOf(f)<0)return false;return true;});if(!L.length){tb.innerHTML='<tr><td colspan="6"><div class="nr">Nenhum</div></td></tr>';return;}tb.innerHTML=L.map(function(a){return'<tr'+(a.status==='Acesso Restrito'?' style="background:#fff5f5"':'')+'><td>'+fotoHTML(a.foto)+'</td><td><strong>'+a.nome+'</strong></td><td style="font-size:10px">'+(a.cpf||'-')+'</td><td>'+empB(a.emp)+'</td><td>'+badge(a.status)+'</td><td><button class="sm" onclick="ver(\''+a.id+'\')">&#128065;</button><button class="sm" onclick="editar(\''+a.id+'\')">&#9998;</button><button class="sm" onclick="addFoto(\''+a.id+'\')">&#128247;</button><button class="sm" onclick="gerarCart(\''+a.id+'\')">&#127380;</button><button class="sm" onclick="excluir(\''+a.id+'\')">&#128465;</button></td></tr>';}).join('');}
+function renderTodos(){var tb=document.getElementById('tbTodos'),f=(document.getElementById('inpFiltro').value||'').toLowerCase();var L=db.filter(function(a){if(filtSt==='vencendo'){var d=diasAteVencimento(a);return d!==null&&d<=30;}if(filtSt!=='todos'&&a.status!==filtSt)return false;if(f&&a.nome.toLowerCase().indexOf(f)<0&&(a.emp||'').toLowerCase().indexOf(f)<0)return false;return true;});if(!L.length){tb.innerHTML='<tr><td colspan="7"><div class="nr">Nenhum</div></td></tr>';return;}tb.innerHTML=L.map(function(a){return'<tr'+(a.status==='Acesso Restrito'?' style="background:#fff5f5"':'')+'><td>'+fotoHTML(a.foto)+'</td><td><strong>'+a.nome+'</strong></td><td style="font-size:10px">'+(a.cpf||'-')+'</td><td>'+empB(a.emp)+'</td><td>'+vigenciaBadge(a)+'</td><td>'+badge(a.status)+'</td><td><button class="sm" onclick="ver(\''+a.id+'\')">&#128065;</button><button class="sm" onclick="editar(\''+a.id+'\')">&#9998;</button><button class="sm" onclick="addFoto(\''+a.id+'\')">&#128247;</button><button class="sm" onclick="gerarCart(\''+a.id+'\')">&#127380;</button><button class="sm" onclick="excluir(\''+a.id+'\')">&#128465;</button></td></tr>';}).join('');}
 function addFoto(id){var inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.onchange=function(){if(!inp.files[0])return;var rd=new FileReader();rd.onload=function(ev){var a=find(id);if(a){a.foto=ev.target.result;fbSaveAssoc(a);renderTodos();toast('Foto ok!');}};rd.readAsDataURL(inp.files[0]);};inp.click();}
-function ver(id){var a=find(id);if(!a)return;var tAc=logAc.filter(function(l){return l.aid===a.id&&l.tp==='ok';}).length;var hAc=logAc.filter(function(l){return l.aid===a.id&&l.tp==='ok'&&l.dt===hoje();}).length;document.getElementById('mTit').textContent=a.nome;document.getElementById('mBody').innerHTML='<div style="text-align:center;margin-bottom:14px">'+(a.foto?'<img src="'+a.foto+'" style="width:100px;height:100px;border-radius:12px;object-fit:cover">':'<div style="width:100px;height:100px;border-radius:12px;background:#edf2f7;display:inline-flex;align-items:center;justify-content:center;font-size:42px;color:#a0aec0">&#128100;</div>')+'</div>'+(a.status==='Acesso Restrito'?'<div class="alert-r">ACESSO RESTRITO</div>':'')+[['CPF',a.cpf||'-'],['Telefone',a.tel||'-'],['Empresa',a.emp||'-'],['Titulo',a.titulo||'-'],['Entrada',a.ini||'-'],['Fim Contrato',a.fim||'-'],['Status',a.status],['Acessos Total',''+tAc],['Acessos Hoje',''+hAc]].map(function(p){return'<div class="dr"><span style="color:#718096;font-weight:600">'+p[0]+'</span><span>'+p[1]+'</span></div>';}).join('');document.getElementById('modalBg').classList.add('act');}
-function editar(id){var a=find(id);if(!a)return;editFotoData=null;document.getElementById('mTit').textContent='Editar - '+a.nome;document.getElementById('mBody').innerHTML='<div style="text-align:center;margin-bottom:14px"><div class="foto-upload" onclick="document.getElementById(\'eFoto\').click()" style="justify-content:center;flex-direction:column;align-items:center;padding:14px">'+(a.foto?'<img src="'+a.foto+'" style="width:80px;height:80px;border-radius:10px;object-fit:cover" id="eFotoImg">':'<div style="width:80px;height:80px;border-radius:8px;background:#edf2f7;display:flex;align-items:center;justify-content:center;font-size:36px;color:#a0aec0" id="eFotoImg">&#128100;</div>')+'<div style="font-size:12px;color:#718096;margin-top:6px"><strong>Clique para '+(a.foto?'trocar':'adicionar')+' foto</strong></div></div><input type="file" id="eFoto" accept="image/*" style="display:none" onchange="previewFotoEdit(this)"></div><div class="fg"><div class="full"><div class="fl">Nome</div><input type="text" id="eN" value="'+a.nome+'"></div><div><div class="fl">CPF</div><input type="text" id="eC" value="'+(a.cpf||'')+'"></div><div><div class="fl">Telefone</div><input type="text" id="eT" value="'+(a.tel||'')+'"></div><div><div class="fl">Empresa</div><input type="text" id="eE" value="'+(a.emp||'')+'"></div><div><div class="fl">Titulo</div><input type="text" id="eTi" value="'+(a.titulo||'')+'"></div><div><div class="fl">Entrada</div><input type="text" id="eI" value="'+(a.ini||'')+'"></div><div><div class="fl">Fim</div><input type="text" id="eF" value="'+(a.fim||'')+'"></div><div><div class="fl">Status</div><select id="eS"><option value="Ativo"'+(a.status==='Ativo'?' selected':'')+'>Ativo</option><option value="Acesso Restrito"'+(a.status==='Acesso Restrito'?' selected':'')+'>Restrito</option></select></div></div><div style="margin-top:14px;text-align:right"><button class="btn bg" onclick="salvarEd(\''+id+'\')">Salvar</button></div>';document.getElementById('modalBg').classList.add('act');}
-function salvarEd(id){var a=find(id);if(!a)return;a.nome=document.getElementById('eN').value.trim().toUpperCase();a.cpf=document.getElementById('eC').value.trim();a.tel=document.getElementById('eT').value.trim();a.emp=document.getElementById('eE').value.trim().toUpperCase();a.titulo=document.getElementById('eTi').value.trim();a.ini=document.getElementById('eI').value.trim();a.fim=document.getElementById('eF').value.trim();a.status=document.getElementById('eS').value;if(editFotoData!==null)a.foto=editFotoData;editFotoData=null;fbSaveAssoc(a);fecharModal();toast('Salvo!');}
+function ver(id){var a=find(id);if(!a)return;var tAc=logAc.filter(function(l){return l.aid===a.id&&l.tp==='ok';}).length;var hAc=logAc.filter(function(l){return l.aid===a.id&&l.tp==='ok'&&l.dt===hoje();}).length;var dias=diasAteVencimento(a);var vigInfo=dias===null?'Sem data definida':dias<0?'⚠️ Vencido há '+Math.abs(dias)+' dias':dias===0?'⚠️ Vence HOJE':dias<=30?'⏰ Vence em '+dias+' dias':'✅ '+dias+' dias restantes';document.getElementById('mTit').textContent=a.nome;document.getElementById('mBody').innerHTML='<div style="text-align:center;margin-bottom:14px">'+(a.foto?'<img src="'+a.foto+'" style="width:100px;height:100px;border-radius:12px;object-fit:cover">':'<div style="width:100px;height:100px;border-radius:12px;background:#edf2f7;display:inline-flex;align-items:center;justify-content:center;font-size:42px;color:#a0aec0">&#128100;</div>')+'</div>'+(a.status==='Acesso Restrito'?'<div class="alert-r">ACESSO RESTRITO</div>':'')+[['CPF',a.cpf||'-'],['Telefone',a.tel||'-'],['Empresa',a.emp||'-'],['Titulo',a.titulo||'-'],['Entrada',a.ini||'-'],['Fim Contrato',a.fim||'-'],['Vigência',vigInfo],['Status',a.status],['Acessos Total',''+tAc],['Acessos Hoje',''+hAc]].map(function(p){return'<div class="dr"><span style="color:#718096;font-weight:600">'+p[0]+'</span><span>'+p[1]+'</span></div>';}).join('');document.getElementById('modalBg').classList.add('act');}
+function editar(id){var a=find(id);if(!a)return;editFotoData=null;document.getElementById('mTit').textContent='Editar - '+a.nome;document.getElementById('mBody').innerHTML='<div style="text-align:center;margin-bottom:14px"><div class="foto-upload" onclick="document.getElementById(\'eFoto\').click()" style="justify-content:center;flex-direction:column;align-items:center;padding:14px">'+(a.foto?'<img src="'+a.foto+'" style="width:80px;height:80px;border-radius:10px;object-fit:cover" id="eFotoImg">':'<div style="width:80px;height:80px;border-radius:8px;background:#edf2f7;display:flex;align-items:center;justify-content:center;font-size:36px;color:#a0aec0" id="eFotoImg">&#128100;</div>')+'<div style="font-size:12px;color:#718096;margin-top:6px"><strong>Clique para '+(a.foto?'trocar':'adicionar')+' foto</strong></div></div><input type="file" id="eFoto" accept="image/*" style="display:none" onchange="previewFotoEdit(this)"></div><div class="fg"><div class="full"><div class="fl">Nome</div><input type="text" id="eN" value="'+a.nome+'"></div><div><div class="fl">CPF</div><input type="text" id="eC" value="'+(a.cpf||'')+'"></div><div><div class="fl">Telefone</div><input type="text" id="eT" value="'+(a.tel||'')+'"></div><div><div class="fl">Empresa</div><input type="text" id="eE" value="'+(a.emp||'')+'"></div><div><div class="fl">Titulo</div><input type="text" id="eTi" value="'+(a.titulo||'')+'"></div><div><div class="fl">Entrada</div><input type="text" id="eI" value="'+(a.ini||'')+'"></div><div><div class="fl">Fim Contrato</div><input type="text" id="eF" value="'+(a.fim||'')+'"></div><div><div class="fl">Status</div><select id="eS"><option value="Ativo"'+(a.status==='Ativo'?' selected':'')+'>Ativo</option><option value="Acesso Restrito"'+(a.status==='Acesso Restrito'?' selected':'')+'>Restrito</option></select></div></div><div class="alert-o" style="margin-top:12px">⏰ Se alterar a data de Fim para uma data futura e marcar como Ativo, o contrato será renovado.</div><div style="margin-top:14px;text-align:right"><button class="btn bg" onclick="salvarEd(\''+id+'\')">Salvar</button></div>';document.getElementById('modalBg').classList.add('act');}
+function salvarEd(id){var a=find(id);if(!a)return;a.nome=document.getElementById('eN').value.trim().toUpperCase();a.cpf=document.getElementById('eC').value.trim();a.tel=document.getElementById('eT').value.trim();a.emp=document.getElementById('eE').value.trim().toUpperCase();a.titulo=document.getElementById('eTi').value.trim();a.ini=document.getElementById('eI').value.trim();a.fim=document.getElementById('eF').value.trim();a.status=document.getElementById('eS').value;if(editFotoData!==null)a.foto=editFotoData;editFotoData=null;fbSaveAssoc(a);fecharModal();toast('Salvo!');verificarVigencias();}
 function excluir(id){if(!confirm('Excluir?'))return;var a=find(id);if(a)fbRemoveAssoc(a);renderTodos();toast('Excluido','in');}
 function fecharModal(){document.getElementById('modalBg').classList.remove('act');editFotoData=null;}
-function exportCSV(){var c='\uFEFF"Nome";"CPF";"Empresa";"Titulo";"Status"\n';db.forEach(function(a){c+='"'+a.nome+'";"'+(a.cpf||'')+'";"'+(a.emp||'')+'";"'+(a.titulo||'')+'";"'+a.status+'"\n';});var b=new Blob([c],{type:'text/csv;charset=utf-8;'});var l=document.createElement('a');l.href=URL.createObjectURL(b);l.download='associados.csv';l.click();}
+function exportCSV(){var c='\uFEFF"Nome";"CPF";"Empresa";"Titulo";"Fim";"Status"\n';db.forEach(function(a){c+='"'+a.nome+'";"'+(a.cpf||'')+'";"'+(a.emp||'')+'";"'+(a.titulo||'')+'";"'+(a.fim||'')+'";"'+a.status+'"\n';});var b=new Blob([c],{type:'text/csv;charset=utf-8;'});var l=document.createElement('a');l.href=URL.createObjectURL(b);l.download='associados.csv';l.click();}
 var pendImp=[];var dz=document.getElementById('dropZone');if(dz){dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('drag');});dz.addEventListener('dragleave',function(){dz.classList.remove('drag');});dz.addEventListener('drop',function(e){e.preventDefault();dz.classList.remove('drag');if(e.dataTransfer.files.length)procArq(e.dataTransfer.files[0]);});}
 function handleFile(inp){if(inp.files&&inp.files[0])procArq(inp.files[0]);}
 function procArq(file){var ext=file.name.split('.').pop().toLowerCase();if(ext==='csv'||ext==='txt'){var r=new FileReader();r.onload=function(e){procCSV(e.target.result);};r.readAsText(file,'UTF-8');}else if(ext==='xls'||ext==='xlsx'){if(typeof XLSX!=='undefined')readXLS(file);else{var sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';sc.onload=function(){readXLS(file);};document.head.appendChild(sc);}}else toast('Formato invalido','er');}
@@ -273,11 +371,11 @@ function readXLS(file){var r=new FileReader();r.onload=function(e){try{var wb=XL
 function processarTexto(){var t=document.getElementById('txtImport').value.trim();if(!t){toast('Cole dados','er');return;}procCSV(t);}
 function procCSV(raw){var sep='\t';if(raw.indexOf('\t')<0)sep=raw.indexOf(';')>=0?';':',';procAOA(raw.split(/\r?\n/).map(function(l){return l.split(sep).map(function(c){return c.trim().replace(/^["']+|["']+$/g,'');});}));}
 function procAOA(aoa){aoa=aoa.filter(function(row){return row.some(function(c){return String(c||'').trim()!=='';});});if(aoa.length<1){toast('Sem dados','er');return;}var maxCols=0;aoa.forEach(function(r){if(r.length>maxCols)maxCols=r.length;});var colScores=[];for(var c=0;c<maxCols;c++){var sc=0;for(var r=0;r<aoa.length;r++)if(ehNomePessoa(String(aoa[r][c]||'')))sc++;colScores.push(sc);}var colNome=-1,melhor=0;for(var c=0;c<colScores.length;c++)if(colScores[c]>melhor){melhor=colScores[c];colNome=c;}if(colNome<0){toast('Nenhum nome','er');return;}pendImp=[];var nv=0,dp=0;for(var r=0;r<aoa.length;r++){var nome=String(aoa[r][colNome]||'').trim().toUpperCase();if(!ehNomePessoa(nome))continue;var cpf='',tel='',d1='',d2='';for(var c=0;c<aoa[r].length;c++){if(c===colNome)continue;var val=String(aoa[r][c]||'').trim();if(!val)continue;if(!cpf&&ehCPF(val))cpf=fmtCPF(val);else if(ehData(val)){if(!d1)d1=fmtDt(val);else if(!d2)d2=fmtDt(val);}else if(!tel&&ehTelefone(val))tel=val;}var isDup=false;for(var j=0;j<db.length;j++)if(db[j].nome===nome||(cpf&&limCPF(cpf).length===11&&limCPF(db[j].cpf)===limCPF(cpf))){isDup=true;break;}pendImp.push({nome:nome,cpf:cpf,tel:tel,ini:d1,fim:d2,status:'Ativo',isDup:isDup});if(isDup)dp++;else nv++;}if(!pendImp.length){toast('Nenhum nome','er');return;}document.getElementById('impDetected').innerHTML='<strong>'+pendImp.length+' encontrados</strong>';document.getElementById('impStats').innerHTML='<div class="imp-stat" style="background:#f0fff4;color:#22543d"><div class="isn">'+nv+'</div><div class="isl">Novos</div></div><div class="imp-stat" style="background:#fffff0;color:#744210"><div class="isn">'+dp+'</div><div class="isl">Dup</div></div>';document.getElementById('impTable').innerHTML='<table><thead><tr><th>#</th><th>Nome</th><th>CPF</th><th></th></tr></thead><tbody>'+pendImp.map(function(p,i){return'<tr class="'+(p.isDup?'imp-row-dup':'imp-row-ok')+'"><td>'+(i+1)+'</td><td><strong>'+p.nome+'</strong></td><td>'+(p.cpf||'-')+'</td><td>'+(p.isDup?'<span class="brs">Dup</span>':'<span class="ba">Novo</span>')+'</td></tr>';}).join('')+'</tbody></table>';document.getElementById('impPreview').style.display='block';}
-function confirmarImport(){var c=0;pendImp.forEach(function(p){if(p.isDup)return;fbSaveAssoc({id:gid(),nome:p.nome,cpf:p.cpf,tel:p.tel||'',emp:'',titulo:'',ini:p.ini||'',fim:p.fim||'',status:'Ativo',foto:'',dt:hoje()});c++;});pendImp=[];document.getElementById('impPreview').style.display='none';document.getElementById('debugCard').style.display='none';toast(c+' importados!');}
+function confirmarImport(){var c=0;pendImp.forEach(function(p){if(p.isDup)return;fbSaveAssoc({id:gid(),nome:p.nome,cpf:p.cpf,tel:p.tel||'',emp:'',titulo:'',ini:p.ini||'',fim:p.fim||'',status:'Ativo',foto:'',dt:hoje()});c++;});pendImp=[];document.getElementById('impPreview').style.display='none';document.getElementById('debugCard').style.display='none';toast(c+' importados!');setTimeout(verificarVigencias,1000);}
 function cancelarImport(){pendImp=[];document.getElementById('impPreview').style.display='none';document.getElementById('debugCard').style.display='none';}
 function regAcesso(a){var ok=a.status==='Ativo';fbSaveLog({id:'L'+Date.now(),aid:a.id,nome:a.nome,emp:a.emp||'',tp:ok?'ok':'bl',dt:hoje(),hr:agora(),di:hojeISO(),ts:Date.now()});}
 function resolverAssociado(v){var a=null;if(v.indexOf('ACQUACARD|')===0){var p=v.split('|');a=find(p[1]);if(!a)for(var i=0;i<db.length;i++)if(db[i].nome===p[2]){a=db[i];break;}}if(!a){var q=v.toUpperCase();for(var i=0;i<db.length;i++)if(db[i].nome.indexOf(q)>=0){a=db[i];break;}}return a;}
-function processarAcesso(){var v=document.getElementById('inpAcesso').value.trim();if(!v){toast('Digite','er');return;}var a=resolverAssociado(v),box=document.getElementById('acessoResult');box.style.display='block';if(!a){box.className='cd acesso-ng';box.innerHTML='<div style="text-align:center;padding:20px"><div style="font-size:50px">&#10060;</div><div style="font-size:18px;font-weight:900;color:#e53e3e">NAO ENCONTRADO</div></div>';document.getElementById('inpAcesso').value='';setTimeout(function(){box.style.display='none';},3000);return;}regAcesso(a);var ok=a.status==='Ativo';box.className='cd '+(ok?'acesso-ok':'acesso-ng');box.innerHTML='<div style="text-align:center;padding:20px">'+(a.foto?'<img src="'+a.foto+'" style="width:90px;height:90px;border-radius:50%;object-fit:cover;margin-bottom:10px;border:4px solid '+(ok?'#68d391':'#fc8181')+'"><br>':'')+'<div style="font-size:60px">'+(ok?'&#9989;':'&#9940;')+'</div><div style="font-size:24px;font-weight:900;color:'+(ok?'#22543d':'#c53030')+'">'+(ok?'LIBERADO':'BLOQUEADO')+'</div><div style="font-size:20px;font-weight:700;margin-top:8px">'+a.nome+'</div></div>';document.getElementById('inpAcesso').value='';pararCameraAcesso();setTimeout(function(){box.style.display='none';},4000);}
+function processarAcesso(){var v=document.getElementById('inpAcesso').value.trim();if(!v){toast('Digite','er');return;}var a=resolverAssociado(v),box=document.getElementById('acessoResult');box.style.display='block';if(!a){box.className='cd acesso-ng';box.innerHTML='<div style="text-align:center;padding:20px"><div style="font-size:50px">&#10060;</div><div style="font-size:18px;font-weight:900;color:#e53e3e">NAO ENCONTRADO</div></div>';document.getElementById('inpAcesso').value='';setTimeout(function(){box.style.display='none';},3000);return;}regAcesso(a);var ok=a.status==='Ativo';var dias=diasAteVencimento(a);var vigMsg='';if(ok&&dias!==null&&dias<=30&&dias>=0)vigMsg='<div style="background:#fffff0;border:1px solid #f6e05e;border-radius:8px;padding:8px;margin-top:10px;font-size:12px;color:#744210">⏰ Contrato vence em <strong>'+dias+' dia'+(dias!==1?'s':'')+'</strong></div>';box.className='cd '+(ok?'acesso-ok':'acesso-ng');box.innerHTML='<div style="text-align:center;padding:20px">'+(a.foto?'<img src="'+a.foto+'" style="width:90px;height:90px;border-radius:50%;object-fit:cover;margin-bottom:10px;border:4px solid '+(ok?'#68d391':'#fc8181')+'"><br>':'')+'<div style="font-size:60px">'+(ok?'&#9989;':'&#9940;')+'</div><div style="font-size:24px;font-weight:900;color:'+(ok?'#22543d':'#c53030')+'">'+(ok?'LIBERADO':'BLOQUEADO')+'</div><div style="font-size:20px;font-weight:700;margin-top:8px">'+a.nome+'</div>'+(!ok&&dias!==null&&dias<0?'<div style="font-size:12px;color:#c53030;margin-top:6px">Contrato vencido há '+Math.abs(dias)+' dias</div>':'')+vigMsg+'</div>';document.getElementById('inpAcesso').value='';pararCameraAcesso();setTimeout(function(){box.style.display='none';},4000);}
 function registroManual(){var opts=db.filter(function(a){return a.status==='Ativo';}).map(function(a){return'<option value="'+a.id+'">'+a.nome+'</option>';}).join('');document.getElementById('mTit').textContent='Registro Manual';document.getElementById('mBody').innerHTML='<select id="selMan"><option>Escolha...</option>'+opts+'</select><div style="margin-top:14px;text-align:right"><button class="btn bg" onclick="confMan()">Registrar</button></div>';document.getElementById('modalBg').classList.add('act');}
 function confMan(){var id=document.getElementById('selMan').value;var a=find(id);if(!a){toast('Selecione','er');return;}regAcesso(a);fecharModal();toast(a.nome+' - entrada!');}
 var acStream=null,acScan=false;
@@ -309,49 +407,9 @@ function renderDelLog(){var card=document.getElementById('delLogCard');if(!delLo
 var cartAssocAtual=null;
 function buscarCart(){var q=document.getElementById('inpCart').value.trim().toLowerCase(),box=document.getElementById('cartList');if(!q){box.innerHTML='';return;}box.innerHTML=db.filter(function(a){return a.nome.toLowerCase().indexOf(q)>=0;}).slice(0,8).map(function(a){return'<div style="padding:8px;border-bottom:1px solid #edf2f7;cursor:pointer;display:flex;align-items:center;gap:8px" onclick="gerarCart(\''+a.id+'\')">'+fotoHTML(a.foto)+'<strong>'+a.nome+'</strong> '+badge(a.status)+'</div>';}).join('');}
 
-function renderFotoCanvas(fotoSrc,containerEl){
-var img=new Image();
-img.crossOrigin='anonymous';
-img.onload=function(){
-var boxW=118,boxH=138;
-var canvas=document.createElement('canvas');
-canvas.width=boxW*2;canvas.height=boxH*2;
-canvas.style.cssText='display:block;width:100%;height:100%;border-radius:7px';
-var ctx=canvas.getContext('2d');
-var imgRatio=img.width/img.height;
-var boxRatio=boxW/boxH;
-var sx=0,sy=0,sw=img.width,sh=img.height;
-if(imgRatio>boxRatio){
-sw=img.height*boxRatio;
-sx=(img.width-sw)/2;
-}else{
-sh=img.width/boxRatio;
-sy=(img.height-sh)*0.25;
-}
-ctx.drawImage(img,sx,sy,sw,sh,0,0,canvas.width,canvas.height);
-containerEl.innerHTML='';
-containerEl.appendChild(canvas);
-};
-img.onerror=function(){containerEl.innerHTML='<div class="ph">&#128100;</div>';};
-img.src=fotoSrc;
-}
+function renderFotoCanvas(fotoSrc,containerEl){var img=new Image();img.crossOrigin='anonymous';img.onload=function(){var boxW=118,boxH=138;var canvas=document.createElement('canvas');canvas.width=boxW*2;canvas.height=boxH*2;canvas.style.cssText='display:block;width:100%;height:100%;border-radius:7px';var ctx=canvas.getContext('2d');var imgRatio=img.width/img.height;var boxRatio=boxW/boxH;var sx=0,sy=0,sw=img.width,sh=img.height;if(imgRatio>boxRatio){sw=img.height*boxRatio;sx=(img.width-sw)/2;}else{sh=img.width/boxRatio;sy=(img.height-sh)*0.25;}ctx.drawImage(img,sx,sy,sw,sh,0,0,canvas.width,canvas.height);containerEl.innerHTML='';containerEl.appendChild(canvas);};img.onerror=function(){containerEl.innerHTML='<div class="ph">&#128100;</div>';};img.src=fotoSrc;}
 
-function gerarCart(id){
-var a=find(id);if(!a)return;cartAssocAtual=a;
-document.querySelectorAll('.tb').forEach(function(b){b.classList.remove('act');});
-document.querySelectorAll('.pnl').forEach(function(p){p.classList.remove('act');});
-document.querySelectorAll('.tb')[6].classList.add('act');
-document.getElementById('p-carteirinha').classList.add('act');
-document.getElementById('cartArea').style.display='block';
-var isR=a.status==='Acesso Restrito';
-var r=isR?'<div class="rst-ov"></div><div class="rst-tag">RESTRITO</div>':'';
-var q=qrUrl('ACQUACARD|'+a.id+'|'+a.nome,200);
-var e=a.emp?'<div class="emp-tag">'+a.emp+'</div>':'';
-var w='<svg class="waves-svg" viewBox="0 0 540 200" preserveAspectRatio="none"><defs><linearGradient id="w1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#bae6fd" stop-opacity=".35"/><stop offset="100%" stop-color="#0284c7" stop-opacity=".35"/></linearGradient><linearGradient id="w2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7dd3fc" stop-opacity=".55"/><stop offset="100%" stop-color="#0369a1" stop-opacity=".65"/></linearGradient><linearGradient id="w3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0891b2" stop-opacity=".75"/><stop offset="100%" stop-color="#0c4a6e" stop-opacity=".92"/></linearGradient></defs><path d="M0,80 C50,50 110,100 180,65 C250,30 320,90 400,55 L540,50 L540,200 L0,200Z" fill="url(#w1)"/><path d="M0,110 C60,80 130,130 210,95 C290,60 360,115 440,85 L540,80 L540,200 L0,200Z" fill="url(#w2)"/><path d="M0,145 C70,120 140,155 220,130 C300,105 370,145 440,120 L540,115 L540,200 L0,200Z" fill="url(#w3)"/></svg>';
-var fotoPlaceholder=a.foto?'':'<div class="ph">&#128100;</div>';
-document.getElementById('cartRender').innerHTML='<div class="acqua-card">'+r+w+'<div class="foto-box" id="cartFotoBox">'+fotoPlaceholder+'</div><div class="brand"><div class="ttl">ACQUA CARD</div><div class="sub1">PASSAPORTE 3 PARQUES</div><div class="sub2">RONDON\u00d3POLIS \u2022 SORRISO \u2022 NOVA MUTUM</div>'+e+'</div><div class="qr-area"><img src="'+q+'"></div><div class="info-bar"><div class="lbl">TITULAR</div><div class="nome">'+a.nome+'</div><div class="row2"><div style="display:flex;gap:18px"><div class="pair"><div class="p-lbl">T\u00cdTULO</div><div class="p-val">'+(a.titulo||'---')+'</div></div><div class="pair"><div class="p-lbl">VENCIMENTO</div><div class="p-val">'+(a.fim||'---')+'</div></div></div><div class="logo-r"><div class="l1">PARQUE DAS \u00c1GUAS</div><div class="l2">Diversao Garantida</div></div></div></div></div>';
-if(a.foto){renderFotoCanvas(a.foto,document.getElementById('cartFotoBox'));}
-}
+function gerarCart(id){var a=find(id);if(!a)return;cartAssocAtual=a;document.querySelectorAll('.tb').forEach(function(b){b.classList.remove('act');});document.querySelectorAll('.pnl').forEach(function(p){p.classList.remove('act');});document.querySelectorAll('.tb')[6].classList.add('act');document.getElementById('p-carteirinha').classList.add('act');document.getElementById('cartArea').style.display='block';var isR=a.status==='Acesso Restrito';var r=isR?'<div class="rst-ov"></div><div class="rst-tag">RESTRITO</div>':'';var q=qrUrl('ACQUACARD|'+a.id+'|'+a.nome,200);var e=a.emp?'<div class="emp-tag">'+a.emp+'</div>':'';var w='<svg class="waves-svg" viewBox="0 0 540 200" preserveAspectRatio="none"><defs><linearGradient id="w1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#bae6fd" stop-opacity=".35"/><stop offset="100%" stop-color="#0284c7" stop-opacity=".35"/></linearGradient><linearGradient id="w2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7dd3fc" stop-opacity=".55"/><stop offset="100%" stop-color="#0369a1" stop-opacity=".65"/></linearGradient><linearGradient id="w3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0891b2" stop-opacity=".75"/><stop offset="100%" stop-color="#0c4a6e" stop-opacity=".92"/></linearGradient></defs><path d="M0,80 C50,50 110,100 180,65 C250,30 320,90 400,55 L540,50 L540,200 L0,200Z" fill="url(#w1)"/><path d="M0,110 C60,80 130,130 210,95 C290,60 360,115 440,85 L540,80 L540,200 L0,200Z" fill="url(#w2)"/><path d="M0,145 C70,120 140,155 220,130 C300,105 370,145 440,120 L540,115 L540,200 L0,200Z" fill="url(#w3)"/></svg>';var fotoPlaceholder=a.foto?'':'<div class="ph">&#128100;</div>';document.getElementById('cartRender').innerHTML='<div class="acqua-card">'+r+w+'<div class="foto-box" id="cartFotoBox">'+fotoPlaceholder+'</div><div class="brand"><div class="ttl">ACQUA CARD</div><div class="sub1">PASSAPORTE 3 PARQUES</div><div class="sub2">RONDON\u00d3POLIS \u2022 SORRISO \u2022 NOVA MUTUM</div>'+e+'</div><div class="qr-area"><img src="'+q+'"></div><div class="info-bar"><div class="lbl">TITULAR</div><div class="nome">'+a.nome+'</div><div class="row2"><div style="display:flex;gap:18px"><div class="pair"><div class="p-lbl">T\u00cdTULO</div><div class="p-val">'+(a.titulo||'---')+'</div></div><div class="pair"><div class="p-lbl">VENCIMENTO</div><div class="p-val">'+(a.fim||'---')+'</div></div></div><div class="logo-r"><div class="l1">PARQUE DAS \u00c1GUAS</div><div class="l2">Diversao Garantida</div></div></div></div></div>';if(a.foto)renderFotoCanvas(a.foto,document.getElementById('cartFotoBox'));}
 
 function loadHtml2Canvas(cb){if(typeof html2canvas!=='undefined')return cb();var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';s.onload=cb;document.head.appendChild(s);}
 function baixarCartImagem(){if(!cartAssocAtual){toast('Gere primeiro','er');return;}var el=document.querySelector('#cartRender .acqua-card');if(!el)return;toast('Gerando...','in');loadHtml2Canvas(function(){html2canvas(el,{scale:2,useCORS:true,allowTaint:true,backgroundColor:null}).then(function(c){var l=document.createElement('a');l.download='AcquaCard_'+cartAssocAtual.nome.replace(/\s+/g,'_')+'.png';l.href=c.toDataURL('image/png');l.click();toast('Baixada!');}).catch(function(){toast('Erro','er');});});}
