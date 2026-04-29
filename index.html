@@ -350,6 +350,41 @@ function registrarAuditoria(acao,tipo,alvo,detalhes){
     if(document.getElementById('p-auditoria').classList.contains('act'))renderAuditoria();
 }
 
+/* ===== INTEGRAÇÃO TIMELINE EMPRESARIAL (link da empresa) =====
+   Grava em 'passaportes_history' no Firebase sempre que houver
+   movimentação de associado empresarial. Alimenta automaticamente
+   a timeline mostrada no linkempresa.html.
+*/
+function eKeyEmpresa(nome){
+    /* Mesma lógica do linkempresa.html para casar a chave da empresa */
+    try{
+        var u=(nome||'').trim().toUpperCase();
+        return btoa(unescape(encodeURIComponent(u))).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
+    }catch(e){return'';}
+}
+function registrarMovimentacaoEmpresarial(tipo,assoc,extra){
+    /* tipo: 'add' | 'rem' | 'sub'
+       assoc: objeto associado principal
+       extra: { outName, inName } para casos de substituição
+    */
+    if(!assoc)return;
+    if(!isEmpresarial(assoc))return;
+    var emp=(assoc.emp||'').trim().toUpperCase();
+    if(!emp)return; /* só registra se tiver empresa nomeada */
+    var entry={
+        tipo:tipo,
+        company:emp,
+        companyName:emp,
+        outName:(extra&&extra.outName)||(tipo==='rem'?assoc.nome:''),
+        inName:(extra&&extra.inName)||(tipo==='add'?assoc.nome:''),
+        date:hoje(),
+        timestamp:Date.now(),
+        usuario:USER?USER.nome:'',
+        ts:Date.now()
+    };
+    fbPost('passaportes_history',entry);
+}
+
 function qrUrl(t,s){return'https://api.qrserver.com/v1/create-qr-code/?size='+s+'x'+s+'&data='+encodeURIComponent(t)+'&format=png&margin=4&color=0c4a6e&bgcolor=ffffff&ecc=H';}
 function maskCPF(el){var v=el.value.replace(/\D/g,'').substr(0,11);v=v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');el.value=v;}
 function maskTel(el){var v=el.value.replace(/\D/g,'').substr(0,11);v=v.replace(/(\d{2})(\d)/,'($1) $2').replace(/(\d{5})(\d)/,'$1-$2');el.value=v;}
@@ -388,6 +423,8 @@ function verificarVigencias(){
             a.status='Acesso Restrito';
             fbSaveAssoc(a,true);
             registrarAuditoria('Vigência expirada → Restrito automaticamente','vig',a.nome,'Fim do contrato: '+a.fim);
+            /* timeline empresarial: vencimento = exclusão automática */
+            registrarMovimentacaoEmpresarial('rem',a);
             alterados++;
         }
     }
@@ -448,6 +485,8 @@ function cadastrar(){
     var novo={id:gid(),nome:n.toUpperCase(),cpf:document.getElementById('cCPF').value.trim(),tel:document.getElementById('cTel').value.trim(),emp:emp,titulo:titulo,ini:document.getElementById('cIni').value.trim(),fim:document.getElementById('cVenc').value.trim(),status:document.getElementById('cSt').value,foto:cadFotoData||'',dt:hoje()};
     fbSaveAssoc(novo);
     registrarAuditoria('Criou novo associado','cre',novo.nome,(emp?'Empresa: '+emp+' · ':'')+(titulo?'Título: '+titulo:'')+' · CPF: '+(novo.cpf||'—'));
+    /* timeline empresarial: novo cadastro empresarial = inclusão (apenas se Ativo) */
+    if(novo.status==='Ativo')registrarMovimentacaoEmpresarial('add',novo);
     cadFotoData='';['cNome','cCPF','cTel','cEmp','cTitulo','cIni','cVenc'].forEach(function(id){document.getElementById(id).value='';});
     var ph=document.getElementById('cFotoImg');if(ph)ph.outerHTML='<div style="width:64px;height:64px;border-radius:8px;background:#edf2f7;display:flex;align-items:center;justify-content:center;font-size:28px;color:#a0aec0" id="cFotoPh">&#128100;</div>';
     toast('✅ Cadastrado!');
@@ -469,15 +508,71 @@ function salvarEd(id){
     var mudancas=[];
     var labels={nome:'Nome',cpf:'CPF',tel:'Telefone',emp:'Empresa',titulo:'Título',ini:'Entrada',fim:'Fim',status:'Status'};
     for(var k in novo){if(editOriginal[k]!==novo[k])mudancas.push(labels[k]+': "'+(editOriginal[k]||'—')+'" → "'+(novo[k]||'—')+'"');}
+
+    /* Snapshot ANTES de aplicar mudanças (para timeline empresarial) */
+    var antes={
+        nome:editOriginal.nome,
+        emp:editOriginal.emp,
+        titulo:editOriginal.titulo,
+        status:editOriginal.status
+    };
+    var antesEmpresarial=isEmpresarial(antes);
+    var depois={
+        nome:novo.nome,
+        emp:novo.emp,
+        titulo:novo.titulo,
+        status:novo.status
+    };
+    var depoisEmpresarial=isEmpresarial(depois);
+
+    /* Aplica mudanças */
     a.nome=novo.nome;a.cpf=novo.cpf;a.tel=novo.tel;a.emp=novo.emp;a.titulo=novo.titulo;a.ini=novo.ini;a.fim=novo.fim;a.status=novo.status;
     if(editFotoData!==null){a.foto=editFotoData;mudancas.push('Foto alterada');}
     editFotoData=null;editOriginal=null;
     fbSaveAssoc(a);
     if(mudancas.length>0)registrarAuditoria('Editou associado','edt',a.nome,mudancas.join(' · '));
+
+    /* ===== Timeline empresarial — detecção inteligente ===== */
+    /* Caso 1: trocou nome dentro da mesma empresa empresarial = SUBSTITUIÇÃO */
+    if(antesEmpresarial&&depoisEmpresarial&&antes.emp===depois.emp&&antes.emp&&antes.nome!==depois.nome&&antes.status==='Ativo'&&depois.status==='Ativo'){
+        registrarMovimentacaoEmpresarial('sub',a,{outName:antes.nome,inName:depois.nome});
+    }
+    /* Caso 2: era ativo empresarial e virou restrito = EXCLUSÃO */
+    else if(antesEmpresarial&&antes.status==='Ativo'&&depois.status==='Acesso Restrito'){
+        var assocAntes={nome:antes.nome,emp:antes.emp,titulo:antes.titulo};
+        registrarMovimentacaoEmpresarial('rem',assocAntes);
+    }
+    /* Caso 3: era restrito e virou ativo (reativação) empresarial = INCLUSÃO */
+    else if(depoisEmpresarial&&antes.status==='Acesso Restrito'&&depois.status==='Ativo'){
+        registrarMovimentacaoEmpresarial('add',a);
+    }
+    /* Caso 4: deixou de ser empresarial (perdeu emp) = EXCLUSÃO da empresa antiga */
+    else if(antesEmpresarial&&!depoisEmpresarial&&antes.emp&&antes.status==='Ativo'){
+        var assocAntes2={nome:antes.nome,emp:antes.emp,titulo:antes.titulo};
+        registrarMovimentacaoEmpresarial('rem',assocAntes2);
+    }
+    /* Caso 5: virou empresarial agora = INCLUSÃO na nova empresa */
+    else if(!antesEmpresarial&&depoisEmpresarial&&depois.emp&&depois.status==='Ativo'){
+        registrarMovimentacaoEmpresarial('add',a);
+    }
+    /* Caso 6: trocou de empresa empresarial = saiu de uma + entrou em outra */
+    else if(antesEmpresarial&&depoisEmpresarial&&antes.emp&&depois.emp&&antes.emp!==depois.emp){
+        if(antes.status==='Ativo'){var saida={nome:antes.nome,emp:antes.emp,titulo:antes.titulo};registrarMovimentacaoEmpresarial('rem',saida);}
+        if(depois.status==='Ativo')registrarMovimentacaoEmpresarial('add',a);
+    }
+
     fecharModal();toast('Salvo!');verificarVigencias();renderTodos();
 }
 
-function excluir(id){var a=find(id);if(!a)return;if(!podeVer(a)){toast('Acesso negado','er');return;}if(!confirm('Excluir '+a.nome+'?'))return;registrarAuditoria('Excluiu associado','del',a.nome,'CPF: '+(a.cpf||'—')+(a.emp?' · Empresa: '+a.emp:''));fbRemoveAssoc(a);renderTodos();toast('Excluido','in');}
+function excluir(id){
+    var a=find(id);if(!a)return;
+    if(!podeVer(a)){toast('Acesso negado','er');return;}
+    if(!confirm('Excluir '+a.nome+'?'))return;
+    registrarAuditoria('Excluiu associado','del',a.nome,'CPF: '+(a.cpf||'—')+(a.emp?' · Empresa: '+a.emp:''));
+    /* timeline empresarial: se era ativo empresarial = exclusão */
+    if(isEmpresarial(a)&&a.status==='Ativo')registrarMovimentacaoEmpresarial('rem',a);
+    fbRemoveAssoc(a);renderTodos();toast('Excluido','in');
+}
 function fecharModal(){document.getElementById('modalBg').classList.remove('act');editFotoData=null;editOriginal=null;}
 function exportCSV(){var base=dbVisivel();var c='\uFEFF"Nome";"CPF";"Empresa";"Titulo";"Tipo";"Fim";"Status"\n';base.forEach(function(a){c+='"'+a.nome+'";"'+(a.cpf||'')+'";"'+(a.emp||'')+'";"'+(a.titulo||'')+'";"'+(isEmpresarial(a)?'Empresarial':'Parque')+'";"'+(a.fim||'')+'";"'+a.status+'"\n';});var b=new Blob([c],{type:'text/csv;charset=utf-8;'});var l=document.createElement('a');l.href=URL.createObjectURL(b);l.download='associados_'+(USER.role==='cdl'?'cdl_':'')+hojeISO()+'.csv';l.click();registrarAuditoria('Exportou CSV','exp','Base ('+base.length+' registros)','Download de planilha');}
 
