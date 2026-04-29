@@ -175,7 +175,6 @@ td{padding:10px;border-bottom:1px solid #edf2f7}tr:hover td{background:#f7fafc}
 .audit-detail{font-size:10px;color:#718096;margin-top:4px;padding:6px 10px;background:#f7fafc;border-radius:6px;border-left:3px solid #cbd5e0}
 .audit-detail strong{color:#2d3748}
 .audit-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-/* ===== BUSCA MANUAL DE ACESSO ===== */
 .man-search-wrap{position:relative}
 .man-search-input{width:100%;padding:12px 40px 12px 14px;border:2px solid #0a4c7a;border-radius:8px;font-size:15px;font-weight:600;background:#fff}
 .man-search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#e2e8f0;border:none;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px;color:#4a5568;display:none;align-items:center;justify-content:center;font-weight:700}
@@ -351,7 +350,8 @@ function podeVer(a){
     return isEmpresarial(a);
 }
 
-var WP_NUMERO='5565996210387',db=[],logAc=[],delLog=[],auditLog=[],isOnline=false,fbOk=false;
+/* ===== VARIÁVEIS GLOBAIS — INCLUI visitasParc PARA PARQUES PARCEIROS ===== */
+var WP_NUMERO='5565996210387',db=[],logAc=[],delLog=[],auditLog=[],visitasParc=[],isOnline=false,fbOk=false;
 var FB_URL='https://aqcuacard-default-rtdb.firebaseio.com';
 
 /* ===== AUDITORIA ===== */
@@ -464,14 +464,26 @@ function fbPut(p,d,cb){var x=new XMLHttpRequest();x.open('PUT',FB_URL+'/'+p+'.js
 function fbPost(p,d,cb){var x=new XMLHttpRequest();x.open('POST',FB_URL+'/'+p+'.json',true);x.setRequestHeader('Content-Type','application/json');x.timeout=8000;x.onload=function(){if(cb)try{cb(null,JSON.parse(x.responseText))}catch(e){cb(e)}};x.onerror=function(){if(cb)cb(new Error('Net'))};x.send(JSON.stringify(d));}
 function fbDelete(p,cb){var x=new XMLHttpRequest();x.open('DELETE',FB_URL+'/'+p+'.json',true);x.timeout=8000;x.onload=function(){if(cb)cb(null)};x.onerror=function(){if(cb)cb(new Error('Net'))};x.send();}
 
+/* ===== CARREGA DADOS — INCLUI visitas_parceiros ===== */
 function carregarDados(){
-    var done=0;function ck(){done++;if(done>=4){isOnline=true;fbOk=true;updateSyncUI();stats();atualizarFeed();verificarVigencias();}}
+    var done=0;function ck(){done++;if(done>=5){isOnline=true;fbOk=true;updateSyncUI();stats();atualizarFeed();verificarVigencias();}}
     fbGet('associados',function(e,d){if(!e&&d){db=[];for(var k in d){var a=d[k];a._fbKey=k;db.push(a);}stats();}ck();});
     fbGet('acessos',function(e,d){if(!e&&d){logAc=[];for(var k in d){var l=d[k];l._fbKey=k;logAc.push(l);}stats();atualizarFeed();}ck();});
     fbGet('exclusoes',function(e,d){if(!e&&d){delLog=[];for(var k in d)delLog.push(d[k]);renderDelLog();}ck();});
     fbGet('auditoria',function(e,d){if(!e&&d){auditLog=[];for(var k in d){var en=d[k];en._fbKey=k;auditLog.push(en);}}ck();});
+    fbGet('visitas_parceiros',function(e,d){if(!e&&d){visitasParc=[];for(var k in d){var v=d[k];v._fbKey=k;visitasParc.push(v);}}ck();});
 }
-function startPolling(){setInterval(function(){fbGet('associados',function(e,d){if(!e&&d){db=[];for(var k in d){var a=d[k];a._fbKey=k;db.push(a);}stats();isOnline=true;updateSyncUI();verificarVigencias();}else{isOnline=false;updateSyncUI();}});fbGet('acessos',function(e,d){if(!e&&d){logAc=[];for(var k in d){var l=d[k];l._fbKey=k;logAc.push(l);}stats();atualizarFeed();}});fbGet('exclusoes',function(e,d){if(!e&&d){delLog=[];for(var k in d)delLog.push(d[k]);renderDelLog();}});fbGet('auditoria',function(e,d){if(!e&&d){auditLog=[];for(var k in d){var en=d[k];en._fbKey=k;auditLog.push(en);}if(document.getElementById('p-auditoria').classList.contains('act'))renderAuditoria();}});},10000);}
+
+/* ===== POLLING — INCLUI visitas_parceiros ===== */
+function startPolling(){
+    setInterval(function(){
+        fbGet('associados',function(e,d){if(!e&&d){db=[];for(var k in d){var a=d[k];a._fbKey=k;db.push(a);}stats();isOnline=true;updateSyncUI();verificarVigencias();}else{isOnline=false;updateSyncUI();}});
+        fbGet('acessos',function(e,d){if(!e&&d){logAc=[];for(var k in d){var l=d[k];l._fbKey=k;logAc.push(l);}stats();atualizarFeed();}});
+        fbGet('exclusoes',function(e,d){if(!e&&d){delLog=[];for(var k in d)delLog.push(d[k]);renderDelLog();}});
+        fbGet('auditoria',function(e,d){if(!e&&d){auditLog=[];for(var k in d){var en=d[k];en._fbKey=k;auditLog.push(en);}if(document.getElementById('p-auditoria').classList.contains('act'))renderAuditoria();}});
+        fbGet('visitas_parceiros',function(e,d){if(!e&&d){visitasParc=[];for(var k in d){var v=d[k];v._fbKey=k;visitasParc.push(v);}}});
+    },10000);
+}
 
 function fbSaveAssoc(a,silent){var o={};for(var k in a)if(k!=='_fbKey')o[k]=a[k];if(a._fbKey)fbPut('associados/'+a._fbKey,o);else{fbPost('associados',o,function(e,r){if(!e&&r&&r.name)a._fbKey=r.name;});db.push(a);}stats();}
 function fbRemoveAssoc(a){if(a._fbKey)fbDelete('associados/'+a._fbKey);db=db.filter(function(x){return x.id!==a.id;});stats();}
@@ -566,7 +578,6 @@ function excluir(id){
 }
 function fecharModal(){document.getElementById('modalBg').classList.remove('act');editFotoData=null;editOriginal=null;}
 function exportCSV(){var base=dbVisivel();var c='\uFEFF"Nome";"CPF";"Empresa";"Titulo";"Tipo";"Fim";"Status"\n';base.forEach(function(a){c+='"'+a.nome+'";"'+(a.cpf||'')+'";"'+(a.emp||'')+'";"'+(a.titulo||'')+'";"'+(isEmpresarial(a)?'Empresarial':'Parque')+'";"'+(a.fim||'')+'";"'+a.status+'"\n';});var b=new Blob([c],{type:'text/csv;charset=utf-8;'});var l=document.createElement('a');l.href=URL.createObjectURL(b);l.download='associados_'+(USER.role==='cdl'?'cdl_':'')+hojeISO()+'.csv';l.click();registrarAuditoria('Exportou CSV','exp','Base ('+base.length+' registros)','Download de planilha');}
-
 var pendImp=[];var dz=document.getElementById('dropZone');if(dz){dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('drag');});dz.addEventListener('dragleave',function(){dz.classList.remove('drag');});dz.addEventListener('drop',function(e){e.preventDefault();dz.classList.remove('drag');if(e.dataTransfer.files.length)procArq(e.dataTransfer.files[0]);});}
 function handleFile(inp){if(inp.files&&inp.files[0])procArq(inp.files[0]);}
 function procArq(file){var ext=file.name.split('.').pop().toLowerCase();if(ext==='csv'||ext==='txt'){var r=new FileReader();r.onload=function(e){procCSV(e.target.result);};r.readAsText(file,'UTF-8');}else if(ext==='xls'||ext==='xlsx'){if(typeof XLSX!=='undefined')readXLS(file);else{var sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';sc.onload=function(){readXLS(file);};document.head.appendChild(sc);}}else toast('Formato invalido','er');}
@@ -581,7 +592,7 @@ function regAcesso(a){var ok=a.status==='Ativo';fbSaveLog({id:'L'+Date.now(),aid
 function resolverAssociado(v){var a=null;if(v.indexOf('ACQUACARD|')===0){var p=v.split('|');a=find(p[1]);if(!a)for(var i=0;i<db.length;i++)if(db[i].nome===p[2]){a=db[i];break;}}if(!a){var q=v.toUpperCase();for(var i=0;i<db.length;i++)if(db[i].nome.indexOf(q)>=0){a=db[i];break;}}return a;}
 function processarAcesso(){var v=document.getElementById('inpAcesso').value.trim();if(!v){toast('Digite','er');return;}var a=resolverAssociado(v),box=document.getElementById('acessoResult');box.style.display='block';if(!a){box.className='cd acesso-ng';box.innerHTML='<div style="text-align:center;padding:20px"><div style="font-size:50px">&#10060;</div><div style="font-size:18px;font-weight:900;color:#e53e3e">NAO ENCONTRADO</div></div>';document.getElementById('inpAcesso').value='';setTimeout(function(){box.style.display='none';},3000);return;}regAcesso(a);var ok=a.status==='Ativo';var dias=diasAteVencimento(a);var vigMsg='';if(ok&&dias!==null&&dias<=30&&dias>=0)vigMsg='<div style="background:#fffff0;border:1px solid #f6e05e;border-radius:8px;padding:8px;margin-top:10px;font-size:12px;color:#744210">⏰ Vence em <strong>'+dias+' dia'+(dias!==1?'s':'')+'</strong></div>';box.className='cd '+(ok?'acesso-ok':'acesso-ng');box.innerHTML='<div style="text-align:center;padding:20px">'+(a.foto?'<img src="'+a.foto+'" style="width:90px;height:90px;border-radius:50%;object-fit:cover;margin-bottom:10px;border:4px solid '+(ok?'#68d391':'#fc8181')+'"><br>':'')+'<div style="font-size:60px">'+(ok?'&#9989;':'&#9940;')+'</div><div style="font-size:24px;font-weight:900;color:'+(ok?'#22543d':'#c53030')+'">'+(ok?'LIBERADO':'BLOQUEADO')+'</div><div style="font-size:20px;font-weight:700;margin-top:8px">'+a.nome+'</div>'+(!ok&&dias!==null&&dias<0?'<div style="font-size:12px;color:#c53030;margin-top:6px">Vencido há '+Math.abs(dias)+' dias</div>':'')+vigMsg+'</div>';document.getElementById('inpAcesso').value='';pararCameraAcesso();setTimeout(function(){box.style.display='none';},4000);}
 
-/* ===== REGISTRO MANUAL — BUSCA EDITÁVEL POR NOME, CPF, EMPRESA, TÍTULO ===== */
+/* ===== REGISTRO MANUAL ===== */
 function registroManual(){
     document.getElementById('mTit').textContent='🔎 Registro Manual de Acesso';
     document.getElementById('mBody').innerHTML=
@@ -619,7 +630,6 @@ function filtrarManual(){
     }
 
     var base=db.slice();
-    /* Busca multi-campo: nome, cpf, empresa, título */
     var resultados=base.filter(function(a){
         if(!a)return false;
         var nome=(a.nome||'').toLowerCase();
@@ -633,7 +643,6 @@ function filtrarManual(){
         return false;
     });
 
-    /* Ordena: ativos primeiro, depois por nome */
     resultados.sort(function(a,b){
         if(a.status==='Ativo'&&b.status!=='Ativo')return -1;
         if(a.status!=='Ativo'&&b.status==='Ativo')return 1;
@@ -661,7 +670,7 @@ function filtrarManual(){
         var actBtn=ok?
             '<button class="man-item-action" data-mid="'+a.id+'">✓ Registrar</button>':
             '<button class="man-item-action blocked" data-mid="'+a.id+'">⊘ Tentar</button>';
-        return '<div class="man-item'+(ok?'':' '/* sempre clicável para registrar bloqueio */)+'" data-mid="'+a.id+'">'+
+        return '<div class="man-item" data-mid="'+a.id+'">'+
             fotoHTML(a.foto)+
             '<div class="man-item-info">'+
                 '<div class="man-item-name">'+a.nome+'</div>'+
@@ -671,7 +680,6 @@ function filtrarManual(){
         '</div>';
     }).join('');
 
-    /* Liga clique nos itens */
     box.querySelectorAll('[data-mid]').forEach(function(el){
         el.addEventListener('click',function(ev){
             ev.stopPropagation();
@@ -687,7 +695,6 @@ function confirmarRegistroManual(id){
     regAcesso(a);
     var ok=a.status==='Ativo';
     fecharModal();
-    /* Mostra resultado visual no painel principal */
     var box=document.getElementById('acessoResult');
     if(box){
         box.style.display='block';
@@ -716,7 +723,44 @@ function copiarRel(){navigator.clipboard.writeText(gerarTxtRel()).then(function(
 function calcFreq(){var de=document.getElementById('freqDe').value,ate=document.getElementById('freqAte').value;var fl=logAc.filter(function(l){if(l.tp!=='ok')return false;if(de&&l.di<de)return false;if(ate&&l.di>ate)return false;return true;});if(!fl.length){toast('Nenhum','er');return;}document.getElementById('freqResult').style.display='block';var dias=new Set(),un=new Set();fl.forEach(function(l){dias.add(l.di);un.add(l.aid);});var hrs={};for(var h=6;h<=22;h++)hrs[h]=0;fl.forEach(function(l){var hh=parseInt(l.hr);hrs[hh]=(hrs[hh]||0)+1;});document.getElementById('freqKPIs').innerHTML='<div class="kpi"><div class="kn" style="color:#38a169">'+fl.length+'</div><div class="kl">Entradas</div></div><div class="kpi"><div class="kn" style="color:#3182ce">'+un.size+'</div><div class="kl">Associados</div></div><div class="kpi"><div class="kn" style="color:#d69e2e">'+(fl.length/dias.size).toFixed(1)+'</div><div class="kl">Media/Dia</div></div>';var mxH=1;for(var k in hrs)if(hrs[k]>mxH)mxH=hrs[k];var hH='';for(var h=6;h<=22;h++){var v=hrs[h]||0;hH+='<div style="display:flex;align-items:center;gap:6px;margin:2px 0;font-size:11px"><span style="min-width:28px;text-align:right;font-weight:700">'+h+'h</span><div class="freq-bar" style="flex:1"><div class="freq-fill" style="width:'+Math.round(v/mxH*100)+'%;background:linear-gradient(90deg,#0891b2,#22d3ee)"></div><div class="freq-label">'+v+'</div></div></div>';}document.getElementById('freqHoras').innerHTML=hH;var rk={};fl.forEach(function(l){if(!rk[l.aid])rk[l.aid]={n:l.nome,c:0,u:''};rk[l.aid].c++;if(l.di>rk[l.aid].u)rk[l.aid].u=l.dt;});var ar=[];for(var id in rk)ar.push(rk[id]);ar.sort(function(a,b){return b.c-a.c;});var mx=ar[0]?ar[0].c:1;document.getElementById('freqRank').innerHTML=ar.map(function(r,i){return'<tr><td>#'+(i+1)+'</td><td><strong>'+r.n+'</strong></td><td><strong>'+r.c+'</strong></td><td style="font-size:10px">'+r.u+'</td><td><div class="freq-bar"><div class="freq-fill" style="width:'+Math.round(r.c/mx*100)+'%;background:'+(i<3?'linear-gradient(90deg,#38a169,#68d391)':'#cbd5e0')+'"></div></div></td></tr>';}).join('');}
 function freqWP(){window.open('https://wa.me/'+WP_NUMERO+'?text='+encodeURIComponent(gerarTxtRel()),'_blank');}
 function freqCSV(){var c='\uFEFF"Data";"Hora";"Nome";"Status"\n';logAc.forEach(function(l){c+='"'+l.dt+'";"'+l.hr+'";"'+l.nome+'";"'+l.tp+'"\n';});var b=new Blob([c],{type:'text/csv;charset=utf-8;'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='acessos.csv';a.click();}
-function buscarIndiv(){var q=document.getElementById('freqIndiv').value.trim().toLowerCase(),box=document.getElementById('freqIndivR');if(q.length<2){box.innerHTML='';return;}var r=db.filter(function(a){return a.nome.toLowerCase().indexOf(q)>=0;}).slice(0,5);box.innerHTML=r.map(function(a){var al=logAc.filter(function(l){return l.aid===a.id&&l.tp==='ok';}).sort(function(x,y){return(y.ts||0)-(x.ts||0);});return'<div class="cd" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:10px">'+fotoHTML(a.foto)+'<div><strong>'+a.nome+'</strong> '+badge(a.status)+'<br><span style="font-size:11px;color:#718096">Total: '+al.length+'</span></div></div>'+(al.length?'<div style="margin-top:6px;max-height:100px;overflow-y:auto;font-size:11px">'+al.slice(0,15).map(function(l){return'<div style="padding:2px 0;color:#718096">'+l.dt+' '+l.hr+'</div>';}).join('')+'</div>':'')+'</div>';}).join('');}
+
+/* ===== HISTÓRICO INDIVIDUAL — PARQUE DAS ÁGUAS + PARQUES PARCEIROS ===== */
+function buscarIndiv(){
+    var q=document.getElementById('freqIndiv').value.trim().toLowerCase(),box=document.getElementById('freqIndivR');
+    if(q.length<2){box.innerHTML='';return;}
+    var r=db.filter(function(a){return a.nome.toLowerCase().indexOf(q)>=0;}).slice(0,5);
+    box.innerHTML=r.map(function(a){
+        var al=logAc.filter(function(l){return l.aid===a.id&&l.tp==='ok';}).sort(function(x,y){return(y.ts||0)-(x.ts||0);});
+        var visitasParceiros=(typeof visitasParc!=='undefined'?visitasParc:[]).filter(function(v){return v.aid===a.id&&v.tp==='ok';}).sort(function(x,y){return(y.ts||0)-(x.ts||0);});
+
+        var totalGeral=al.length+visitasParceiros.length;
+        var parqueNomes={'riviera':'🌊 Riviera','castellus':'🏰 Castellus','valebeach':'🏖️ Vale Beach'};
+        var parqueCores={'riviera':'#22d3ee','castellus':'#d4a853','valebeach':'#a78bfa'};
+
+        return '<div class="cd" style="margin-bottom:8px">'+
+            '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'+
+                fotoHTML(a.foto)+
+                '<div style="flex:1">'+
+                    '<strong>'+a.nome+'</strong> '+badge(a.status)+
+                    '<br><span style="font-size:11px;color:#718096">📊 Total Geral: '+totalGeral+' acesso'+(totalGeral!==1?'s':'')+'</span>'+
+                '</div>'+
+            '</div>'+
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">'+
+                '<div style="background:#f0fff4;border:1px solid #9ae6b4;border-radius:8px;padding:8px;text-align:center">'+
+                    '<div style="font-size:18px;font-weight:900;color:#22543d">'+al.length+'</div>'+
+                    '<div style="font-size:9px;font-weight:700;color:#22543d;text-transform:uppercase">🏊 Parque das Águas</div>'+
+                '</div>'+
+                '<div style="background:#ebf8ff;border:1px solid #90cdf4;border-radius:8px;padding:8px;text-align:center">'+
+                    '<div style="font-size:18px;font-weight:900;color:#2a4365">'+visitasParceiros.length+'</div>'+
+                    '<div style="font-size:9px;font-weight:700;color:#2a4365;text-transform:uppercase">🤝 Parques Parceiros</div>'+
+                '</div>'+
+            '</div>'+
+            (al.length?'<div style="margin-top:8px"><div style="font-size:10px;font-weight:700;color:#22543d;margin-bottom:4px">🏊 ÚLTIMAS VISITAS — PARQUE DAS ÁGUAS</div><div style="max-height:120px;overflow-y:auto;font-size:11px;background:#f0fff4;border-radius:6px;padding:6px">'+al.slice(0,15).map(function(l){return'<div style="padding:3px 6px;color:#22543d;border-bottom:1px solid #c6f6d5">📅 '+l.dt+' às '+l.hr+'</div>';}).join('')+'</div></div>':'')+
+            (visitasParceiros.length?'<div style="margin-top:8px"><div style="font-size:10px;font-weight:700;color:#2a4365;margin-bottom:4px">🤝 VISITAS EM PARQUES PARCEIROS</div><div style="max-height:140px;overflow-y:auto;font-size:11px;background:#ebf8ff;border-radius:6px;padding:6px">'+visitasParceiros.slice(0,20).map(function(v){var pn=parqueNomes[v.parqueId]||v.parqueNome||v.parqueId;var cor=parqueCores[v.parqueId]||'#90cdf4';return'<div style="padding:4px 6px;color:#2a4365;border-bottom:1px solid #bee3f8;display:flex;justify-content:space-between;align-items:center;gap:6px"><span>📅 '+v.dt+' às '+v.hr+'</span><span style="background:'+cor+';color:#fff;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;white-space:nowrap">'+pn+'</span></div>';}).join('')+'</div></div>':'')+
+        '</div>';
+    }).join('');
+}
+
 var totemStr=null,totemSc=false;
 function iniciarTotem(){document.getElementById('totemBg').classList.add('act');navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(function(s){totemStr=s;document.getElementById('totemVideo').srcObject=s;document.getElementById('totemVideo').play();totemSc=true;loadJsQR(function(){scanTotem();});}).catch(function(e){toast('Camera: '+e.message,'er');});}
 function sairTotem(){totemSc=false;if(totemStr){totemStr.getTracks().forEach(function(t){t.stop()});totemStr=null;}document.getElementById('totemBg').classList.remove('act');}
