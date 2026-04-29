@@ -14,6 +14,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .hd h1{font-size:21px;font-weight:800;letter-spacing:1px}
 .hd .s1{font-size:10px;color:rgba(255,255,255,.28);margin-top:2px;letter-spacing:2px;text-transform:uppercase}
 .hd .bg{display:inline-block;margin-top:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);padding:4px 16px;border-radius:30px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase}
+.hd .pkbg{display:inline-block;margin-top:6px;padding:4px 14px;border-radius:30px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.hd .pkbg.riviera{background:rgba(34,211,238,.15);color:#22d3ee;border:1px solid rgba(34,211,238,.4)}
+.hd .pkbg.castellus{background:rgba(212,168,83,.15);color:#fbd38d;border:1px solid rgba(212,168,83,.4)}
+.hd .pkbg.valebeach{background:rgba(167,139,250,.15);color:#d6bcfa;border:1px solid rgba(167,139,250,.4)}
 .hd .sy{margin-top:6px;font-size:10px;font-weight:600}
 .sd{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:3px;vertical-align:middle;animation:pu 2s infinite}
 @keyframes pu{0%,100%{opacity:1}50%{opacity:.3}}
@@ -40,63 +44,122 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .ov{position:absolute;inset:0;z-index:20;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;border-radius:14px}
 .ov.show{display:flex;align-items:center;justify-content:center;animation:fin .3s ease}
 @keyframes fin{from{opacity:0}to{opacity:1}}
-.ov.g{background:rgba(3,40,18,.97)}.ov.r{background:rgba(50,8,8,.97)}.ov.w{background:rgba(50,28,5,.97)}
-.ov-in{padding:26px 16px;text-align:center;width:100%}
+.ov.g{background:rgba(3,40,18,.97)}.ov.r{background:rgba(50,8,8,.97)}.ov.w{background:rgba(50,28,5,.97)}.ov.b{background:rgba(8,30,55,.97)}
+.ov-in{padding:22px 16px;text-align:center;width:100%}
 
-.ic{width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:34px}
+.ic{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:30px}
 .ic.ok{background:#00c853;box-shadow:0 0 40px rgba(0,200,83,.25)}
 .ic.ng{background:#e53e3e;box-shadow:0 0 40px rgba(229,62,62,.25)}
 .ic.wn{background:#dd6b20;box-shadow:0 0 40px rgba(221,107,32,.25)}
-.tx{font-size:18px;font-weight:800;text-transform:uppercase;letter-spacing:2px}
-.tx.ok{color:#00e676}.tx.ng{color:#fc5c65}.tx.wn{color:#f6ad55}
-.nm{font-size:17px;font-weight:700;color:#fff;margin-top:10px}
-.aq{display:inline-block;margin-top:10px;background:#fff;color:#000;padding:5px 16px;border-radius:30px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.ic.bl{background:#3182ce;box-shadow:0 0 40px rgba(49,130,206,.25)}
+.tx{font-size:17px;font-weight:800;text-transform:uppercase;letter-spacing:2px}
+.tx.ok{color:#00e676}.tx.ng{color:#fc5c65}.tx.wn{color:#f6ad55}.tx.bl{color:#63b3ed}
+.nm{font-size:16px;font-weight:700;color:#fff;margin-top:8px}
+.aq{display:inline-block;margin-top:8px;background:#fff;color:#000;padding:5px 16px;border-radius:30px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
 .dl{margin-top:10px;display:flex;flex-direction:column;gap:4px;text-align:left;max-width:340px;margin-left:auto;margin-right:auto}
-.dr{display:flex;justify-content:space-between;padding:7px 10px;background:rgba(255,255,255,.06);border-radius:7px;font-size:12px}
+.dr{display:flex;justify-content:space-between;padding:6px 10px;background:rgba(255,255,255,.06);border-radius:7px;font-size:12px}
 .dr .k{color:rgba(255,255,255,.42);font-weight:600}.dr .v{color:#fff;font-weight:500}
 
-.bn{display:inline-block;margin-top:16px;padding:13px 36px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:.2s;-webkit-tap-highlight-color:transparent;user-select:none}
+.bn{display:inline-block;margin-top:14px;padding:13px 30px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;transition:.2s;-webkit-tap-highlight-color:transparent;user-select:none}
 .bn:active{transform:scale(.96);background:rgba(255,255,255,.16)}
+.bn.reg{background:#00c853;border-color:#00e676;color:#fff;padding:14px 36px;font-size:14px;letter-spacing:1px;box-shadow:0 6px 20px rgba(0,200,83,.4);margin-right:8px}
+.bn.reg:active{background:#00a040}
+.bn.cnc{background:rgba(229,62,62,.2);border-color:rgba(229,62,62,.4);color:#fc8181}
+.btn-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 
-/* busca */
-.sa{display:none}
-.sb{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px}
-.sb label{display:block;font-size:12px;color:rgba(255,255,255,.4);margin-bottom:8px;font-weight:600}
-.sb .iw{display:flex;gap:8px}
-.sb input{flex:1;padding:14px 16px;border:1px solid rgba(255,255,255,.1);border-radius:10px;background:rgba(255,255,255,.06);color:#fff;font-size:16px;outline:none}
-.sb input::placeholder{color:rgba(255,255,255,.18);font-size:14px}
-.sb input:focus{border-color:rgba(255,255,255,.25)}
-.sbtn{padding:14px 22px;background:#fff;border:none;border-radius:10px;color:#000;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
-.sh{font-size:10px;color:rgba(255,255,255,.1);margin-top:6px;text-align:center}
-.sr{margin-top:12px}
-.sc{padding:24px 16px;border-radius:14px;text-align:center;margin-top:10px;animation:fin .3s}
-.sc.sv{background:rgba(0,200,83,.06);border:2px solid rgba(0,200,100,.3)}
-.sc.swb{background:rgba(221,107,32,.06);border:2px solid rgba(255,165,0,.3)}
-.sc.sn{background:rgba(229,62,62,.06);border:2px solid rgba(255,80,80,.2)}
-.ri{display:flex;justify-content:space-between;align-items:center;padding:11px 12px;background:rgba(255,255,255,.05);border-radius:8px;margin-bottom:5px;cursor:pointer;border:1px solid transparent;transition:.2s}
-.ri:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.15)}
-.ri .rn{font-weight:600;font-size:13px}
-.ba{background:rgba(0,200,100,.15);color:#00e676;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700}
-.bw{background:rgba(255,165,0,.15);color:#f6ad55;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700}
+/* relatório */
+.rel-wrap{padding:18px 6px}
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.kpi{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 8px;text-align:center}
+.kpi .kn{font-size:22px;font-weight:900;color:#22d3ee}
+.kpi .kl{font-size:9px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-top:3px}
+.rel-filt{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.rel-filt input{padding:10px;border:1px solid rgba(255,255,255,.1);border-radius:8px;background:rgba(255,255,255,.06);color:#fff;font-size:13px;outline:none;font-family:inherit}
+.rel-filt input::-webkit-calendar-picker-indicator{filter:invert(1) opacity(.6)}
+.rel-actions{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.rel-btn{flex:1;padding:11px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.rel-btn:active{background:rgba(255,255,255,.15)}
+.rel-btn.csv{background:rgba(34,211,238,.15);border-color:rgba(34,211,238,.35);color:#22d3ee}
+.rel-list{max-height:380px;overflow-y:auto;border:1px solid rgba(255,255,255,.06);border-radius:10px;background:rgba(255,255,255,.02)}
+.rel-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px}
+.rel-item:last-child{border-bottom:none}
+.rel-item .rt{min-width:55px;font-weight:700;color:#22d3ee;font-size:11px;background:rgba(34,211,238,.1);padding:3px 6px;border-radius:6px;text-align:center}
+.rel-item .rd{font-size:9px;color:rgba(255,255,255,.4);margin-top:2px;text-align:center}
+.rel-item .ri-info{flex:1;min-width:0}
+.rel-item .ri-nome{font-weight:700;color:#fff;font-size:13px}
+.rel-item .ri-meta{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px}
+.rel-item .ri-st{flex-shrink:0}
+.rel-empty{text-align:center;padding:32px 14px;color:rgba(255,255,255,.18);font-size:12px}
+.rel-empty .ic-big{font-size:42px;opacity:.4;margin-bottom:8px}
+
 .idle{text-align:center;padding:24px;color:rgba(255,255,255,.1);margin-top:14px;font-size:12px}
 .ft{padding:16px;text-align:center;font-size:9px;color:rgba(255,255,255,.06);margin-top:auto}
+
+/* tela seleção parque */
+.parkSel{position:fixed;inset:0;background:linear-gradient(135deg,#0c1821,#0a2a3f);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.parkSel.hidden{display:none}
+.parkSel h2{font-size:22px;font-weight:800;letter-spacing:2px;margin-bottom:6px;text-align:center}
+.parkSel .ps-sub{font-size:11px;color:rgba(255,255,255,.4);text-align:center;margin-bottom:30px;letter-spacing:2px;text-transform:uppercase}
+.parkSel .ps-grid{display:grid;gap:12px;width:100%;max-width:380px}
+.ps-btn{padding:22px 20px;border-radius:14px;border:2px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#fff;cursor:pointer;text-align:left;font-family:inherit;transition:.25s;display:flex;align-items:center;gap:14px}
+.ps-btn:hover{transform:translateY(-2px)}
+.ps-btn[data-pk="riviera"]:hover{border-color:#22d3ee;background:rgba(34,211,238,.08)}
+.ps-btn[data-pk="castellus"]:hover{border-color:#fbd38d;background:rgba(212,168,83,.08)}
+.ps-btn[data-pk="valebeach"]:hover{border-color:#d6bcfa;background:rgba(167,139,250,.08)}
+.ps-icon{font-size:32px}
+.ps-info .ps-nm{font-size:15px;font-weight:800;letter-spacing:1px}
+.ps-info .ps-ds{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;letter-spacing:1px;text-transform:uppercase}
 
 @media(max-width:500px){
 .hd h1{font-size:18px}
 .hd img{width:80px}
-.sb .iw{flex-direction:column}
-.sbtn{padding:13px}
 .cam-box{aspect-ratio:3/3.5}
+.kpi-row{grid-template-columns:repeat(3,1fr)}
+.kpi .kn{font-size:18px}
 }
 </style>
 </head>
 <body>
+
+<!-- ===== TELA DE SELEÇÃO DE PARQUE ===== -->
+<div class="parkSel" id="parkSel">
+    <h2>🤝 TOTEM PARCEIRO</h2>
+    <div class="ps-sub">Selecione o parque</div>
+    <div class="ps-grid">
+        <button class="ps-btn" data-pk="riviera" onclick="APP.escolher('riviera')">
+            <div class="ps-icon">🌊</div>
+            <div class="ps-info">
+                <div class="ps-nm">RIVIERA</div>
+                <div class="ps-ds">Clube Parceiro</div>
+            </div>
+        </button>
+        <button class="ps-btn" data-pk="castellus" onclick="APP.escolher('castellus')">
+            <div class="ps-icon">🏰</div>
+            <div class="ps-info">
+                <div class="ps-nm">CASTELLUS</div>
+                <div class="ps-ds">Clube Parceiro</div>
+            </div>
+        </button>
+        <button class="ps-btn" data-pk="valebeach" onclick="APP.escolher('valebeach')">
+            <div class="ps-icon">🏖️</div>
+            <div class="ps-info">
+                <div class="ps-nm">VALE BEACH</div>
+                <div class="ps-ds">Clube Parceiro</div>
+            </div>
+        </button>
+    </div>
+    <div style="margin-top:20px;font-size:10px;color:rgba(255,255,255,.2);text-align:center">Você também pode acessar direto via:<br>?parque=riviera · ?parque=castellus · ?parque=valebeach</div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="appView" style="display:none;flex-direction:column;align-items:center;width:100%;flex:1">
 
 <div class="hd">
     <img src="https://parquedasaguasmt-alt.github.io/AQCUACARD/logo-parque.png" alt="Parque das Águas" onerror="this.style.display='none'">
     <h1>PARQUE DAS ÁGUAS</h1>
     <div class="s1">AQUACARD — Validação de Carteirinha</div>
     <div class="bg">Totem Parceiro</div>
+    <div class="pkbg" id="pkBadge">—</div>
     <div class="sy">
         <span class="sd" id="sDot" style="background:#f6e05e"></span>
         <span id="sTxt" style="color:rgba(255,255,255,.3)">Conectando...</span>
@@ -105,7 +168,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
 <div class="tabs">
     <div class="tb on" id="t1" onclick="APP.switchTab('qr')">📷 QR Code</div>
-    <div class="tb" id="t2" onclick="APP.switchTab('search')">🔍 Nome / CPF</div>
+    <div class="tb" id="t2" onclick="APP.switchTab('rel')">📊 Relatório</div>
 </div>
 
 <div class="wrap">
@@ -121,18 +184,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
         <div class="cam-st" id="camSt">Iniciando câmera...</div>
     </div>
 
-    <div class="sa" id="searchTab">
-        <div class="sb">
-            <label>Validar Carteirinha Digital</label>
-            <div class="iw">
-                <input type="text" id="sInput" placeholder="Nome ou CPF..." autocomplete="off"/>
-                <button class="sbtn" onclick="APP.buscar()">Validar</button>
+    <div id="relTab" style="display:none">
+        <div class="rel-wrap">
+            <div class="kpi-row">
+                <div class="kpi"><div class="kn" id="kHj">0</div><div class="kl">Hoje</div></div>
+                <div class="kpi"><div class="kn" id="kMs">0</div><div class="kl">Mês</div></div>
+                <div class="kpi"><div class="kn" id="kTt">0</div><div class="kl">Total</div></div>
             </div>
-            <div class="sh">Pressione ENTER ou clique em Validar</div>
+            <div class="rel-filt">
+                <input type="date" id="relDe">
+                <input type="date" id="relAte">
+            </div>
+            <div class="rel-actions">
+                <button class="rel-btn" onclick="APP.filtrarRel()">🔍 Filtrar</button>
+                <button class="rel-btn csv" onclick="APP.exportarCSV()">📊 CSV</button>
+            </div>
+            <div class="rel-list" id="relList"></div>
         </div>
-        <div class="sr" id="sRes"></div>
-        <div class="idle" id="sIdle">💳 Busque pelo nome ou CPF</div>
     </div>
+</div>
+
 </div>
 
 <div class="ft">Parque das Águas — AquaCard © 2026</div>
@@ -142,7 +213,56 @@ var APP=(function(){
 
 var FB='https://aqcuacard-default-rtdb.firebaseio.com';
 var assoc=[];
+var visitas=[];
 var online=false;
+
+/* ===== PARQUES ===== */
+var PARQUES={
+    riviera:{id:'riviera',nome:'RIVIERA',icon:'🌊',cls:'riviera'},
+    castellus:{id:'castellus',nome:'CASTELLUS',icon:'🏰',cls:'castellus'},
+    valebeach:{id:'valebeach',nome:'VALE BEACH',icon:'🏖️',cls:'valebeach'}
+};
+var PARQUE=null;
+
+/* ===== INICIALIZAÇÃO PARQUE ===== */
+function getParqueDaURL(){
+    var url=window.location.search;
+    var m=url.match(/[?&]parque=([^&]+)/i);
+    if(m&&m[1]){
+        var pk=m[1].toLowerCase().trim();
+        if(PARQUES[pk])return pk;
+    }
+    /* fallback: hash */
+    var h=window.location.hash.replace('#','').toLowerCase().trim();
+    if(PARQUES[h])return h;
+    return null;
+}
+
+function escolher(pk){
+    if(!PARQUES[pk])return;
+    PARQUE=PARQUES[pk];
+    /* salva sessão */
+    try{sessionStorage.setItem('totem_parque',pk);}catch(e){}
+    iniciarApp();
+}
+
+function iniciarApp(){
+    document.getElementById('parkSel').classList.add('hidden');
+    document.getElementById('appView').style.display='flex';
+    var bg=document.getElementById('pkBadge');
+    bg.className='pkbg '+PARQUE.cls;
+    bg.textContent=PARQUE.icon+' '+PARQUE.nome;
+    document.title='Totem '+PARQUE.nome+' | Parque das Águas';
+    loadDB();
+    loadVisitas();
+    setInterval(loadDB,15000);
+    setInterval(loadVisitas,12000);
+    initCam();
+    /* datas padrão relatório */
+    var hj=new Date(),m30=new Date(hj-30*864e5);
+    document.getElementById('relDe').value=m30.toISOString().substr(0,10);
+    document.getElementById('relAte').value=hj.toISOString().substr(0,10);
+}
 
 /* ===== DB ===== */
 function loadDB(){
@@ -163,6 +283,26 @@ function loadDB(){
     x.onerror=x.ontimeout=function(){online=false;syncUI()};
     x.send();
 }
+
+function loadVisitas(){
+    var x=new XMLHttpRequest();
+    x.open('GET',FB+'/visitas_parceiros.json',true);
+    x.timeout=12000;
+    x.onload=function(){
+        if(x.status===200){
+            try{
+                var d=JSON.parse(x.responseText);
+                visitas=[];
+                if(d){for(var k in d){var v=d[k];v._k=k;visitas.push(v)}}
+                if(document.getElementById('relTab').style.display!=='none')renderRel();
+                updateKPIs();
+            }catch(e){}
+        }
+    };
+    x.onerror=x.ontimeout=function(){};
+    x.send();
+}
+
 function syncUI(){
     var d=document.getElementById('sDot'),t=document.getElementById('sTxt');
     if(online){d.style.background='#68d391';t.textContent='Base sincronizada';t.style.color='#68d391'}
@@ -174,6 +314,9 @@ function N(s){return(s||'').toUpperCase().normalize('NFD').replace(/[\u0300-\u03
 function NC(c){return(c||'').replace(/\D/g,'')}
 function MC(c){var l=NC(c);if(l.length!==11)return c||'—';return'***.'+l.substr(3,3)+'.'+l.substr(6,3)+'-**'}
 function TS(){var n=new Date();return n.toLocaleDateString('pt-BR')+' às '+n.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
+function hojeBR(){return new Date().toLocaleDateString('pt-BR')}
+function agoraBR(){return new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}
+function hojeISO(){return new Date().toISOString().substr(0,10)}
 
 function find(val){
     if(val.indexOf('ACQUACARD|')===0){
@@ -182,11 +325,7 @@ function find(val){
         if(nm){var nn=N(nm);for(var i=0;i<assoc.length;i++){if(N(assoc[i].nome)===nn)return assoc[i]}}
         return null;
     }
-    var cb=NC(val);
-    if(/^\d{11}$/.test(cb)){for(var i=0;i<assoc.length;i++){if(NC(assoc[i].cpf)===cb)return assoc[i]}}
-    var nm=N(val);
-    for(var i=0;i<assoc.length;i++){if(N(assoc[i].nome)===nm)return assoc[i]}
-    return null;
+    return null; /* TOTEM PARCEIRO ACEITA APENAS QR ACQUACARD */
 }
 
 /* ===== CAMERA ===== */
@@ -197,6 +336,7 @@ var camStream=null;
 var scanInterval=null;
 var jsQRLoaded=false;
 var resultShowing=false;
+var assocAtual=null; /* sócio sendo confirmado */
 
 function initCam(){
     navigator.mediaDevices.getUserMedia({
@@ -215,7 +355,7 @@ function initCam(){
         };
     }).catch(function(err){
         console.log('Cam error:',err);
-        document.getElementById('camSt').innerHTML='⚠️ Câmera indisponível. Use a aba Busca.';
+        document.getElementById('camSt').innerHTML='⚠️ Câmera indisponível. Verifique permissões.';
     });
 }
 
@@ -228,20 +368,12 @@ function loadJsQR(cb){
     document.head.appendChild(s);
 }
 
-function beginScan(){
-    endScan();
-    scanInterval=setInterval(doScan,300);
-}
-
-function endScan(){
-    if(scanInterval){clearInterval(scanInterval);scanInterval=null}
-}
+function beginScan(){endScan();scanInterval=setInterval(doScan,300)}
+function endScan(){if(scanInterval){clearInterval(scanInterval);scanInterval=null}}
 
 function doScan(){
-    /* Se resultado está na tela, não processa */
-    if(resultShowing) return;
-    /* Se vídeo não está pronto, pula */
-    if(!video.videoWidth||video.readyState<video.HAVE_ENOUGH_DATA) return;
+    if(resultShowing)return;
+    if(!video.videoWidth||video.readyState<video.HAVE_ENOUGH_DATA)return;
     try{
         canvas.width=video.videoWidth;
         canvas.height=video.videoHeight;
@@ -252,12 +384,12 @@ function doScan(){
             resultShowing=true;
             handleQR(code.data);
         }
-    }catch(e){/* ignora erros de frame */}
+    }catch(e){}
 }
 
 function handleQR(txt){
     var a=find(txt);
-    if(a) showOverlay(a);
+    if(a)showOverlay(a);
     else showOverlayNF(txt);
 }
 
@@ -267,6 +399,7 @@ var ovIn=document.getElementById('ovIn');
 var camLine=document.getElementById('camLine');
 
 function showOverlay(a){
+    assocAtual=a;
     var dtc=TS();
     camLine.style.display='none';
     ov.className='ov';
@@ -277,13 +410,21 @@ function showOverlay(a){
             '<div class="ic wn">⚠</div>'+
             '<div class="tx wn">Acesso Restrito</div>'+
             '<div class="nm">'+a.nome+'</div>'+
-            '<div style="margin-top:10px;font-size:12px;color:rgba(255,255,255,.4)">Carteirinha com restrição.<br>Procure a administração.</div>'+
-            '<div class="bn" onclick="APP.nova()">🔄 Nova Consulta</div>';
+            '<div style="margin-top:8px;font-size:11px;color:rgba(255,255,255,.4)">Carteirinha com restrição.<br>Procure a administração.</div>'+
+            '<div class="dl">'+
+                '<div class="dr"><span class="k">CPF</span><span class="v">'+MC(a.cpf)+'</span></div>'+
+                (a.titulo?'<div class="dr"><span class="k">Título</span><span class="v">'+a.titulo+'</span></div>':'')+
+                '<div class="dr"><span class="k">Validação</span><span class="v">'+dtc+'</span></div>'+
+            '</div>'+
+            '<div class="btn-row">'+
+                '<div class="bn cnc" onclick="APP.cancelar()">✕ Cancelar</div>'+
+                '<div class="bn" onclick="APP.registrarTentativa()">⚠ Registrar Tentativa</div>'+
+            '</div>';
     }else{
-        ov.classList.add('show','g');
+        ov.classList.add('show','b');
         ovIn.innerHTML=
-            '<div class="ic ok">✓</div>'+
-            '<div class="tx ok">Carteirinha Válida</div>'+
+            '<div class="ic bl">🎫</div>'+
+            '<div class="tx bl">Sócio Identificado</div>'+
             '<div class="nm">'+a.nome+'</div>'+
             '<div class="aq">AQUACARD ATIVO</div>'+
             '<div class="dl">'+
@@ -294,7 +435,11 @@ function showOverlay(a){
                 (a.fim?'<div class="dr"><span class="k">Validade</span><span class="v">'+a.fim+'</span></div>':'')+
                 '<div class="dr"><span class="k">Validação</span><span class="v">'+dtc+'</span></div>'+
             '</div>'+
-            '<div class="bn" onclick="APP.nova()">🔄 Nova Consulta</div>';
+            '<div style="margin-top:12px;font-size:11px;color:rgba(255,255,255,.5);font-weight:600">Confirme a entrada no '+PARQUE.nome+'</div>'+
+            '<div class="btn-row">'+
+                '<div class="bn cnc" onclick="APP.cancelar()">✕ Cancelar</div>'+
+                '<div class="bn reg" onclick="APP.registrarAcesso()">✓ REGISTRAR ACESSO</div>'+
+            '</div>';
     }
 }
 
@@ -304,106 +449,208 @@ function showOverlayNF(txt){
     ovIn.innerHTML=
         '<div class="ic ng">✕</div>'+
         '<div class="tx ng">Não Encontrado</div>'+
-        '<div style="font-size:12px;color:rgba(255,255,255,.25);margin-top:8px">Carteirinha não identificada.</div>'+
+        '<div style="font-size:12px;color:rgba(255,255,255,.25);margin-top:8px">Carteirinha não identificada.<br>Apenas QR Code do AquaCard é aceito.</div>'+
         '<div style="font-size:9px;color:rgba(255,255,255,.1);margin-top:4px;word-break:break-all">'+txt.substring(0,80)+'</div>'+
+        '<div class="bn" onclick="APP.cancelar()">🔄 Nova Consulta</div>';
+}
+
+/* ===== TELA SUCESSO ===== */
+function showSucesso(a){
+    ov.className='ov show g';
+    ovIn.innerHTML=
+        '<div class="ic ok">✓</div>'+
+        '<div class="tx ok">Acesso Registrado</div>'+
+        '<div class="nm">'+a.nome+'</div>'+
+        '<div class="aq" style="background:'+(PARQUE.cls==='riviera'?'#22d3ee':PARQUE.cls==='castellus'?'#fbd38d':'#d6bcfa')+';color:#000">'+PARQUE.icon+' '+PARQUE.nome+'</div>'+
+        '<div style="margin-top:10px;font-size:11px;color:rgba(255,255,255,.5)">Visita registrada com sucesso<br>Sincronizada com AquaCard</div>'+
+        '<div class="bn" onclick="APP.nova()">🔄 Nova Consulta</div>';
+    /* auto-fecha em 4s */
+    setTimeout(function(){if(resultShowing)nova();},4000);
+}
+
+function showFalha(){
+    ov.className='ov show r';
+    ovIn.innerHTML=
+        '<div class="ic ng">✕</div>'+
+        '<div class="tx ng">Erro ao Registrar</div>'+
+        '<div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:8px">Falha na conexão.<br>Tente novamente.</div>'+
         '<div class="bn" onclick="APP.nova()">🔄 Nova Consulta</div>';
 }
 
+/* ===== REGISTRO DE ACESSO ===== */
+function registrarAcesso(){
+    if(!assocAtual)return;
+    salvarVisita(assocAtual,'ok');
+}
+
+function registrarTentativa(){
+    if(!assocAtual)return;
+    salvarVisita(assocAtual,'bl');
+}
+
+function salvarVisita(a,tp){
+    var visita={
+        id:'V'+Date.now()+Math.random().toString(36).substr(2,4),
+        aid:a.id,
+        nome:a.nome,
+        cpf:a.cpf||'',
+        emp:a.emp||'',
+        titulo:a.titulo||'',
+        foto:a.foto||'',
+        parqueId:PARQUE.id,
+        parqueNome:PARQUE.nome,
+        tp:tp,
+        statusSocio:a.status||'',
+        dt:hojeBR(),
+        hr:agoraBR(),
+        di:hojeISO(),
+        ts:Date.now()
+    };
+    /* feedback visual imediato */
+    ov.className='ov show b';
+    ovIn.innerHTML='<div class="ic bl">⏳</div><div class="tx bl">Registrando...</div><div style="margin-top:14px;font-size:12px;color:rgba(255,255,255,.5)">Sincronizando com AquaCard</div>';
+
+    /* salva no Firebase */
+    var x=new XMLHttpRequest();
+    x.open('POST',FB+'/visitas_parceiros.json',true);
+    x.setRequestHeader('Content-Type','application/json');
+    x.timeout=10000;
+    x.onload=function(){
+        if(x.status>=200&&x.status<300){
+            try{var r=JSON.parse(x.responseText);if(r&&r.name)visita._k=r.name;}catch(e){}
+            visitas.push(visita);
+            updateKPIs();
+            if(tp==='ok')showSucesso(a);
+            else{
+                ov.className='ov show w';
+                ovIn.innerHTML='<div class="ic wn">⚠</div><div class="tx wn">Tentativa Registrada</div><div class="nm">'+a.nome+'</div><div style="margin-top:10px;font-size:11px;color:rgba(255,255,255,.5)">Acesso bloqueado registrado<br>no '+PARQUE.nome+'</div><div class="bn" onclick="APP.nova()">🔄 Nova Consulta</div>';
+                setTimeout(function(){if(resultShowing)nova();},4000);
+            }
+        }else showFalha();
+    };
+    x.onerror=x.ontimeout=function(){showFalha()};
+    x.send(JSON.stringify(visita));
+}
+
+function cancelar(){nova()}
+
 function nova(){
-    /* Esconde overlay */
     ov.className='ov';
     ovIn.innerHTML='';
     camLine.style.display='block';
     document.getElementById('camSt').textContent='📷 Câmera ativa — aponte para o QR Code';
-
-    /* Libera scan após cooldown para evitar releitura do mesmo QR */
-    setTimeout(function(){
-        resultShowing=false;
-    },2000);
+    assocAtual=null;
+    setTimeout(function(){resultShowing=false;},1500);
 }
 
 /* ===== TABS ===== */
 function switchTab(tab){
     document.getElementById('t1').classList.toggle('on',tab==='qr');
-    document.getElementById('t2').classList.toggle('on',tab==='search');
+    document.getElementById('t2').classList.toggle('on',tab==='rel');
     document.getElementById('qrTab').style.display=tab==='qr'?'block':'none';
-    document.getElementById('searchTab').style.display=tab==='search'?'block':'none';
-
+    document.getElementById('relTab').style.display=tab==='rel'?'block':'none';
     if(tab==='qr'){
         nova();
-        if(!scanInterval&&jsQRLoaded) beginScan();
+        if(!scanInterval&&jsQRLoaded)beginScan();
     }else{
-        document.getElementById('sInput').focus();
-        document.getElementById('sRes').innerHTML='';
-        document.getElementById('sIdle').style.display='block';
+        endScan();
+        renderRel();
     }
 }
 
-/* ===== BUSCA ===== */
-function buscar(){
-    var v=document.getElementById('sInput').value.trim();
-    if(!v) return;
-    document.getElementById('sIdle').style.display='none';
-    var area=document.getElementById('sRes');
-    var dtc=TS();
-    var a=find(v);
-    if(a){sCard(a,dtc);return}
+/* ===== RELATÓRIO ===== */
+function visitasDoParque(){
+    return visitas.filter(function(v){return v.parqueId===PARQUE.id});
+}
 
-    var b=N(v),bc=NC(v),isD=/^\d+$/.test(bc)&&bc.length>=3,r=[];
-    if(isD){r=assoc.filter(function(x){return x.cpf&&NC(x.cpf).indexOf(bc)>=0})}
-    if(!r.length){r=assoc.filter(function(x){return N(x.nome).indexOf(b)>=0})}
-    if(r.length===1){sCard(r[0],dtc);return}
-    if(r.length>1){
-        area.innerHTML=r.slice(0,15).map(function(x,idx){
-            var c=x.status==='Ativo'?'ba':'bw',t=x.status==='Ativo'?'Ativo':'Restrito';
-            return'<div class="ri" data-id="'+x.id+'" onclick="APP.selS(this.dataset.id)"><div class="rn">'+x.nome+'</div><div class="'+c+'">'+t+'</div></div>';
-        }).join('');
+function updateKPIs(){
+    var minhas=visitasDoParque();
+    var hj=hojeBR();
+    var msPref=hojeISO().substr(0,7);
+    var hjC=minhas.filter(function(v){return v.dt===hj}).length;
+    var msC=minhas.filter(function(v){return (v.di||'').indexOf(msPref)===0}).length;
+    var elHj=document.getElementById('kHj'),elMs=document.getElementById('kMs'),elTt=document.getElementById('kTt');
+    if(elHj)elHj.textContent=hjC;
+    if(elMs)elMs.textContent=msC;
+    if(elTt)elTt.textContent=minhas.length;
+}
+
+function filtrarRel(){renderRel()}
+
+function renderRel(){
+    updateKPIs();
+    var de=document.getElementById('relDe').value;
+    var ate=document.getElementById('relAte').value;
+    var L=visitasDoParque().filter(function(v){
+        if(de&&v.di<de)return false;
+        if(ate&&v.di>ate)return false;
+        return true;
+    }).sort(function(a,b){return (b.ts||0)-(a.ts||0)});
+
+    var box=document.getElementById('relList');
+    if(!L.length){
+        box.innerHTML='<div class="rel-empty"><div class="ic-big">📭</div>Nenhuma visita registrada<br><span style="font-size:10px;color:rgba(255,255,255,.15)">no período selecionado</span></div>';
         return;
     }
-    area.innerHTML='<div class="sc sn"><div class="ic ng">✕</div><div class="tx ng">Não Encontrado</div><div style="font-size:12px;color:rgba(255,255,255,.2);margin-top:6px">Nenhum associado encontrado.</div><div class="bn" onclick="APP.limS()">🔄 Nova Consulta</div></div>';
+    box.innerHTML=L.slice(0,300).map(function(v){
+        var ok=v.tp==='ok';
+        var meta=[];
+        if(v.cpf)meta.push(MC(v.cpf));
+        if(v.emp)meta.push('🏢 '+v.emp);
+        if(v.titulo)meta.push('🎫 '+v.titulo);
+        return '<div class="rel-item">'+
+            '<div><div class="rt">'+v.hr.substr(0,5)+'</div><div class="rd">'+v.dt+'</div></div>'+
+            '<div class="ri-info">'+
+                '<div class="ri-nome">'+v.nome+'</div>'+
+                (meta.length?'<div class="ri-meta">'+meta.join(' · ')+'</div>':'')+
+            '</div>'+
+            '<div class="ri-st">'+(ok?'<span style="background:rgba(0,200,100,.15);color:#00e676;padding:3px 9px;border-radius:14px;font-size:10px;font-weight:700">✓ OK</span>':'<span style="background:rgba(229,62,62,.15);color:#fc5c65;padding:3px 9px;border-radius:14px;font-size:10px;font-weight:700">⛔ Bloq</span>')+'</div>'+
+        '</div>';
+    }).join('')+(L.length>300?'<div class="rel-empty" style="padding:12px;font-size:10px">Mostrando 300 de '+L.length+' — refine os filtros</div>':'');
 }
 
-function selS(id){
-    for(var i=0;i<assoc.length;i++){if(assoc[i].id===id){sCard(assoc[i],TS());return}}
-}
+function exportarCSV(){
+    var de=document.getElementById('relDe').value;
+    var ate=document.getElementById('relAte').value;
+    var L=visitasDoParque().filter(function(v){
+        if(de&&v.di<de)return false;
+        if(ate&&v.di>ate)return false;
+        return true;
+    }).sort(function(a,b){return (b.ts||0)-(a.ts||0)});
 
-function sCard(a,dtc){
-    var area=document.getElementById('sRes');
-    if(a.status==='Acesso Restrito'){
-        area.innerHTML='<div class="sc swb"><div class="ic wn">⚠</div><div class="tx wn">Acesso Restrito</div><div class="nm">'+a.nome+'</div><div style="margin-top:8px;font-size:12px;color:rgba(255,255,255,.35)">Procure a administração.</div><div class="bn" onclick="APP.limS()">🔄 Nova Consulta</div></div>';
-    }else{
-        area.innerHTML='<div class="sc sv"><div class="ic ok">✓</div><div class="tx ok">Carteirinha Válida</div><div class="nm">'+a.nome+'</div><div class="aq">AQUACARD ATIVO</div><div class="dl">'+
-            '<div class="dr"><span class="k">Status</span><span class="v" style="color:#00e676;font-weight:700">'+a.status+'</span></div>'+
-            '<div class="dr"><span class="k">CPF</span><span class="v">'+MC(a.cpf)+'</span></div>'+
-            (a.emp?'<div class="dr"><span class="k">Empresa</span><span class="v">'+a.emp+'</span></div>':'')+
-            (a.titulo?'<div class="dr"><span class="k">Título</span><span class="v">'+a.titulo+'</span></div>':'')+
-            (a.fim?'<div class="dr"><span class="k">Validade</span><span class="v">'+a.fim+'</span></div>':'')+
-            '<div class="dr"><span class="k">Validação</span><span class="v">'+dtc+'</span></div>'+
-            '</div><div class="bn" onclick="APP.limS()">🔄 Nova Consulta</div></div>';
-    }
+    if(!L.length){alert('Nenhuma visita no período');return}
+    var c='\uFEFF"Data";"Hora";"Nome";"CPF";"Empresa";"Titulo";"Status Socio";"Resultado";"Parque"\n';
+    L.forEach(function(v){
+        c+='"'+v.dt+'";"'+v.hr+'";"'+(v.nome||'')+'";"'+(v.cpf||'')+'";"'+(v.emp||'')+'";"'+(v.titulo||'')+'";"'+(v.statusSocio||'')+'";"'+(v.tp==='ok'?'Liberado':'Bloqueado')+'";"'+v.parqueNome+'"\n';
+    });
+    var b=new Blob([c],{type:'text/csv;charset=utf-8;'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(b);
+    a.download='visitas_'+PARQUE.id+'_'+hojeISO()+'.csv';
+    a.click();
 }
-
-function limS(){
-    document.getElementById('sInput').value='';
-    document.getElementById('sRes').innerHTML='';
-    document.getElementById('sIdle').style.display='block';
-    document.getElementById('sInput').focus();
-}
-
-document.getElementById('sInput').addEventListener('keydown',function(e){if(e.key==='Enter')buscar()});
 
 /* ===== INIT ===== */
-loadDB();
-setInterval(loadDB,15000);
-initCam();
+var pkInicial=getParqueDaURL();
+if(!pkInicial){
+    /* tenta sessão */
+    try{var s=sessionStorage.getItem('totem_parque');if(s&&PARQUES[s])pkInicial=s;}catch(e){}
+}
+if(pkInicial){
+    PARQUE=PARQUES[pkInicial];
+    iniciarApp();
+}
+/* senão, tela de seleção fica visível */
 
-/* API pública */
 return{
     nova:nova,
     switchTab:switchTab,
-    buscar:buscar,
-    selS:selS,
-    limS:limS
+    escolher:escolher,
+    registrarAcesso:registrarAcesso,
+    registrarTentativa:registrarTentativa,
+    cancelar:cancelar,
+    filtrarRel:filtrarRel,
+    exportarCSV:exportarCSV
 };
 
 })();
