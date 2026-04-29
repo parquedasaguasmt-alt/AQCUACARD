@@ -178,16 +178,14 @@
         @keyframes spin{to{transform:rotate(360deg)}}
         .lov p{color:var(--t3);font-size:.95rem}
         .lov .rbtn{margin-top:20px;display:none;padding:10px 24px;background:var(--gold);color:var(--bg);border:none;border-radius:8px;font-size:.92rem;font-weight:700;cursor:pointer;font-family:inherit}
-        .foto-thumb{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--ok-b)}
-        .foto-thumb-ph{width:48px;height:48px;border-radius:50%;background:var(--hover);display:flex;align-items:center;justify-content:center;font-size:1.2rem;border:2px solid var(--bd)}
         .pass-group{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:12px;overflow:hidden}
-        .pass-group-h{padding:16px 24px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .15s;border-bottom:1px solid transparent}
+        .pass-group-h{padding:16px 24px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .15s;border-bottom:1px solid transparent;gap:12px}
         .pass-group-h:hover{background:var(--elev)}
         .pass-group-h.opn{border-bottom-color:var(--bd)}
         .pass-group-h .pg-left{display:flex;align-items:center;gap:12px}
-        .pass-group-h .pg-code{font-size:1.1rem;font-weight:800;color:var(--cyan);min-width:60px}
+        .pass-group-h .pg-code{font-size:1.1rem;font-weight:800;color:var(--cyan);min-width:60px;background:var(--cyan-d);border:1px solid var(--cyan-b);padding:6px 10px;border-radius:8px;text-align:center}
         .pass-group-h .pg-info{font-size:.82rem;color:var(--t3)}
-        .pass-group-h .pg-count{background:var(--cyan-d);color:var(--cyan);border:1px solid var(--cyan-b);padding:4px 12px;border-radius:12px;font-size:.78rem;font-weight:700}
+        .pass-group-h .pg-count{background:var(--cyan-d);color:var(--cyan);border:1px solid var(--cyan-b);padding:4px 12px;border-radius:12px;font-size:.78rem;font-weight:700;white-space:nowrap}
         .pass-group-b{display:none;padding:0}
         .pass-group-b.opn{display:block}
         .pass-group-b .tbl tbody td{padding:12px 20px}
@@ -208,16 +206,11 @@
         .rs{text-align:center;padding:14px 10px;background:var(--elev);border-radius:10px;border:1px solid var(--bd)}
         .rs .rv{font-size:1.6rem;font-weight:800}.rs .rl{font-size:.78rem;font-weight:600;color:var(--t3);margin-top:2px}
         .rs.rgo .rv{color:var(--gold)}.rs.rgn .rv{color:var(--ok)}.rs.rbl .rv{color:var(--blue)}.rs.rpu .rv{color:var(--acc)}.rs.rrd .rv{color:var(--err)}.rs.rcy .rv{color:var(--cyan)}
-        .sbi{display:flex;align-items:center;gap:14px;padding:14px 24px;border-bottom:1px solid var(--bd);transition:background .15s}
-        .sbi:last-child{border-bottom:none}.sbi:hover{background:var(--elev)}
-        .sbi .sic{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:rgba(255,255,255,.03);border:1px solid var(--bd);flex-shrink:0}
-        .sbi .sin{flex:1;min-width:0}.sbi .sbn{font-weight:700;font-size:.92rem;color:var(--t1)}.sbi .sbd{font-size:.78rem;color:var(--t3)}
-        .sbi .sbc{font-size:1.3rem;font-weight:800;color:var(--gold);flex-shrink:0;min-width:40px;text-align:right}
-        .sbi .sbw{flex-shrink:0;width:120px;height:6px;background:var(--hover);border-radius:3px;overflow:hidden}
-        .sbi .sb{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold),#e0b85e);transition:width .6s}
-        .sbi .sb.sb-cy{background:linear-gradient(90deg,var(--cyan),#67e8f9)}
-        .sbi .sbc.sbc-cy{color:var(--cyan)}
-        @media(max-width:768px){.grid{grid-template-columns:1fr}.hdr{padding:0 14px;gap:8px}.etb{flex-direction:column;text-align:center}.em{flex-direction:column;gap:6px}.sbi .sbw{display:none}.lar{flex-direction:column}}
+        .total-row{padding:18px 24px;background:var(--elev);border-top:2px solid var(--bd2);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+        .total-row .tr-label{font-weight:800;color:var(--t1);font-size:.95rem}
+        .total-row .tr-stats{display:flex;gap:18px;flex-wrap:wrap;font-size:.85rem}
+        .total-row .tr-stats span{font-weight:700}
+        @media(max-width:768px){.grid{grid-template-columns:1fr}.hdr{padding:0 14px;gap:8px}.etb{flex-direction:column;text-align:center}.em{flex-direction:column;gap:6px}.lar{flex-direction:column}.pass-group-h{flex-direction:column;align-items:flex-start}.pass-group-h .pg-count{align-self:flex-end}}
     </style>
 </head>
 <body>
@@ -257,7 +250,6 @@
     <div class="cnt">
         <div class="kr" id="cK"></div>
 
-        <!-- Aviso institucional para modo direto (empresa) -->
         <div class="info-box hdn" id="infoBoxEmpresa">
             <h4>📋 Painel de Consulta — Sua Empresa</h4>
             <p>Este é o portal exclusivo da sua empresa para <strong>conferir os colaboradores ativos</strong> com acesso aos parques e <strong>acompanhar o histórico de movimentações</strong> (inclusões, exclusões e substituições).</p>
@@ -273,7 +265,6 @@
     </div>
 </div>
 
-<!-- RELATÓRIO CDL -->
 <div id="vCdlRp" class="hdn">
     <div class="hdr"><img class="logo" src="https://parquedasaguasmt-alt.github.io/AQCUACARD/logo-parque.png" onerror="this.style.display='none'" alt=""><div class="dv"></div><span class="tt">Relatório Empresarial</span><span class="et">CDL</span><div class="sp"></div><button class="bbk" onclick="goHome()">← Voltar</button></div>
     <div class="cnt" id="cdlRpContent"></div>
@@ -332,40 +323,38 @@ function togWp(){var s=document.getElementById('wpS');s.style.display=s.style.di
 function upMP(){document.getElementById('mpv').textContent=buildMsg(curLK);}
 function doWp(){var num=document.getElementById('wpN').value.replace(/\D/g,''),fn=num;if(num.length>=10&&num.length<=11)fn='55'+num;openWA(buildMsg(curLK),fn);closeLink();toast('📤 WhatsApp aberto!','ok');}
 
-/* ===== RELATÓRIO CDL ===== */
+/* ===== RELATÓRIO CDL CONSOLIDADO ===== */
 function buildCdlReportHTML(){
     var keys=Object.keys(cos),tA=0,tR=0,tG=0,cd=[];
-    for(var i=0;i<keys.length;i++){var co=cos[keys[i]],a=0,r=0;for(var j=0;j<co.staff.length;j++){if(co.staff[j].status==='active')a++;if(co.staff[j].status==='restricted')r++;}tA+=a;tR+=r;tG+=co.staff.length;cd.push({name:co.name,icon:co.icon,a:a,r:r,t:co.staff.length});}
+    for(var i=0;i<keys.length;i++){var co=cos[keys[i]],a=0,r=0;for(var j=0;j<co.staff.length;j++){if(co.staff[j].status==='active')a++;if(co.staff[j].status==='restricted')r++;}tA+=a;tR+=r;tG+=co.staff.length;cd.push({key:keys[i],name:co.name,icon:co.icon,a:a,r:r,t:co.staff.length});}
     var tSub=hist.length;
     var mx=1;for(var l=0;l<cd.length;l++)if(cd[l].a>mx)mx=cd[l].a;
     cd.sort(function(a,b){return b.a-a.a;});
 
     var rr='<div class="rp"><div class="rp-h"><h3>📊 Relatório — Passaportes Empresariais CDL</h3><div class="tb2">🏛️ CDL Nova Mutum × Parque das Águas</div></div>';
-    rr+='<div class="rsm"><div class="rs rgo"><div class="rv">'+keys.length+'</div><div class="rl">Empresas</div></div><div class="rs rgn"><div class="rv">'+tA+'</div><div class="rl">Sócios Ativos</div></div><div class="rs rrd"><div class="rv">'+tR+'</div><div class="rl">Restritos</div></div><div class="rs rbl"><div class="rv">'+tG+'</div><div class="rl">Total Geral</div></div><div class="rs rpu"><div class="rv">'+tSub+'</div><div class="rl">Movimentações</div></div></div>';
+    rr+='<div class="rsm"><div class="rs rgo"><div class="rv">'+keys.length+'</div><div class="rl">Empresas</div></div><div class="rs rgn"><div class="rv">'+tA+'</div><div class="rl">Sócios Ativos</div></div><div class="rs rrd"><div class="rv">'+tR+'</div><div class="rl">Restritos</div></div><div class="rs rbl"><div class="rv">'+tG+'</div><div class="rl">Total Geral</div></div><div class="rs rpu"><div class="rv">'+tSub+'</div><div class="rl">Movimentações</div></div></div></div>';
 
-    rr+='<div style="padding:20px 24px 10px;"><div style="font-size:.92rem;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:14px;">🏆 Ranking por Empresa</div></div>';
-    for(var m=0;m<cd.length;m++){var c=cd[m],p=Math.round((c.a/mx)*100);rr+='<div class="sbi"><div class="sic">'+c.icon+'</div><div class="sin"><div class="sbn">'+c.name+'</div><div class="sbd">'+c.a+' ativo'+(c.a!==1?'s':'')+(c.r>0?' · <span style="color:var(--err);">'+c.r+' restrito'+(c.r!==1?'s':'')+'</span>':'')+'</div></div><div class="sbw"><div class="sb" style="width:'+p+'%"></div></div><div class="sbc">'+c.a+'</div></div>';}
-    rr+='</div>';
-
-    rr+='<div class="pnl"><div class="pnl-h"><div class="pnl-t">📋 Detalhamento por Empresa</div></div><div class="pnl-b"><table class="tbl"><thead><tr><th>Empresa</th><th>Ativos</th><th>Restritos</th><th>Total</th><th>%</th></tr></thead><tbody>';
-    for(var n=0;n<cd.length;n++){var cc=cd[n],pct=tA>0?((cc.a/tA)*100).toFixed(1):'0';rr+='<tr><td><strong>'+cc.icon+' '+cc.name+'</strong></td><td style="color:var(--ok);font-weight:700;">'+cc.a+'</td><td style="color:'+(cc.r>0?'var(--err)':'var(--t4)')+';font-weight:600;">'+cc.r+'</td><td>'+cc.t+'</td><td style="color:var(--gold);font-weight:700;">'+pct+'%</td></tr>';}
-    rr+='<tr style="background:var(--elev);font-weight:700;"><td>TOTAL</td><td style="color:var(--ok);">'+tA+'</td><td style="color:var(--err);">'+tR+'</td><td>'+tG+'</td><td style="color:var(--gold);">100%</td></tr></tbody></table></div></div>';
-
-    rr+='<div class="pnl"><div class="pnl-h"><div class="pnl-t">👥 Colaboradores por Empresa</div><div style="font-size:.78rem;color:var(--t4);">Clique para expandir</div></div><div class="pnl-b">';
-    for(var e=0;e<cd.length;e++){
-        var ek=null;for(var ek2 in cos)if(cos[ek2].name===cd[e].name){ek=ek2;break;}
-        if(!ek)continue;var co2=cos[ek],gid='cdlg_'+e;
-        rr+='<div class="pass-group"><div class="pass-group-h" onclick="var b=document.getElementById(\''+gid+'\');b.classList.toggle(\'opn\');this.classList.toggle(\'opn\')"><div class="pg-left"><span style="font-size:1.1rem;">'+co2.icon+'</span><span class="pg-info"><strong style="color:var(--t1);">'+co2.name+'</strong> — '+cd[e].a+' ativo'+(cd[e].a!==1?'s':'')+'</span></div><span class="pg-count">'+cd[e].t+' sócio'+(cd[e].t!==1?'s':'')+'</span></div>';
+    /* BLOCO ÚNICO: Empresas CDL */
+    rr+='<div class="pnl"><div class="pnl-h"><div class="pnl-t">🏛️ Passaportes Empresariais — Detalhamento Completo</div><div style="font-size:.78rem;color:var(--t4);">Clique na empresa para ver os colaboradores</div></div><div class="pnl-b">';
+    for(var m=0;m<cd.length;m++){
+        var c=cd[m],p=Math.round((c.a/mx)*100),pct=tA>0?((c.a/tA)*100).toFixed(1):'0',co2=cos[c.key],gid='cdlg_'+m;
+        rr+='<div class="pass-group">';
+        rr+='<div class="pass-group-h" onclick="var b=document.getElementById(\''+gid+'\');b.classList.toggle(\'opn\');this.classList.toggle(\'opn\')">';
+        rr+='<div class="pg-left" style="flex:1;min-width:0;"><span style="font-size:1.3rem;flex-shrink:0;">'+c.icon+'</span><div style="flex:1;min-width:0;"><div style="font-weight:700;color:var(--t1);font-size:.95rem;">'+c.name+'</div><div style="font-size:.78rem;color:var(--t3);margin-top:2px;"><span style="color:var(--ok);font-weight:700;">'+c.a+' ativo'+(c.a!==1?'s':'')+'</span>'+(c.r>0?' · <span style="color:var(--err);font-weight:700;">'+c.r+' restrito'+(c.r!==1?'s':'')+'</span>':'')+' · Total '+c.t+' · '+pct+'%</div><div style="margin-top:6px;width:100%;height:5px;background:var(--hover);border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+p+'%;background:linear-gradient(90deg,var(--gold),#e0b85e);border-radius:3px;"></div></div></div></div>';
+        rr+='<span class="pg-count">'+c.t+' sócio'+(c.t!==1?'s':'')+'</span></div>';
         rr+='<div class="pass-group-b" id="'+gid+'"><table class="tbl"><thead><tr><th>#</th><th>Nome</th><th>CPF</th><th>Telefone</th><th>Status</th></tr></thead><tbody>';
         for(var s=0;s<co2.staff.length;s++){var st=co2.staff[s],sts=st.status==='restricted'?'<span class="pill p-rs">⚠️ Restrito</span>':'<span class="pill p-ok">● Ativo</span>';rr+='<tr'+(st.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'><td>'+(s+1)+'</td><td><strong>'+st.name+'</strong></td><td>'+(st.cpf||'—')+'</td><td>'+(st.tel||'—')+'</td><td>'+sts+'</td></tr>';}
         rr+='</tbody></table></div></div>';
     }
+    rr+='<div class="total-row"><div class="tr-label">📊 TOTAL GERAL</div><div class="tr-stats"><span style="color:var(--ok);">✅ '+tA+' ativos</span><span style="color:var(--err);">⚠️ '+tR+' restritos</span><span style="color:var(--gold);">👥 '+tG+' total</span></div></div>';
     rr+='</div></div>';
 
+    /* Histórico */
     if(hist.length){
         rr+='<div class="pnl"><div class="pnl-h"><div class="pnl-t">📜 Histórico de Movimentações</div></div><div class="pnl-b">';
-        for(var h=0;h<hist.length;h++){
-            var hi=hist[h],tipo=hi.tipo||'sub',ic='🔄',tt='Substituição';
+        var hsorted=hist.slice().sort(function(a,b){return (b._k||0)>(a._k||0)?1:-1;});
+        for(var h=0;h<hsorted.length;h++){
+            var hi=hsorted[h],tipo=hi.tipo||'sub',ic='🔄',tt='Substituição';
             if(tipo==='add'){ic='🟢';tt='Inclusão';}else if(tipo==='rem'){ic='🔴';tt='Exclusão';}
             var det=tipo==='add'?('🟢 Entrou: '+hi.inName):tipo==='rem'?('🔴 Saiu: '+hi.outName):('🔴 '+hi.outName+' → 🟢 '+hi.inName);
             rr+='<div class="he"><div class="ht"><span class="hn">'+ic+' '+hi.companyName+' — '+tt+'</span><span class="hd">'+hi.date+'</span></div><div style="font-size:.85rem;color:var(--t2);margin-top:4px;">'+det+'</div></div>';
@@ -401,8 +390,6 @@ function openComp(key){
     curCo=key;var co=cos[key];if(!co){toast('Não encontrada','err');return;}
     document.getElementById('vHome').classList.add('hdn');document.getElementById('vComp').classList.remove('hdn');document.getElementById('vAdm').classList.add('hdn');document.getElementById('vCdlRp').classList.add('hdn');
     document.getElementById('bbkC').style.display=dirMode?'none':'';
-
-    /* Mostra info-box institucional sempre que estiver na visão da empresa */
     document.getElementById('infoBoxEmpresa').classList.remove('hdn');
 
     document.getElementById('cN').textContent=co.icon+' '+co.name;document.getElementById('cC').textContent='Painel de consulta — Sincronizado em tempo real';
@@ -419,10 +406,9 @@ function openComp(key){
     if(!rows)rows='<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--t3);">Nenhum colaborador</td></tr>';
     document.getElementById('cTbl').innerHTML=rows;
 
-    /* Timeline de movimentações */
     var hs=[];for(var p2=0;p2<hist.length;p2++)if(hist[p2].company===key)hs.push(hist[p2]);
     hs.sort(function(a,b){return (b._k||0)>(a._k||0)?1:-1;});
-    var tlEl=document.getElementById('cTL'),tlBody=document.getElementById('cTLB');
+    var tlBody=document.getElementById('cTLB');
     if(!hs.length){
         tlBody.innerHTML='<div style="text-align:center;padding:40px;color:var(--t3);font-size:.88rem;">📭 Nenhuma movimentação registrada ainda.<br><span style="font-size:.78rem;color:var(--t4);">Inclusões, substituições e exclusões aparecerão aqui.</span></div>';
     }else{
@@ -474,31 +460,54 @@ function rAdm(){
     rReport();
 }
 
+/* ===== RELATÓRIO ADMIN CONSOLIDADO ===== */
 function rReport(){
     var keys=Object.keys(cos),tA=0,tR=0,tG=0,cd=[];
-    for(var i=0;i<keys.length;i++){var co=cos[keys[i]],a=0,r=0;for(var j=0;j<co.staff.length;j++){if(co.staff[j].status==='active')a++;if(co.staff[j].status==='restricted')r++;}tA+=a;tR+=r;tG+=co.staff.length;cd.push({name:co.name,icon:co.icon,a:a,r:r,t:co.staff.length});}
+    for(var i=0;i<keys.length;i++){var co=cos[keys[i]],a=0,r=0;for(var j=0;j<co.staff.length;j++){if(co.staff[j].status==='active')a++;if(co.staff[j].status==='restricted')r++;}tA+=a;tR+=r;tG+=co.staff.length;cd.push({key:keys[i],name:co.name,icon:co.icon,a:a,r:r,t:co.staff.length});}
     var sem=0;for(var k=0;k<raw.length;k++)if(!(raw[k].emp||'').trim())sem++;
     var pg=getPassGroups(),pgKeys=Object.keys(pg).sort(function(a,b){var na=parseInt(a)||0,nb=parseInt(b)||0;if(na&&nb)return na-nb;return a.localeCompare(b);}),totalPassDiretos=pgKeys.length,totalSociosDiretos=0;
     for(var pi=0;pi<pgKeys.length;pi++)totalSociosDiretos+=pg[pgKeys[pi]].members.length;
     var mx=1;for(var l=0;l<cd.length;l++)if(cd[l].a>mx)mx=cd[l].a;
     cd.sort(function(a,b){return b.a-a.a;});
-    var rr='<div class="rp"><div class="rp-h"><h3>📊 Relatório Geral</h3><div class="tb2">👥 '+tA+' ativos em '+keys.length+' empresas</div></div><div class="rsm"><div class="rs rgo"><div class="rv">'+keys.length+'</div><div class="rl">Empresas CDL</div></div><div class="rs rgn"><div class="rv">'+tA+'</div><div class="rl">Ativos CDL</div></div><div class="rs rrd"><div class="rv">'+tR+'</div><div class="rl">Restritos</div></div><div class="rs rcy"><div class="rv">'+totalPassDiretos+'</div><div class="rl">Passaportes Diretos</div></div><div class="rs rbl"><div class="rv">'+totalSociosDiretos+'</div><div class="rl">Sócios Diretos</div></div><div class="rs rpu"><div class="rv">'+sem+'</div><div class="rl">Sem Empresa</div></div></div>';
-    rr+='<div style="padding:20px 24px 10px;"><div style="font-size:.92rem;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:14px;">🏛️ Passaportes Empresariais — CDL</div></div>';
-    for(var m=0;m<cd.length;m++){var c=cd[m],p=Math.round((c.a/mx)*100);rr+='<div class="sbi"><div class="sic">'+c.icon+'</div><div class="sin"><div class="sbn">'+c.name+'</div><div class="sbd">'+c.a+' ativo'+(c.a!==1?'s':'')+(c.r>0?' · <span style="color:var(--err);">'+c.r+' restrito'+(c.r!==1?'s':'')+'</span>':'')+'</div></div><div class="sbw"><div class="sb" style="width:'+p+'%"></div></div><div class="sbc">'+c.a+'</div></div>';}
-    rr+='</div>';
-    rr+='<div class="pnl"><div class="pnl-h"><div class="pnl-t">📋 Detalhamento CDL</div></div><div class="pnl-b"><table class="tbl"><thead><tr><th>Empresa</th><th>Ativos</th><th>Restritos</th><th>Total</th><th>%</th></tr></thead><tbody>';
-    for(var n=0;n<cd.length;n++){var cc=cd[n],pct=tA>0?((cc.a/tA)*100).toFixed(1):'0';rr+='<tr><td><strong>'+cc.icon+' '+cc.name+'</strong></td><td style="color:var(--ok);font-weight:700;">'+cc.a+'</td><td style="color:'+(cc.r>0?'var(--err)':'var(--t4)')+';font-weight:600;">'+cc.r+'</td><td>'+cc.t+'</td><td style="color:var(--gold);font-weight:700;">'+pct+'%</td></tr>';}
-    rr+='<tr style="background:var(--elev);font-weight:700;"><td>TOTAL CDL</td><td style="color:var(--ok);">'+tA+'</td><td style="color:var(--err);">'+tR+'</td><td>'+tG+'</td><td style="color:var(--gold);">100%</td></tr></tbody></table></div></div>';
-    if(pgKeys.length>0){var mxD=1;for(var pd=0;pd<pgKeys.length;pd++){var cnt=pg[pgKeys[pd]].members.length;if(cnt>mxD)mxD=cnt;}
-    rr+='<div class="rp"><div class="rp-h"><h3>🌊 Passaportes Diretos — Parque das Águas</h3><div class="tb2">🎫 '+totalPassDiretos+' passaportes · '+totalSociosDiretos+' sócios</div></div><div style="padding:20px 24px 10px;"><div style="font-size:.82rem;font-weight:600;color:var(--t3);margin-bottom:10px;">Agrupados pelo código do passaporte</div></div>';
-    for(var pd2=0;pd2<pgKeys.length;pd2++){var grp=pg[pgKeys[pd2]],pW=Math.round((grp.members.length/mxD)*100),acD=0,rsD=0;for(var gm=0;gm<grp.members.length;gm++){if(grp.members[gm].status==='active')acD++;if(grp.members[gm].status==='restricted')rsD++;}rr+='<div class="sbi"><div class="sic" style="background:var(--cyan-d);border-color:var(--cyan-b);color:var(--cyan);font-weight:800;font-size:.95rem;">'+grp.code+'</div><div class="sin"><div class="sbn">Passaporte '+grp.code+'</div><div class="sbd">'+acD+' ativo'+(acD!==1?'s':'')+(rsD>0?' · <span style="color:var(--err);">'+rsD+' restrito'+(rsD!==1?'s':'')+'</span>':'')+'</div></div><div class="sbw"><div class="sb sb-cy" style="width:'+pW+'%"></div></div><div class="sbc sbc-cy">'+grp.members.length+'</div></div>';}
-    rr+='</div>';
-    rr+='<div class="pnl"><div class="pnl-h"><div class="pnl-t">👥 Sócios por Passaporte</div><div style="font-size:.78rem;color:var(--t4);">Clique para expandir</div></div><div class="pnl-b">';
-    for(var pd3=0;pd3<pgKeys.length;pd3++){var grp2=pg[pgKeys[pd3]],gid='pg_'+pd3,acD2=0,rsD2=0;for(var gm2=0;gm2<grp2.members.length;gm2++){if(grp2.members[gm2].status==='active')acD2++;if(grp2.members[gm2].status==='restricted')rsD2++;}
-    rr+='<div class="pass-group"><div class="pass-group-h" onclick="var b=document.getElementById(\''+gid+'\');b.classList.toggle(\'opn\');this.classList.toggle(\'opn\')"><div class="pg-left"><span class="pg-code">'+grp2.code+'</span><span class="pg-info">'+acD2+' ativo'+(acD2!==1?'s':'')+(rsD2>0?' · '+rsD2+' restrito'+(rsD2!==1?'s':''):'')+'</span></div><span class="pg-count">'+grp2.members.length+' sócio'+(grp2.members.length!==1?'s':'')+'</span></div><div class="pass-group-b" id="'+gid+'"><table class="tbl"><thead><tr><th>#</th><th>Nome</th><th>CPF</th><th>Telefone</th><th>Empresa</th><th>Status</th></tr></thead><tbody>';
-    for(var gm3=0;gm3<grp2.members.length;gm3++){var mb=grp2.members[gm3],sts=mb.status==='restricted'?'<span class="pill p-rs">⚠️ Restrito</span>':'<span class="pill p-ok">● Ativo</span>';rr+='<tr'+(mb.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'><td>'+(gm3+1)+'</td><td><strong>'+mb.name+'</strong></td><td>'+(mb.cpf||'—')+'</td><td>'+(mb.tel||'—')+'</td><td style="font-size:.82rem;color:var(--t3);">'+(mb.emp||'—')+'</td><td>'+sts+'</td></tr>';}
-    rr+='</tbody></table></div></div>';}
-    rr+='</div></div>';}
+
+    /* HEADER */
+    var rr='<div class="rp"><div class="rp-h"><h3>📊 Relatório Geral</h3><div class="tb2">👥 '+tA+' ativos em '+keys.length+' empresas</div></div><div class="rsm"><div class="rs rgo"><div class="rv">'+keys.length+'</div><div class="rl">Empresas CDL</div></div><div class="rs rgn"><div class="rv">'+tA+'</div><div class="rl">Ativos CDL</div></div><div class="rs rrd"><div class="rv">'+tR+'</div><div class="rl">Restritos</div></div><div class="rs rcy"><div class="rv">'+totalPassDiretos+'</div><div class="rl">Passaportes Diretos</div></div><div class="rs rbl"><div class="rv">'+totalSociosDiretos+'</div><div class="rl">Sócios Diretos</div></div><div class="rs rpu"><div class="rv">'+sem+'</div><div class="rl">Sem Empresa</div></div></div></div>';
+
+    /* BLOCO ÚNICO: Passaportes Empresariais CDL */
+    rr+='<div class="pnl"><div class="pnl-h"><div class="pnl-t">🏛️ Passaportes Empresariais — CDL</div><div style="font-size:.78rem;color:var(--t4);">Clique na empresa para ver os colaboradores</div></div><div class="pnl-b">';
+    for(var m=0;m<cd.length;m++){
+        var c=cd[m],p=Math.round((c.a/mx)*100),pct=tA>0?((c.a/tA)*100).toFixed(1):'0',co2=cos[c.key],gid='admg_'+m;
+        rr+='<div class="pass-group">';
+        rr+='<div class="pass-group-h" onclick="var b=document.getElementById(\''+gid+'\');b.classList.toggle(\'opn\');this.classList.toggle(\'opn\')">';
+        rr+='<div class="pg-left" style="flex:1;min-width:0;"><span style="font-size:1.3rem;flex-shrink:0;">'+c.icon+'</span><div style="flex:1;min-width:0;"><div style="font-weight:700;color:var(--t1);font-size:.95rem;">'+c.name+'</div><div style="font-size:.78rem;color:var(--t3);margin-top:2px;"><span style="color:var(--ok);font-weight:700;">'+c.a+' ativo'+(c.a!==1?'s':'')+'</span>'+(c.r>0?' · <span style="color:var(--err);font-weight:700;">'+c.r+' restrito'+(c.r!==1?'s':'')+'</span>':'')+' · Total '+c.t+' · '+pct+'%</div><div style="margin-top:6px;width:100%;height:5px;background:var(--hover);border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+p+'%;background:linear-gradient(90deg,var(--gold),#e0b85e);border-radius:3px;"></div></div></div></div>';
+        rr+='<span class="pg-count">'+c.t+' sócio'+(c.t!==1?'s':'')+'</span></div>';
+        rr+='<div class="pass-group-b" id="'+gid+'"><table class="tbl"><thead><tr><th>#</th><th>Nome</th><th>CPF</th><th>Telefone</th><th>Status</th></tr></thead><tbody>';
+        for(var s=0;s<co2.staff.length;s++){var st=co2.staff[s],sts=st.status==='restricted'?'<span class="pill p-rs">⚠️ Restrito</span>':'<span class="pill p-ok">● Ativo</span>';rr+='<tr'+(st.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'><td>'+(s+1)+'</td><td><strong>'+st.name+'</strong></td><td>'+(st.cpf||'—')+'</td><td>'+(st.tel||'—')+'</td><td>'+sts+'</td></tr>';}
+        rr+='</tbody></table></div></div>';
+    }
+    rr+='<div class="total-row"><div class="tr-label">📊 TOTAL CDL</div><div class="tr-stats"><span style="color:var(--ok);">✅ '+tA+' ativos</span><span style="color:var(--err);">⚠️ '+tR+' restritos</span><span style="color:var(--gold);">👥 '+tG+' total</span></div></div>';
+    rr+='</div></div>';
+
+    /* BLOCO ÚNICO: Passaportes Diretos */
+    if(pgKeys.length>0){
+        var mxD=1;for(var pd=0;pd<pgKeys.length;pd++){var cnt=pg[pgKeys[pd]].members.length;if(cnt>mxD)mxD=cnt;}
+        rr+='<div class="pnl"><div class="pnl-h"><div class="pnl-t">🌊 Passaportes Diretos — Parque das Águas</div><div style="font-size:.78rem;color:var(--t4);">Clique no passaporte para ver os sócios</div></div><div class="pnl-b">';
+        for(var pd2=0;pd2<pgKeys.length;pd2++){
+            var grp=pg[pgKeys[pd2]],pW=Math.round((grp.members.length/mxD)*100),acD=0,rsD=0,gid2='pg_'+pd2;
+            for(var gm=0;gm<grp.members.length;gm++){if(grp.members[gm].status==='active')acD++;if(grp.members[gm].status==='restricted')rsD++;}
+            var pctD=totalSociosDiretos>0?((grp.members.length/totalSociosDiretos)*100).toFixed(1):'0';
+            rr+='<div class="pass-group">';
+            rr+='<div class="pass-group-h" onclick="var b=document.getElementById(\''+gid2+'\');b.classList.toggle(\'opn\');this.classList.toggle(\'opn\')">';
+            rr+='<div class="pg-left" style="flex:1;min-width:0;"><span class="pg-code">'+grp.code+'</span><div style="flex:1;min-width:0;"><div style="font-weight:700;color:var(--t1);font-size:.95rem;">Passaporte '+grp.code+'</div><div style="font-size:.78rem;color:var(--t3);margin-top:2px;"><span style="color:var(--ok);font-weight:700;">'+acD+' ativo'+(acD!==1?'s':'')+'</span>'+(rsD>0?' · <span style="color:var(--err);font-weight:700;">'+rsD+' restrito'+(rsD!==1?'s':'')+'</span>':'')+' · '+pctD+'%</div><div style="margin-top:6px;width:100%;height:5px;background:var(--hover);border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+pW+'%;background:linear-gradient(90deg,var(--cyan),#67e8f9);border-radius:3px;"></div></div></div></div>';
+            rr+='<span class="pg-count">'+grp.members.length+' sócio'+(grp.members.length!==1?'s':'')+'</span></div>';
+            rr+='<div class="pass-group-b" id="'+gid2+'"><table class="tbl"><thead><tr><th>#</th><th>Nome</th><th>CPF</th><th>Telefone</th><th>Empresa</th><th>Status</th></tr></thead><tbody>';
+            for(var gm3=0;gm3<grp.members.length;gm3++){var mb=grp.members[gm3],sts2=mb.status==='restricted'?'<span class="pill p-rs">⚠️ Restrito</span>':'<span class="pill p-ok">● Ativo</span>';rr+='<tr'+(mb.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'><td>'+(gm3+1)+'</td><td><strong>'+mb.name+'</strong></td><td>'+(mb.cpf||'—')+'</td><td>'+(mb.tel||'—')+'</td><td style="font-size:.82rem;color:var(--t3);">'+(mb.emp||'—')+'</td><td>'+sts2+'</td></tr>';}
+            rr+='</tbody></table></div></div>';
+        }
+        rr+='<div class="total-row"><div class="tr-label">📊 TOTAL DIRETOS</div><div class="tr-stats"><span style="color:var(--cyan);">🎫 '+totalPassDiretos+' passaportes</span><span style="color:var(--gold);">👥 '+totalSociosDiretos+' sócios</span></div></div>';
+        rr+='</div></div>';
+    }
+
     document.getElementById('aRp').innerHTML=rr;
 }
 
