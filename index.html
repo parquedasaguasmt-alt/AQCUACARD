@@ -62,6 +62,7 @@ td{padding:10px;border-bottom:1px solid #edf2f7}tr:hover td{background:#f7fafc}
 .bvc{display:inline-block;padding:2px 8px;background:#fefcbf;color:#744210;border-radius:16px;font-size:10px;font-weight:600}
 .bvn{display:inline-block;padding:2px 8px;background:#fed7d7;color:#742a2a;border-radius:16px;font-size:10px;font-weight:600}
 .bpq{display:inline-block;padding:2px 8px;background:#bee3f8;color:#2a4365;border-radius:16px;font-size:10px;font-weight:600}
+.btit{display:inline-block;padding:2px 8px;background:#fef3c7;color:#78350f;border-radius:16px;font-size:10px;font-weight:700}
 .nr{text-align:center;padding:30px;color:#a0aec0;font-size:13px}
 .fg{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fg .full{grid-column:1/-1}
 .fl{font-size:11px;font-weight:600;color:#4a5568;margin-bottom:4px}
@@ -174,6 +175,29 @@ td{padding:10px;border-bottom:1px solid #edf2f7}tr:hover td{background:#f7fafc}
 .audit-detail{font-size:10px;color:#718096;margin-top:4px;padding:6px 10px;background:#f7fafc;border-radius:6px;border-left:3px solid #cbd5e0}
 .audit-detail strong{color:#2d3748}
 .audit-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+/* ===== BUSCA MANUAL DE ACESSO ===== */
+.man-search-wrap{position:relative}
+.man-search-input{width:100%;padding:12px 40px 12px 14px;border:2px solid #0a4c7a;border-radius:8px;font-size:15px;font-weight:600;background:#fff}
+.man-search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#e2e8f0;border:none;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px;color:#4a5568;display:none;align-items:center;justify-content:center;font-weight:700}
+.man-search-clear:hover{background:#cbd5e0;color:#2d3748}
+.man-search-clear.show{display:flex}
+.man-results{margin-top:10px;max-height:340px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:10px;background:#f7fafc}
+.man-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #edf2f7;cursor:pointer;transition:background .15s;background:#fff}
+.man-item:hover{background:#ebf8ff}
+.man-item:last-child{border-bottom:none}
+.man-item.disabled{cursor:not-allowed;opacity:.55}
+.man-item.disabled:hover{background:#fff}
+.man-item-info{flex:1;min-width:0}
+.man-item-name{font-weight:700;color:#2d3748;font-size:13px;line-height:1.3}
+.man-item-meta{font-size:10px;color:#718096;margin-top:3px;display:flex;gap:8px;flex-wrap:wrap}
+.man-item-meta span{display:inline-flex;align-items:center}
+.man-item-action{flex-shrink:0;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;color:#fff;background:#38a169;border:none;cursor:pointer}
+.man-item-action.blocked{background:#e53e3e}
+.man-item-action.blocked:hover{background:#c53030}
+.man-item-action:hover{background:#2f855a}
+.man-count{font-size:11px;color:#718096;margin-top:6px;text-align:center;font-weight:600}
+.man-helper{font-size:11px;color:#4a5568;margin-top:6px;background:#ebf8ff;padding:8px 12px;border-radius:6px;line-height:1.5;border-left:3px solid #0a4c7a}
+.man-helper strong{color:#0a4c7a}
 @media(max-width:600px){.acqua-card{width:100%;max-width:540px;height:auto;aspect-ratio:54/32}.acqua-card .foto-box{width:90px;height:108px}.acqua-card .brand{left:118px;right:88px}.acqua-card .brand .ttl{font-size:20px}.acqua-card .qr-area{width:72px;height:72px}.fg{grid-template-columns:1fr}.kpi-grid{grid-template-columns:1fr 1fr}.hdr{padding:14px 16px}.hdr h1{font-size:15px}.tb{padding:10px 12px;font-size:11px}}
 @media print{body *{visibility:hidden}.print-area,.print-area *{visibility:visible}.print-area{position:absolute;left:50%;top:20px;transform:translateX(-50%)}}
 </style>
@@ -350,27 +374,18 @@ function registrarAuditoria(acao,tipo,alvo,detalhes){
     if(document.getElementById('p-auditoria').classList.contains('act'))renderAuditoria();
 }
 
-/* ===== INTEGRAÇÃO TIMELINE EMPRESARIAL (link da empresa) =====
-   Grava em 'passaportes_history' no Firebase sempre que houver
-   movimentação de associado empresarial. Alimenta automaticamente
-   a timeline mostrada no linkempresa.html.
-*/
+/* ===== INTEGRAÇÃO TIMELINE EMPRESARIAL ===== */
 function eKeyEmpresa(nome){
-    /* Mesma lógica do linkempresa.html para casar a chave da empresa */
     try{
         var u=(nome||'').trim().toUpperCase();
         return btoa(unescape(encodeURIComponent(u))).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
     }catch(e){return'';}
 }
 function registrarMovimentacaoEmpresarial(tipo,assoc,extra){
-    /* tipo: 'add' | 'rem' | 'sub'
-       assoc: objeto associado principal
-       extra: { outName, inName } para casos de substituição
-    */
     if(!assoc)return;
     if(!isEmpresarial(assoc))return;
     var emp=(assoc.emp||'').trim().toUpperCase();
-    if(!emp)return; /* só registra se tiver empresa nomeada */
+    if(!emp)return;
     var entry={
         tipo:tipo,
         company:emp,
@@ -423,7 +438,6 @@ function verificarVigencias(){
             a.status='Acesso Restrito';
             fbSaveAssoc(a,true);
             registrarAuditoria('Vigência expirada → Restrito automaticamente','vig',a.nome,'Fim do contrato: '+a.fim);
-            /* timeline empresarial: vencimento = exclusão automática */
             registrarMovimentacaoEmpresarial('rem',a);
             alterados++;
         }
@@ -480,12 +494,10 @@ function cadastrar(){
     var n=document.getElementById('cNome').value.trim();if(!n){toast('Nome!','er');return;}
     var emp=document.getElementById('cEmp').value.trim().toUpperCase();
     var titulo=document.getElementById('cTitulo').value.trim();
-    /* CDL só pode cadastrar empresariais */
     if(USER.role==='cdl'&&!emp&&titulo.toUpperCase().indexOf('-E')<0){toast('⚠️ CDL só cadastra empresariais. Preencha Empresa ou use -E no Título','er');return;}
     var novo={id:gid(),nome:n.toUpperCase(),cpf:document.getElementById('cCPF').value.trim(),tel:document.getElementById('cTel').value.trim(),emp:emp,titulo:titulo,ini:document.getElementById('cIni').value.trim(),fim:document.getElementById('cVenc').value.trim(),status:document.getElementById('cSt').value,foto:cadFotoData||'',dt:hoje()};
     fbSaveAssoc(novo);
     registrarAuditoria('Criou novo associado','cre',novo.nome,(emp?'Empresa: '+emp+' · ':'')+(titulo?'Título: '+titulo:'')+' · CPF: '+(novo.cpf||'—'));
-    /* timeline empresarial: novo cadastro empresarial = inclusão (apenas se Ativo) */
     if(novo.status==='Ativo')registrarMovimentacaoEmpresarial('add',novo);
     cadFotoData='';['cNome','cCPF','cTel','cEmp','cTitulo','cIni','cVenc'].forEach(function(id){document.getElementById(id).value='';});
     var ph=document.getElementById('cFotoImg');if(ph)ph.outerHTML='<div style="width:64px;height:64px;border-radius:8px;background:#edf2f7;display:flex;align-items:center;justify-content:center;font-size:28px;color:#a0aec0" id="cFotoPh">&#128100;</div>';
@@ -504,58 +516,38 @@ function editar(id){var a=find(id);if(!a)return;if(!podeVer(a)){toast('⚠️ Ac
 function salvarEd(id){
     var a=find(id);if(!a)return;
     var novo={nome:document.getElementById('eN').value.trim().toUpperCase(),cpf:document.getElementById('eC').value.trim(),tel:document.getElementById('eT').value.trim(),emp:document.getElementById('eE').value.trim().toUpperCase(),titulo:document.getElementById('eTi').value.trim(),ini:document.getElementById('eI').value.trim(),fim:document.getElementById('eF').value.trim(),status:document.getElementById('eS').value};
-    /* Detectar mudanças */
     var mudancas=[];
     var labels={nome:'Nome',cpf:'CPF',tel:'Telefone',emp:'Empresa',titulo:'Título',ini:'Entrada',fim:'Fim',status:'Status'};
     for(var k in novo){if(editOriginal[k]!==novo[k])mudancas.push(labels[k]+': "'+(editOriginal[k]||'—')+'" → "'+(novo[k]||'—')+'"');}
 
-    /* Snapshot ANTES de aplicar mudanças (para timeline empresarial) */
-    var antes={
-        nome:editOriginal.nome,
-        emp:editOriginal.emp,
-        titulo:editOriginal.titulo,
-        status:editOriginal.status
-    };
+    var antes={nome:editOriginal.nome,emp:editOriginal.emp,titulo:editOriginal.titulo,status:editOriginal.status};
     var antesEmpresarial=isEmpresarial(antes);
-    var depois={
-        nome:novo.nome,
-        emp:novo.emp,
-        titulo:novo.titulo,
-        status:novo.status
-    };
+    var depois={nome:novo.nome,emp:novo.emp,titulo:novo.titulo,status:novo.status};
     var depoisEmpresarial=isEmpresarial(depois);
 
-    /* Aplica mudanças */
     a.nome=novo.nome;a.cpf=novo.cpf;a.tel=novo.tel;a.emp=novo.emp;a.titulo=novo.titulo;a.ini=novo.ini;a.fim=novo.fim;a.status=novo.status;
     if(editFotoData!==null){a.foto=editFotoData;mudancas.push('Foto alterada');}
     editFotoData=null;editOriginal=null;
     fbSaveAssoc(a);
     if(mudancas.length>0)registrarAuditoria('Editou associado','edt',a.nome,mudancas.join(' · '));
 
-    /* ===== Timeline empresarial — detecção inteligente ===== */
-    /* Caso 1: trocou nome dentro da mesma empresa empresarial = SUBSTITUIÇÃO */
     if(antesEmpresarial&&depoisEmpresarial&&antes.emp===depois.emp&&antes.emp&&antes.nome!==depois.nome&&antes.status==='Ativo'&&depois.status==='Ativo'){
         registrarMovimentacaoEmpresarial('sub',a,{outName:antes.nome,inName:depois.nome});
     }
-    /* Caso 2: era ativo empresarial e virou restrito = EXCLUSÃO */
     else if(antesEmpresarial&&antes.status==='Ativo'&&depois.status==='Acesso Restrito'){
         var assocAntes={nome:antes.nome,emp:antes.emp,titulo:antes.titulo};
         registrarMovimentacaoEmpresarial('rem',assocAntes);
     }
-    /* Caso 3: era restrito e virou ativo (reativação) empresarial = INCLUSÃO */
     else if(depoisEmpresarial&&antes.status==='Acesso Restrito'&&depois.status==='Ativo'){
         registrarMovimentacaoEmpresarial('add',a);
     }
-    /* Caso 4: deixou de ser empresarial (perdeu emp) = EXCLUSÃO da empresa antiga */
     else if(antesEmpresarial&&!depoisEmpresarial&&antes.emp&&antes.status==='Ativo'){
         var assocAntes2={nome:antes.nome,emp:antes.emp,titulo:antes.titulo};
         registrarMovimentacaoEmpresarial('rem',assocAntes2);
     }
-    /* Caso 5: virou empresarial agora = INCLUSÃO na nova empresa */
     else if(!antesEmpresarial&&depoisEmpresarial&&depois.emp&&depois.status==='Ativo'){
         registrarMovimentacaoEmpresarial('add',a);
     }
-    /* Caso 6: trocou de empresa empresarial = saiu de uma + entrou em outra */
     else if(antesEmpresarial&&depoisEmpresarial&&antes.emp&&depois.emp&&antes.emp!==depois.emp){
         if(antes.status==='Ativo'){var saida={nome:antes.nome,emp:antes.emp,titulo:antes.titulo};registrarMovimentacaoEmpresarial('rem',saida);}
         if(depois.status==='Ativo')registrarMovimentacaoEmpresarial('add',a);
@@ -569,7 +561,6 @@ function excluir(id){
     if(!podeVer(a)){toast('Acesso negado','er');return;}
     if(!confirm('Excluir '+a.nome+'?'))return;
     registrarAuditoria('Excluiu associado','del',a.nome,'CPF: '+(a.cpf||'—')+(a.emp?' · Empresa: '+a.emp:''));
-    /* timeline empresarial: se era ativo empresarial = exclusão */
     if(isEmpresarial(a)&&a.status==='Ativo')registrarMovimentacaoEmpresarial('rem',a);
     fbRemoveAssoc(a);renderTodos();toast('Excluido','in');
 }
@@ -589,8 +580,130 @@ function cancelarImport(){pendImp=[];document.getElementById('impPreview').style
 function regAcesso(a){var ok=a.status==='Ativo';fbSaveLog({id:'L'+Date.now(),aid:a.id,nome:a.nome,emp:a.emp||'',tp:ok?'ok':'bl',dt:hoje(),hr:agora(),di:hojeISO(),ts:Date.now()});}
 function resolverAssociado(v){var a=null;if(v.indexOf('ACQUACARD|')===0){var p=v.split('|');a=find(p[1]);if(!a)for(var i=0;i<db.length;i++)if(db[i].nome===p[2]){a=db[i];break;}}if(!a){var q=v.toUpperCase();for(var i=0;i<db.length;i++)if(db[i].nome.indexOf(q)>=0){a=db[i];break;}}return a;}
 function processarAcesso(){var v=document.getElementById('inpAcesso').value.trim();if(!v){toast('Digite','er');return;}var a=resolverAssociado(v),box=document.getElementById('acessoResult');box.style.display='block';if(!a){box.className='cd acesso-ng';box.innerHTML='<div style="text-align:center;padding:20px"><div style="font-size:50px">&#10060;</div><div style="font-size:18px;font-weight:900;color:#e53e3e">NAO ENCONTRADO</div></div>';document.getElementById('inpAcesso').value='';setTimeout(function(){box.style.display='none';},3000);return;}regAcesso(a);var ok=a.status==='Ativo';var dias=diasAteVencimento(a);var vigMsg='';if(ok&&dias!==null&&dias<=30&&dias>=0)vigMsg='<div style="background:#fffff0;border:1px solid #f6e05e;border-radius:8px;padding:8px;margin-top:10px;font-size:12px;color:#744210">⏰ Vence em <strong>'+dias+' dia'+(dias!==1?'s':'')+'</strong></div>';box.className='cd '+(ok?'acesso-ok':'acesso-ng');box.innerHTML='<div style="text-align:center;padding:20px">'+(a.foto?'<img src="'+a.foto+'" style="width:90px;height:90px;border-radius:50%;object-fit:cover;margin-bottom:10px;border:4px solid '+(ok?'#68d391':'#fc8181')+'"><br>':'')+'<div style="font-size:60px">'+(ok?'&#9989;':'&#9940;')+'</div><div style="font-size:24px;font-weight:900;color:'+(ok?'#22543d':'#c53030')+'">'+(ok?'LIBERADO':'BLOQUEADO')+'</div><div style="font-size:20px;font-weight:700;margin-top:8px">'+a.nome+'</div>'+(!ok&&dias!==null&&dias<0?'<div style="font-size:12px;color:#c53030;margin-top:6px">Vencido há '+Math.abs(dias)+' dias</div>':'')+vigMsg+'</div>';document.getElementById('inpAcesso').value='';pararCameraAcesso();setTimeout(function(){box.style.display='none';},4000);}
-function registroManual(){var opts=db.filter(function(a){return a.status==='Ativo';}).map(function(a){return'<option value="'+a.id+'">'+a.nome+'</option>';}).join('');document.getElementById('mTit').textContent='Registro Manual';document.getElementById('mBody').innerHTML='<select id="selMan"><option>Escolha...</option>'+opts+'</select><div style="margin-top:14px;text-align:right"><button class="btn bg" onclick="confMan()">Registrar</button></div>';document.getElementById('modalBg').classList.add('act');}
-function confMan(){var id=document.getElementById('selMan').value;var a=find(id);if(!a){toast('Selecione','er');return;}regAcesso(a);fecharModal();toast(a.nome+' - entrada!');}
+
+/* ===== REGISTRO MANUAL — BUSCA EDITÁVEL POR NOME, CPF, EMPRESA, TÍTULO ===== */
+function registroManual(){
+    document.getElementById('mTit').textContent='🔎 Registro Manual de Acesso';
+    document.getElementById('mBody').innerHTML=
+        '<div class="man-helper">🔍 Pesquise por <strong>Nome, CPF, Empresa</strong> ou <strong>Número do Título</strong>. Você pode editar e corrigir o que digitou a qualquer momento.</div>'+
+        '<div class="man-search-wrap" style="margin-top:12px">'+
+            '<input type="text" id="manBusca" class="man-search-input" placeholder="Digite nome, CPF, empresa ou título..." autocomplete="off" oninput="filtrarManual()" onkeydown="if(event.key===\'Escape\')limparManBusca()">'+
+            '<button type="button" class="man-search-clear" id="manClear" onclick="limparManBusca()" title="Limpar">✕</button>'+
+        '</div>'+
+        '<div class="man-count" id="manCount">Digite ao menos 1 caractere para buscar</div>'+
+        '<div class="man-results" id="manResults"></div>';
+    document.getElementById('modalBg').classList.add('act');
+    setTimeout(function(){var i=document.getElementById('manBusca');if(i)i.focus();},120);
+}
+
+function limparManBusca(){
+    var inp=document.getElementById('manBusca');
+    if(inp){inp.value='';inp.focus();filtrarManual();}
+}
+
+function filtrarManual(){
+    var inp=document.getElementById('manBusca');
+    if(!inp)return;
+    var q=inp.value.trim().toLowerCase();
+    var qDigits=q.replace(/\D/g,'');
+    var clear=document.getElementById('manClear');
+    var box=document.getElementById('manResults');
+    var cnt=document.getElementById('manCount');
+
+    if(q){clear.classList.add('show');}else{clear.classList.remove('show');}
+
+    if(!q){
+        cnt.textContent='Digite ao menos 1 caractere para buscar';
+        box.innerHTML='';
+        return;
+    }
+
+    var base=db.slice();
+    /* Busca multi-campo: nome, cpf, empresa, título */
+    var resultados=base.filter(function(a){
+        if(!a)return false;
+        var nome=(a.nome||'').toLowerCase();
+        var emp=(a.emp||'').toLowerCase();
+        var titulo=(a.titulo||'').toString().toLowerCase();
+        var cpfDigits=(a.cpf||'').replace(/\D/g,'');
+        if(nome.indexOf(q)>=0)return true;
+        if(emp&&emp.indexOf(q)>=0)return true;
+        if(titulo&&titulo.indexOf(q)>=0)return true;
+        if(qDigits&&qDigits.length>=3&&cpfDigits&&cpfDigits.indexOf(qDigits)>=0)return true;
+        return false;
+    });
+
+    /* Ordena: ativos primeiro, depois por nome */
+    resultados.sort(function(a,b){
+        if(a.status==='Ativo'&&b.status!=='Ativo')return -1;
+        if(a.status!=='Ativo'&&b.status==='Ativo')return 1;
+        return (a.nome||'').localeCompare(b.nome||'');
+    });
+
+    if(!resultados.length){
+        cnt.innerHTML='<span style="color:#e53e3e">⚠️ Nenhum associado encontrado para "<strong>'+q.replace(/[<>]/g,'')+'</strong>"</span>';
+        box.innerHTML='<div class="nr" style="padding:20px">Verifique se digitou corretamente.<br><span style="font-size:11px;color:#a0aec0">Você pode editar o campo acima para corrigir.</span></div>';
+        return;
+    }
+
+    var max=80;
+    var lista=resultados.slice(0,max);
+    cnt.textContent='✅ '+resultados.length+' encontrado'+(resultados.length>1?'s':'')+(resultados.length>max?' (mostrando '+max+')':'')+' — clique para registrar entrada';
+
+    box.innerHTML=lista.map(function(a){
+        var ok=a.status==='Ativo';
+        var stPill=ok?'<span class="ba">Ativo</span>':'<span class="brs">Restrito</span>';
+        var tip=isEmpresarial(a)?'<span class="bemp">🏛️ Empresarial</span>':'<span class="bpq">🌊 Parque</span>';
+        var meta=[];
+        if(a.cpf)meta.push('<span>📄 '+a.cpf+'</span>');
+        if(a.emp)meta.push('<span>🏢 '+a.emp+'</span>');
+        if(a.titulo)meta.push('<span class="btit">🎫 '+a.titulo+'</span>');
+        var actBtn=ok?
+            '<button class="man-item-action" data-mid="'+a.id+'">✓ Registrar</button>':
+            '<button class="man-item-action blocked" data-mid="'+a.id+'">⊘ Tentar</button>';
+        return '<div class="man-item'+(ok?'':' '/* sempre clicável para registrar bloqueio */)+'" data-mid="'+a.id+'">'+
+            fotoHTML(a.foto)+
+            '<div class="man-item-info">'+
+                '<div class="man-item-name">'+a.nome+'</div>'+
+                '<div class="man-item-meta">'+stPill+' '+tip+(meta.length?' '+meta.join(' '):'')+'</div>'+
+            '</div>'+
+            actBtn+
+        '</div>';
+    }).join('');
+
+    /* Liga clique nos itens */
+    box.querySelectorAll('[data-mid]').forEach(function(el){
+        el.addEventListener('click',function(ev){
+            ev.stopPropagation();
+            var id=el.getAttribute('data-mid');
+            confirmarRegistroManual(id);
+        });
+    });
+}
+
+function confirmarRegistroManual(id){
+    var a=find(id);
+    if(!a){toast('Associado não encontrado','er');return;}
+    regAcesso(a);
+    var ok=a.status==='Ativo';
+    fecharModal();
+    /* Mostra resultado visual no painel principal */
+    var box=document.getElementById('acessoResult');
+    if(box){
+        box.style.display='block';
+        box.className='cd '+(ok?'acesso-ok':'acesso-ng');
+        box.innerHTML='<div style="text-align:center;padding:20px">'+
+            (a.foto?'<img src="'+a.foto+'" style="width:90px;height:90px;border-radius:50%;object-fit:cover;margin-bottom:10px;border:4px solid '+(ok?'#68d391':'#fc8181')+'"><br>':'')+
+            '<div style="font-size:60px">'+(ok?'✅':'⛔')+'</div>'+
+            '<div style="font-size:24px;font-weight:900;color:'+(ok?'#22543d':'#c53030')+'">'+(ok?'LIBERADO':'BLOQUEADO')+'</div>'+
+            '<div style="font-size:20px;font-weight:700;margin-top:8px">'+a.nome+'</div>'+
+            '<div style="font-size:11px;color:#718096;margin-top:6px">📝 Registro manual</div>'+
+        '</div>';
+        setTimeout(function(){box.style.display='none';},4000);
+    }
+    toast((ok?'✅ ':'⚠️ ')+a.nome+' — '+(ok?'Entrada registrada':'Bloqueado registrado'),ok?'ok':'wr');
+}
+
 var acStream=null,acScan=false;
 function iniciarCameraAcesso(){if(acStream){pararCameraAcesso();return;}document.getElementById('acessoReaderArea').style.display='block';navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(function(s){acStream=s;document.getElementById('acessoVideo').srcObject=s;document.getElementById('acessoVideo').play();acScan=true;loadJsQR(function(){scanAcesso();});}).catch(function(e){toast('Camera: '+e.message,'er');});}
 function pararCameraAcesso(){acScan=false;if(acStream){acStream.getTracks().forEach(function(t){t.stop()});acStream=null;}document.getElementById('acessoReaderArea').style.display='none';}
@@ -627,7 +740,6 @@ function renderAuditoria(){
     if(f.t!=='todos')L=L.filter(function(e){return e.tipo===f.t;});
     if(q)L=L.filter(function(e){return(e.alvo||'').toLowerCase().indexOf(q)>=0||(e.acao||'').toLowerCase().indexOf(q)>=0;});
 
-    /* KPIs */
     var byUser={Admin:0,'Adriana Rodrigues':0,'Gilvane Grochoski':0};var total=auditLog.length;
     auditLog.forEach(function(e){if(byUser[e.usuario]!==undefined)byUser[e.usuario]++;});
     document.getElementById('auditKPIs').innerHTML='<div class="kpi"><div class="kn" style="color:#0a4c7a">'+total+'</div><div class="kl">Total Geral</div></div><div class="kpi"><div class="kn" style="color:#7b341e">'+byUser.Admin+'</div><div class="kl">Admin</div></div><div class="kpi"><div class="kn" style="color:#0a4c7a">'+byUser['Adriana Rodrigues']+'</div><div class="kl">Adriana</div></div><div class="kpi"><div class="kn" style="color:#0a4c7a">'+byUser['Gilvane Grochoski']+'</div><div class="kl">Gilvane</div></div>';
