@@ -35,8 +35,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .st .n{font-size:20px;font-weight:800}.st .l{font-size:9px;text-transform:uppercase;opacity:.8}
 .sync-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:12px;font-size:9px;font-weight:700}
 .sync-on{background:rgba(56,161,105,.25);color:#9ae6b4}.sync-off{background:rgba(229,62,62,.25);color:#feb2b2}
+.sync-paused{background:rgba(214,158,46,.25);color:#fbd38d}
 .sync-dot{width:7px;height:7px;border-radius:50%;animation:pulse 2s infinite}
-.sync-dot.on{background:#68d391}.sync-dot.off{background:#fc8181}
+.sync-dot.on{background:#68d391}.sync-dot.off{background:#fc8181}.sync-dot.pa{background:#f6ad55}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .scope-badge{display:inline-block;background:rgba(212,168,83,.3);color:#fef3c7;padding:4px 12px;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:.5px;margin-top:4px}
 .scope-badge.cdl{background:rgba(96,165,250,.3);color:#dbeafe}
@@ -350,9 +351,34 @@ function podeVer(a){
     return isEmpresarial(a);
 }
 
-/* ===== VARIÁVEIS GLOBAIS — INCLUI visitasParc PARA PARQUES PARCEIROS ===== */
+/* ===== VARIÁVEIS GLOBAIS ===== */
 var WP_NUMERO='5565996210387',db=[],logAc=[],delLog=[],auditLog=[],visitasParc=[],isOnline=false,fbOk=false;
 var FB_URL='https://aqcuacard-default-rtdb.firebaseio.com';
+
+/* ===== OTIMIZAÇÃO: CACHE LOCAL + CONTROLE DE POLLING ===== */
+var CACHE_KEYS={db:'acqua_db_v2',logAc:'acqua_logAc_v2',delLog:'acqua_delLog_v2',auditLog:'acqua_auditLog_v2',visitasParc:'acqua_visitasParc_v2',ts:'acqua_ts_v2',vigCheck:'acqua_vigCheck_v2'};
+var ultimoLogTs=0,ultimoAuditTs=0,ultimoVisitaTs=0;
+var pollTimer=null,pollAtivo=false,abaVisivel=true,ultimaInteracao=Date.now();
+var POLL_INT_ATIVO=15000;   // aba visível e usuário ativo
+var POLL_INT_INATIVO=60000; // aba visível mas usuário parado >2min
+var POLL_INT_OCULTO=180000; // aba oculta (3min)
+var INATIVIDADE_MS=120000;  // 2 min sem mexer = inativo
+
+function cacheSalvar(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function cacheLer(k){try{var v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch(e){return null;}}
+
+function carregarCacheLocal(){
+    var c;
+    c=cacheLer(CACHE_KEYS.db);if(c&&c.length){db=c;}
+    c=cacheLer(CACHE_KEYS.logAc);if(c&&c.length){logAc=c;}
+    c=cacheLer(CACHE_KEYS.delLog);if(c&&c.length){delLog=c;}
+    c=cacheLer(CACHE_KEYS.auditLog);if(c&&c.length){auditLog=c;}
+    c=cacheLer(CACHE_KEYS.visitasParc);if(c&&c.length){visitasParc=c;}
+    var ts=cacheLer(CACHE_KEYS.ts);
+    if(ts){ultimoLogTs=ts.log||0;ultimoAuditTs=ts.audit||0;ultimoVisitaTs=ts.visita||0;}
+    if(db.length){stats();atualizarFeed();}
+}
+function salvarCacheTs(){cacheSalvar(CACHE_KEYS.ts,{log:ultimoLogTs,audit:ultimoAuditTs,visita:ultimoVisitaTs});}
 
 /* ===== AUDITORIA ===== */
 function registrarAuditoria(acao,tipo,alvo,detalhes){
@@ -370,6 +396,8 @@ function registrarAuditoria(acao,tipo,alvo,detalhes){
         ts:Date.now()
     };
     auditLog.push(entry);
+    if(entry.ts>ultimoAuditTs)ultimoAuditTs=entry.ts;
+    cacheSalvar(CACHE_KEYS.auditLog,auditLog);salvarCacheTs();
     fbPost('auditoria',entry,function(e,r){if(!e&&r&&r.name)entry._fbKey=r.name;});
     if(document.getElementById('p-auditoria').classList.contains('act'))renderAuditoria();
 }
@@ -426,7 +454,11 @@ function parseDateBR(str){if(!str)return null;str=String(str).trim();var m;if((m
 function diasAteVencimento(a){var d=parseDateBR(a.fim);if(!d)return null;var hj=new Date();hj.setHours(0,0,0,0);var dt=new Date(d);dt.setHours(0,0,0,0);return Math.ceil((dt-hj)/(1000*60*60*24));}
 function vigenciaBadge(a){var dias=diasAteVencimento(a);if(dias===null)return'<span class="bi">Sem data</span>';if(dias<0)return'<span class="bvn">Vencido '+Math.abs(dias)+'d</span>';if(dias===0)return'<span class="bvn">Vence hoje</span>';if(dias<=30)return'<span class="bvc">'+dias+'d restantes</span>';return'<span class="ba">'+dias+'d</span>';}
 
-function verificarVigencias(){
+/* OTIMIZAÇÃO: vigência roda 1x/dia */
+function verificarVigencias(forcar){
+    var ultimo=cacheLer(CACHE_KEYS.vigCheck);
+    var hojeStr=hojeISO();
+    if(!forcar&&ultimo===hojeStr)return;
     var hj=new Date();hj.setHours(23,59,59,999);
     var alterados=0;
     for(var i=0;i<db.length;i++){
@@ -442,7 +474,8 @@ function verificarVigencias(){
             alterados++;
         }
     }
-    if(alterados>0)toast('⏰ '+alterados+' contrato'+(alterados>1?'s':'')+' vencido'+(alterados>1?'s':'')+' → Restrito','wr');
+    cacheSalvar(CACHE_KEYS.vigCheck,hojeStr);
+    if(alterados>0){toast('⏰ '+alterados+' contrato'+(alterados>1?'s':'')+' vencido'+(alterados>1?'s':'')+' → Restrito','wr');cacheSalvar(CACHE_KEYS.db,db);}
     stats();renderVigencia();
 }
 
@@ -458,38 +491,209 @@ function renderVigencia(){
     var aEl=document.getElementById('vigAtivos');if(emDia.length){aEl.style.display='';document.getElementById('vigAtivosList').innerHTML=emDia.slice(0,50).map(function(v){return'<div class="venc-item"><div class="vi-days ok">'+v.dias+'d</div>'+fotoHTML(v.a.foto)+'<div style="flex:1"><strong>'+v.a.nome+'</strong><br><span style="font-size:10px;color:#718096">'+(v.a.emp||'—')+' · Fim: '+(v.a.fim||'—')+'</span></div>'+badge(v.a.status)+'</div>';}).join('')+(emDia.length>50?'<div class="nr">... e mais '+(emDia.length-50)+'</div>':'');}else aEl.style.display='none';
 }
 
-function updateSyncUI(){var el=document.getElementById('syncStatus'),cm=document.getElementById('cloudStatusMsg');if(isOnline){el.innerHTML='<div class="sync-badge sync-on"><div class="sync-dot on"></div>SINCRONIZADO</div>';if(cm){cm.innerHTML='<strong>&#9989; Conectado!</strong> Dados sincronizados.';cm.className='alert-g';}}else{el.innerHTML='<div class="sync-badge sync-off"><div class="sync-dot off"></div>OFFLINE</div>';if(cm){cm.innerHTML='<strong>&#9888; Offline</strong>';cm.className='alert-y';}}}
+function updateSyncUI(){var el=document.getElementById('syncStatus'),cm=document.getElementById('cloudStatusMsg');if(!el)return;if(!isOnline){el.innerHTML='<div class="sync-badge sync-off"><div class="sync-dot off"></div>OFFLINE</div>';if(cm){cm.innerHTML='<strong>&#9888; Offline</strong>';cm.className='alert-y';}return;}if(!abaVisivel||(Date.now()-ultimaInteracao>INATIVIDADE_MS)){el.innerHTML='<div class="sync-badge sync-paused"><div class="sync-dot pa"></div>SINC ECONOMIA</div>';}else{el.innerHTML='<div class="sync-badge sync-on"><div class="sync-dot on"></div>SINCRONIZADO</div>';}if(cm){cm.innerHTML='<strong>&#9989; Conectado!</strong> Sincronização inteligente ativa (economia de dados).';cm.className='alert-g';}}
+
 function fbGet(p,cb){var x=new XMLHttpRequest();x.open('GET',FB_URL+'/'+p+'.json',true);x.timeout=8000;x.onload=function(){if(x.status===200)try{cb(null,JSON.parse(x.responseText))}catch(e){cb(e)}else cb(new Error(x.status))};x.onerror=function(){cb(new Error('Net'))};x.ontimeout=function(){cb(new Error('T'))};x.send();}
 function fbPut(p,d,cb){var x=new XMLHttpRequest();x.open('PUT',FB_URL+'/'+p+'.json',true);x.setRequestHeader('Content-Type','application/json');x.timeout=8000;x.onload=function(){if(cb)cb(null)};x.onerror=function(){if(cb)cb(new Error('Net'))};x.send(JSON.stringify(d));}
 function fbPost(p,d,cb){var x=new XMLHttpRequest();x.open('POST',FB_URL+'/'+p+'.json',true);x.setRequestHeader('Content-Type','application/json');x.timeout=8000;x.onload=function(){if(cb)try{cb(null,JSON.parse(x.responseText))}catch(e){cb(e)}};x.onerror=function(){if(cb)cb(new Error('Net'))};x.send(JSON.stringify(d));}
 function fbDelete(p,cb){var x=new XMLHttpRequest();x.open('DELETE',FB_URL+'/'+p+'.json',true);x.timeout=8000;x.onload=function(){if(cb)cb(null)};x.onerror=function(){if(cb)cb(new Error('Net'))};x.send();}
 
-/* ===== CARREGA DADOS — INCLUI visitas_parceiros ===== */
+/* OTIMIZAÇÃO: GET shallow para verificar mudanças sem baixar tudo */
+function fbGetShallow(p,cb){var x=new XMLHttpRequest();x.open('GET',FB_URL+'/'+p+'.json?shallow=true',true);x.timeout=8000;x.onload=function(){if(x.status===200)try{cb(null,JSON.parse(x.responseText))}catch(e){cb(e)}else cb(new Error(x.status))};x.onerror=function(){cb(new Error('Net'))};x.ontimeout=function(){cb(new Error('T'))};x.send();}
+
+/* OTIMIZAÇÃO: GET filtrado por timestamp (só registros novos) */
+function fbGetSince(p,ts,cb){
+    var url=FB_URL+'/'+p+'.json?orderBy=%22ts%22&startAt='+ts;
+    var x=new XMLHttpRequest();x.open('GET',url,true);x.timeout=8000;
+    x.onload=function(){if(x.status===200)try{cb(null,JSON.parse(x.responseText))}catch(e){cb(e)}else cb(new Error(x.status))};
+    x.onerror=function(){cb(new Error('Net'))};x.ontimeout=function(){cb(new Error('T'))};
+    x.send();
+}
+
+/* ===== CARGA INICIAL: usa cache + sincroniza ===== */
 function carregarDados(){
-    var done=0;function ck(){done++;if(done>=5){isOnline=true;fbOk=true;updateSyncUI();stats();atualizarFeed();verificarVigencias();}}
-    fbGet('associados',function(e,d){if(!e&&d){db=[];for(var k in d){var a=d[k];a._fbKey=k;db.push(a);}stats();}ck();});
-    fbGet('acessos',function(e,d){if(!e&&d){logAc=[];for(var k in d){var l=d[k];l._fbKey=k;logAc.push(l);}stats();atualizarFeed();}ck();});
-    fbGet('exclusoes',function(e,d){if(!e&&d){delLog=[];for(var k in d)delLog.push(d[k]);renderDelLog();}ck();});
-    fbGet('auditoria',function(e,d){if(!e&&d){auditLog=[];for(var k in d){var en=d[k];en._fbKey=k;auditLog.push(en);}}ck();});
-    fbGet('visitas_parceiros',function(e,d){if(!e&&d){visitasParc=[];for(var k in d){var v=d[k];v._fbKey=k;visitasParc.push(v);}}ck();});
+    carregarCacheLocal();
+    // Se já tem cache, mostra imediato e sincroniza em background
+    if(db.length>0){
+        isOnline=true;updateSyncUI();stats();atualizarFeed();
+        sincronizarCompleto();
+    }else{
+        // Primeira carga: precisa baixar tudo uma vez
+        sincronizarCompleto(true);
+    }
+    startPolling();
+    setupVisibilidade();
 }
 
-/* ===== POLLING — INCLUI visitas_parceiros ===== */
+function sincronizarCompleto(forcarTudo){
+    var done=0,total=5;
+    function ck(){done++;if(done>=total){isOnline=true;fbOk=true;updateSyncUI();stats();atualizarFeed();verificarVigencias();}}
+
+    // Associados: baixa tudo só se cache vazio ou forçado, senão atualiza só mudanças via shallow
+    if(forcarTudo||!db.length){
+        fbGet('associados',function(e,d){if(!e&&d){db=[];for(var k in d){var a=d[k];a._fbKey=k;db.push(a);}cacheSalvar(CACHE_KEYS.db,db);stats();}ck();});
+    }else{
+        // Compara chaves com shallow — se mudou, baixa tudo
+        fbGetShallow('associados',function(e,keys){
+            if(e){ck();return;}
+            var atuais=db.filter(function(a){return a._fbKey;}).map(function(a){return a._fbKey;}).sort().join(',');
+            var remotas=keys?Object.keys(keys).sort().join(','):'';
+            if(atuais!==remotas){
+                fbGet('associados',function(e2,d){if(!e2&&d){db=[];for(var k in d){var a=d[k];a._fbKey=k;db.push(a);}cacheSalvar(CACHE_KEYS.db,db);stats();}ck();});
+            }else{ck();}
+        });
+    }
+
+    // Acessos: incremental por timestamp
+    if(forcarTudo||!logAc.length){
+        fbGet('acessos',function(e,d){if(!e&&d){logAc=[];for(var k in d){var l=d[k];l._fbKey=k;logAc.push(l);if(l.ts>ultimoLogTs)ultimoLogTs=l.ts;}cacheSalvar(CACHE_KEYS.logAc,logAc);salvarCacheTs();stats();atualizarFeed();}ck();});
+    }else{
+        fbGetSince('acessos',ultimoLogTs+1,function(e,d){
+            if(!e&&d){
+                var novos=0;
+                for(var k in d){var l=d[k];l._fbKey=k;var existe=false;for(var i=0;i<logAc.length;i++)if(logAc[i]._fbKey===k){existe=true;break;}if(!existe){logAc.push(l);novos++;if(l.ts>ultimoLogTs)ultimoLogTs=l.ts;}}
+                if(novos>0){cacheSalvar(CACHE_KEYS.logAc,logAc);salvarCacheTs();stats();atualizarFeed();}
+            }
+            ck();
+        });
+    }
+
+    // Exclusões: pequeno volume, baixa shallow + completo se mudou
+    if(forcarTudo||!delLog.length){
+        fbGet('exclusoes',function(e,d){if(!e&&d){delLog=[];for(var k in d)delLog.push(d[k]);cacheSalvar(CACHE_KEYS.delLog,delLog);renderDelLog();}ck();});
+    }else{
+        fbGetShallow('exclusoes',function(e,keys){
+            if(e){ck();return;}
+            var n=keys?Object.keys(keys).length:0;
+            if(n!==delLog.length){
+                fbGet('exclusoes',function(e2,d){if(!e2&&d){delLog=[];for(var k in d)delLog.push(d[k]);cacheSalvar(CACHE_KEYS.delLog,delLog);renderDelLog();}ck();});
+            }else{ck();}
+        });
+    }
+
+    // Auditoria: incremental por timestamp
+    if(forcarTudo||!auditLog.length){
+        fbGet('auditoria',function(e,d){if(!e&&d){auditLog=[];for(var k in d){var en=d[k];en._fbKey=k;auditLog.push(en);if(en.ts>ultimoAuditTs)ultimoAuditTs=en.ts;}cacheSalvar(CACHE_KEYS.auditLog,auditLog);salvarCacheTs();}ck();});
+    }else{
+        fbGetSince('auditoria',ultimoAuditTs+1,function(e,d){
+            if(!e&&d){
+                var novos=0;
+                for(var k in d){var en=d[k];en._fbKey=k;var existe=false;for(var i=0;i<auditLog.length;i++)if(auditLog[i]._fbKey===k){existe=true;break;}if(!existe){auditLog.push(en);novos++;if(en.ts>ultimoAuditTs)ultimoAuditTs=en.ts;}}
+                if(novos>0){cacheSalvar(CACHE_KEYS.auditLog,auditLog);salvarCacheTs();if(document.getElementById('p-auditoria').classList.contains('act'))renderAuditoria();}
+            }
+            ck();
+        });
+    }
+
+    // Visitas parceiros: incremental
+    if(forcarTudo||!visitasParc.length){
+        fbGet('visitas_parceiros',function(e,d){if(!e&&d){visitasParc=[];for(var k in d){var v=d[k];v._fbKey=k;visitasParc.push(v);if(v.ts&&v.ts>ultimoVisitaTs)ultimoVisitaTs=v.ts;}cacheSalvar(CACHE_KEYS.visitasParc,visitasParc);salvarCacheTs();}ck();});
+    }else{
+        fbGetSince('visitas_parceiros',ultimoVisitaTs+1,function(e,d){
+            if(!e&&d){
+                var novos=0;
+                for(var k in d){var v=d[k];v._fbKey=k;var existe=false;for(var i=0;i<visitasParc.length;i++)if(visitasParc[i]._fbKey===k){existe=true;break;}if(!existe){visitasParc.push(v);novos++;if(v.ts&&v.ts>ultimoVisitaTs)ultimoVisitaTs=v.ts;}}
+                if(novos>0){cacheSalvar(CACHE_KEYS.visitasParc,visitasParc);salvarCacheTs();}
+            }
+            ck();
+        });
+    }
+}
+
+/* ===== POLLING INTELIGENTE E ADAPTATIVO ===== */
+function getPollInterval(){
+    if(!abaVisivel)return POLL_INT_OCULTO;
+    if(Date.now()-ultimaInteracao>INATIVIDADE_MS)return POLL_INT_INATIVO;
+    return POLL_INT_ATIVO;
+}
+
 function startPolling(){
-    setInterval(function(){
-        fbGet('associados',function(e,d){if(!e&&d){db=[];for(var k in d){var a=d[k];a._fbKey=k;db.push(a);}stats();isOnline=true;updateSyncUI();verificarVigencias();}else{isOnline=false;updateSyncUI();}});
-        fbGet('acessos',function(e,d){if(!e&&d){logAc=[];for(var k in d){var l=d[k];l._fbKey=k;logAc.push(l);}stats();atualizarFeed();}});
-        fbGet('exclusoes',function(e,d){if(!e&&d){delLog=[];for(var k in d)delLog.push(d[k]);renderDelLog();}});
-        fbGet('auditoria',function(e,d){if(!e&&d){auditLog=[];for(var k in d){var en=d[k];en._fbKey=k;auditLog.push(en);}if(document.getElementById('p-auditoria').classList.contains('act'))renderAuditoria();}});
-        fbGet('visitas_parceiros',function(e,d){if(!e&&d){visitasParc=[];for(var k in d){var v=d[k];v._fbKey=k;visitasParc.push(v);}}});
-    },10000);
+    if(pollAtivo)return;
+    pollAtivo=true;
+    function loop(){
+        if(!pollAtivo)return;
+        sincronizarIncremental();
+        // Verifica vigência só 1x ao dia (controle interno)
+        verificarVigencias();
+        var prox=getPollInterval();
+        pollTimer=setTimeout(loop,prox);
+    }
+    pollTimer=setTimeout(loop,getPollInterval());
 }
 
-function fbSaveAssoc(a,silent){var o={};for(var k in a)if(k!=='_fbKey')o[k]=a[k];if(a._fbKey)fbPut('associados/'+a._fbKey,o);else{fbPost('associados',o,function(e,r){if(!e&&r&&r.name)a._fbKey=r.name;});db.push(a);}stats();}
-function fbRemoveAssoc(a){if(a._fbKey)fbDelete('associados/'+a._fbKey);db=db.filter(function(x){return x.id!==a.id;});stats();}
-function fbSaveLog(l){var o={};for(var k in l)if(k!=='_fbKey')o[k]=l[k];fbPost('acessos',o,function(e,r){if(!e&&r&&r.name)l._fbKey=r.name;});logAc.push(l);stats();atualizarFeed();}
-function fbRemoveLog(l){if(l._fbKey)fbDelete('acessos/'+l._fbKey);logAc=logAc.filter(function(x){return x.id!==l.id;});stats();atualizarFeed();}
-function fbSaveDel(d){fbPost('exclusoes',d);delLog.push(d);renderDelLog();}
+function pararPolling(){pollAtivo=false;if(pollTimer){clearTimeout(pollTimer);pollTimer=null;}}
+
+/* OTIMIZAÇÃO MÁXIMA: sincronização incremental — só baixa o que mudou */
+function sincronizarIncremental(){
+    // Acessos: só os novos desde último ts
+    fbGetSince('acessos',ultimoLogTs+1,function(e,d){
+        if(e){isOnline=false;updateSyncUI();return;}
+        isOnline=true;
+        if(d){
+            var novos=0;
+            for(var k in d){var l=d[k];l._fbKey=k;var existe=false;for(var i=0;i<logAc.length;i++)if(logAc[i]._fbKey===k){existe=true;break;}if(!existe){logAc.push(l);novos++;if(l.ts>ultimoLogTs)ultimoLogTs=l.ts;}}
+            if(novos>0){cacheSalvar(CACHE_KEYS.logAc,logAc);salvarCacheTs();stats();atualizarFeed();}
+        }
+        updateSyncUI();
+    });
+
+    // Auditoria: só os novos desde último ts
+    fbGetSince('auditoria',ultimoAuditTs+1,function(e,d){
+        if(e||!d)return;
+        var novos=0;
+        for(var k in d){var en=d[k];en._fbKey=k;var existe=false;for(var i=0;i<auditLog.length;i++)if(auditLog[i]._fbKey===k){existe=true;break;}if(!existe){auditLog.push(en);novos++;if(en.ts>ultimoAuditTs)ultimoAuditTs=en.ts;}}
+        if(novos>0){cacheSalvar(CACHE_KEYS.auditLog,auditLog);salvarCacheTs();if(document.getElementById('p-auditoria').classList.contains('act'))renderAuditoria();}
+    });
+
+    // Visitas parceiros: incremental
+    fbGetSince('visitas_parceiros',ultimoVisitaTs+1,function(e,d){
+        if(e||!d)return;
+        var novos=0;
+        for(var k in d){var v=d[k];v._fbKey=k;var existe=false;for(var i=0;i<visitasParc.length;i++)if(visitasParc[i]._fbKey===k){existe=true;break;}if(!existe){visitasParc.push(v);novos++;if(v.ts&&v.ts>ultimoVisitaTs)ultimoVisitaTs=v.ts;}}
+        if(novos>0){cacheSalvar(CACHE_KEYS.visitasParc,visitasParc);salvarCacheTs();}
+    });
+
+    // Associados: shallow para detectar mudanças (não baixa tudo)
+    fbGetShallow('associados',function(e,keys){
+        if(e||!keys)return;
+        var atuais=db.filter(function(a){return a._fbKey;}).map(function(a){return a._fbKey;}).sort().join(',');
+        var remotas=Object.keys(keys).sort().join(',');
+        if(atuais!==remotas){
+            // Mudou — baixa completo
+            fbGet('associados',function(e2,d){if(!e2&&d){db=[];for(var k in d){var a=d[k];a._fbKey=k;db.push(a);}cacheSalvar(CACHE_KEYS.db,db);stats();if(document.getElementById('p-todos').classList.contains('act'))renderTodos();}});
+        }
+    });
+
+    // Exclusões: shallow
+    fbGetShallow('exclusoes',function(e,keys){
+        if(e)return;
+        var n=keys?Object.keys(keys).length:0;
+        if(n!==delLog.length){
+            fbGet('exclusoes',function(e2,d){if(!e2&&d){delLog=[];for(var k in d)delLog.push(d[k]);cacheSalvar(CACHE_KEYS.delLog,delLog);renderDelLog();}});
+        }
+    });
+}
+
+/* ===== DETECTOR DE VISIBILIDADE E INTERAÇÃO ===== */
+function setupVisibilidade(){
+    document.addEventListener('visibilitychange',function(){
+        abaVisivel=!document.hidden;
+        if(abaVisivel){
+            ultimaInteracao=Date.now();
+            sincronizarIncremental(); // ao voltar, sincroniza imediatamente
+        }
+        updateSyncUI();
+    });
+    ['click','keydown','mousemove','touchstart','scroll'].forEach(function(ev){
+        document.addEventListener(ev,function(){ultimaInteracao=Date.now();},{passive:true});
+    });
+}
+
+function fbSaveAssoc(a,silent){var o={};for(var k in a)if(k!=='_fbKey')o[k]=a[k];if(a._fbKey)fbPut('associados/'+a._fbKey,o);else{fbPost('associados',o,function(e,r){if(!e&&r&&r.name)a._fbKey=r.name;cacheSalvar(CACHE_KEYS.db,db);});db.push(a);}cacheSalvar(CACHE_KEYS.db,db);stats();}
+function fbRemoveAssoc(a){if(a._fbKey)fbDelete('associados/'+a._fbKey);db=db.filter(function(x){return x.id!==a.id;});cacheSalvar(CACHE_KEYS.db,db);stats();}
+function fbSaveLog(l){var o={};for(var k in l)if(k!=='_fbKey')o[k]=l[k];fbPost('acessos',o,function(e,r){if(!e&&r&&r.name)l._fbKey=r.name;cacheSalvar(CACHE_KEYS.logAc,logAc);});logAc.push(l);if(l.ts>ultimoLogTs)ultimoLogTs=l.ts;cacheSalvar(CACHE_KEYS.logAc,logAc);salvarCacheTs();stats();atualizarFeed();}
+function fbRemoveLog(l){if(l._fbKey)fbDelete('acessos/'+l._fbKey);logAc=logAc.filter(function(x){return x.id!==l.id;});cacheSalvar(CACHE_KEYS.logAc,logAc);stats();atualizarFeed();}
+function fbSaveDel(d){fbPost('exclusoes',d);delLog.push(d);cacheSalvar(CACHE_KEYS.delLog,delLog);renderDelLog();}
 function stats(){var base=dbVisivel(),t=base.length,a=0;base.forEach(function(x){if(x.status==='Ativo')a++;});document.getElementById('sT').textContent=t;document.getElementById('sA').textContent=a;if(USER&&USER.role==='admin')document.getElementById('sHoje').textContent=logAc.filter(function(l){return l.dt===hoje()&&l.tp==='ok';}).length;}
 
 var cadFotoData='';
@@ -565,7 +769,7 @@ function salvarEd(id){
         if(depois.status==='Ativo')registrarMovimentacaoEmpresarial('add',a);
     }
 
-    fecharModal();toast('Salvo!');verificarVigencias();renderTodos();
+    fecharModal();toast('Salvo!');verificarVigencias(true);renderTodos();
 }
 
 function excluir(id){
@@ -585,7 +789,7 @@ function readXLS(file){var r=new FileReader();r.onload=function(e){try{var wb=XL
 function processarTexto(){var t=document.getElementById('txtImport').value.trim();if(!t){toast('Cole dados','er');return;}procCSV(t);}
 function procCSV(raw){var sep='\t';if(raw.indexOf('\t')<0)sep=raw.indexOf(';')>=0?';':',';procAOA(raw.split(/\r?\n/).map(function(l){return l.split(sep).map(function(c){return c.trim().replace(/^["']+|["']+$/g,'');});}));}
 function procAOA(aoa){aoa=aoa.filter(function(row){return row.some(function(c){return String(c||'').trim()!=='';});});if(aoa.length<1){toast('Sem dados','er');return;}var maxCols=0;aoa.forEach(function(r){if(r.length>maxCols)maxCols=r.length;});var colScores=[];for(var c=0;c<maxCols;c++){var sc=0;for(var r=0;r<aoa.length;r++)if(ehNomePessoa(String(aoa[r][c]||'')))sc++;colScores.push(sc);}var colNome=-1,melhor=0;for(var c=0;c<colScores.length;c++)if(colScores[c]>melhor){melhor=colScores[c];colNome=c;}if(colNome<0){toast('Nenhum nome','er');return;}pendImp=[];var nv=0,dp=0;for(var r=0;r<aoa.length;r++){var nome=String(aoa[r][colNome]||'').trim().toUpperCase();if(!ehNomePessoa(nome))continue;var cpf='',tel='',d1='',d2='';for(var c=0;c<aoa[r].length;c++){if(c===colNome)continue;var val=String(aoa[r][c]||'').trim();if(!val)continue;if(!cpf&&ehCPF(val))cpf=fmtCPF(val);else if(ehData(val)){if(!d1)d1=fmtDt(val);else if(!d2)d2=fmtDt(val);}else if(!tel&&ehTelefone(val))tel=val;}var isDup=false;for(var j=0;j<db.length;j++)if(db[j].nome===nome||(cpf&&limCPF(cpf).length===11&&limCPF(db[j].cpf)===limCPF(cpf))){isDup=true;break;}pendImp.push({nome:nome,cpf:cpf,tel:tel,ini:d1,fim:d2,status:'Ativo',isDup:isDup});if(isDup)dp++;else nv++;}if(!pendImp.length){toast('Nenhum nome','er');return;}document.getElementById('impDetected').innerHTML='<strong>'+pendImp.length+' encontrados</strong>';document.getElementById('impStats').innerHTML='<div class="imp-stat" style="background:#f0fff4;color:#22543d"><div class="isn">'+nv+'</div><div class="isl">Novos</div></div><div class="imp-stat" style="background:#fffff0;color:#744210"><div class="isn">'+dp+'</div><div class="isl">Dup</div></div>';document.getElementById('impTable').innerHTML='<table><thead><tr><th>#</th><th>Nome</th><th>CPF</th><th></th></tr></thead><tbody>'+pendImp.map(function(p,i){return'<tr class="'+(p.isDup?'imp-row-dup':'imp-row-ok')+'"><td>'+(i+1)+'</td><td><strong>'+p.nome+'</strong></td><td>'+(p.cpf||'-')+'</td><td>'+(p.isDup?'<span class="brs">Dup</span>':'<span class="ba">Novo</span>')+'</td></tr>';}).join('')+'</tbody></table>';document.getElementById('impPreview').style.display='block';}
-function confirmarImport(){var c=0;pendImp.forEach(function(p){if(p.isDup)return;fbSaveAssoc({id:gid(),nome:p.nome,cpf:p.cpf,tel:p.tel||'',emp:'',titulo:'',ini:p.ini||'',fim:p.fim||'',status:'Ativo',foto:'',dt:hoje()});c++;});if(c>0)registrarAuditoria('Importou planilha','imp',c+' registros','Total processado: '+pendImp.length+' · Novos: '+c+' · Duplicados: '+(pendImp.length-c));pendImp=[];document.getElementById('impPreview').style.display='none';toast(c+' importados!');setTimeout(verificarVigencias,1000);}
+function confirmarImport(){var c=0;pendImp.forEach(function(p){if(p.isDup)return;fbSaveAssoc({id:gid(),nome:p.nome,cpf:p.cpf,tel:p.tel||'',emp:'',titulo:'',ini:p.ini||'',fim:p.fim||'',status:'Ativo',foto:'',dt:hoje()});c++;});if(c>0)registrarAuditoria('Importou planilha','imp',c+' registros','Total processado: '+pendImp.length+' · Novos: '+c+' · Duplicados: '+(pendImp.length-c));pendImp=[];document.getElementById('impPreview').style.display='none';toast(c+' importados!');setTimeout(function(){verificarVigencias(true);},1000);}
 function cancelarImport(){pendImp=[];document.getElementById('impPreview').style.display='none';}
 
 function regAcesso(a){var ok=a.status==='Ativo';fbSaveLog({id:'L'+Date.now(),aid:a.id,nome:a.nome,emp:a.emp||'',tp:ok?'ok':'bl',dt:hoje(),hr:agora(),di:hojeISO(),ts:Date.now()});}
@@ -805,7 +1009,7 @@ function limparAuditoria(){
     if(USER.role!=='admin'){toast('⚠️ Apenas Admin pode limpar','er');return;}
     if(!confirm('⚠️ ATENÇÃO!\n\nIsso vai apagar TODOS os '+auditLog.length+' registros de auditoria.\n\nEssa ação NÃO pode ser desfeita.\n\nConfirma?'))return;
     if(!confirm('🚨 Tem certeza ABSOLUTA?'))return;
-    fbDelete('auditoria');auditLog=[];renderAuditoria();toast('Histórico limpo','wr');
+    fbDelete('auditoria');auditLog=[];cacheSalvar(CACHE_KEYS.auditLog,auditLog);renderAuditoria();toast('Histórico limpo','wr');
 }
 
 var cartAssocAtual=null;
@@ -820,7 +1024,7 @@ setInterval(function(){var e=document.getElementById('horaAtual');if(e)e.textCon
 var hj=new Date(),m30=new Date(hj-30*864e5);
 document.getElementById('freqDe').value=m30.toISOString().substr(0,10);
 document.getElementById('freqAte').value=hj.toISOString().substr(0,10);
-updateSyncUI();if(USER)carregarDados();startPolling();
+updateSyncUI();if(USER)carregarDados();
 </script>
 </body>
 </html>
