@@ -201,6 +201,63 @@ td{padding:10px;border-bottom:1px solid #edf2f7}tr:hover td{background:#f7fafc}
 @media(max-width:600px){.acqua-card{width:100%;max-width:540px;height:auto;aspect-ratio:54/32}.acqua-card .foto-box{width:90px;height:108px}.acqua-card .brand{left:118px;right:88px}.acqua-card .brand .ttl{font-size:20px}.acqua-card .qr-area{width:72px;height:72px}.fg{grid-template-columns:1fr}.kpi-grid{grid-template-columns:1fr 1fr}.hdr{padding:14px 16px}.hdr h1{font-size:15px}.tb{padding:10px 12px;font-size:11px}}
 @media print{body *{visibility:hidden}.print-area,.print-area *{visibility:visible}.print-area{position:absolute;left:50%;top:20px;transform:translateX(-50%)}}
 </style>
+
+<!-- ===== FIREBASE AUTH SDK (NOVO) ===== -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script>
+/* ===== INICIALIZAÇÃO FIREBASE AUTH ===== */
+var firebaseConfig = {
+  apiKey: "AIzaSyAHCEzImuTitxs-0rkglPfibhNw58NlCFI",
+  authDomain: "aqcuacard.firebaseapp.com",
+  databaseURL: "https://aqcuacard-default-rtdb.firebaseio.com",
+  projectId: "aqcuacard",
+  storageBucket: "aqcuacard.firebasestorage.app",
+  messagingSenderId: "413048806911",
+  appId: "1:413048806911:web:25244b89cd67b0fbc95bca"
+};
+firebase.initializeApp(firebaseConfig);
+
+/* Token JWT que será anexado em TODAS as requisições ao banco */
+var FB_TOKEN = null;
+var FB_TOKEN_READY = false;
+var FB_PENDING_QUEUE = []; /* fila de requisições aguardando token */
+
+/* Faz login anônimo automaticamente */
+firebase.auth().signInAnonymously().catch(function(err){
+    console.error('Erro no login anônimo:',err);
+    alert('⚠️ Erro de autenticação no Firebase. Verifique se a autenticação anônima está ativada no console.');
+});
+
+/* Atualiza o token sempre que mudar (login, renovação automática a cada 1h) */
+firebase.auth().onIdTokenChanged(function(user){
+    if(user){
+        user.getIdToken().then(function(token){
+            FB_TOKEN = token;
+            FB_TOKEN_READY = true;
+            /* Executa requisições que ficaram aguardando o token */
+            var q = FB_PENDING_QUEUE.slice();
+            FB_PENDING_QUEUE = [];
+            q.forEach(function(fn){try{fn();}catch(e){}});
+        });
+    }else{
+        FB_TOKEN = null;
+        FB_TOKEN_READY = false;
+    }
+});
+
+/* Helper: aguarda token estar pronto antes de executar requisição */
+function _comToken(fn){
+    if(FB_TOKEN_READY && FB_TOKEN){fn();}
+    else{FB_PENDING_QUEUE.push(fn);}
+}
+
+/* Helper: monta URL com auth=token */
+function _authParam(url){
+    if(!FB_TOKEN) return url;
+    return url + (url.indexOf('?')>=0 ? '&' : '?') + 'auth=' + encodeURIComponent(FB_TOKEN);
+}
+</script>
 </head>
 <body>
 
@@ -359,10 +416,10 @@ var FB_URL='https://aqcuacard-default-rtdb.firebaseio.com';
 var CACHE_KEYS={db:'acqua_db_v2',logAc:'acqua_logAc_v2',delLog:'acqua_delLog_v2',auditLog:'acqua_auditLog_v2',visitasParc:'acqua_visitasParc_v2',ts:'acqua_ts_v2',vigCheck:'acqua_vigCheck_v2'};
 var ultimoLogTs=0,ultimoAuditTs=0,ultimoVisitaTs=0;
 var pollTimer=null,pollAtivo=false,abaVisivel=true,ultimaInteracao=Date.now();
-var POLL_INT_ATIVO=15000;   // aba visível e usuário ativo
-var POLL_INT_INATIVO=60000; // aba visível mas usuário parado >2min
-var POLL_INT_OCULTO=180000; // aba oculta (3min)
-var INATIVIDADE_MS=120000;  // 2 min sem mexer = inativo
+var POLL_INT_ATIVO=15000;
+var POLL_INT_INATIVO=60000;
+var POLL_INT_OCULTO=180000;
+var INATIVIDADE_MS=120000;
 
 function cacheSalvar(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 function cacheLer(k){try{var v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch(e){return null;}}
@@ -454,7 +511,6 @@ function parseDateBR(str){if(!str)return null;str=String(str).trim();var m;if((m
 function diasAteVencimento(a){var d=parseDateBR(a.fim);if(!d)return null;var hj=new Date();hj.setHours(0,0,0,0);var dt=new Date(d);dt.setHours(0,0,0,0);return Math.ceil((dt-hj)/(1000*60*60*24));}
 function vigenciaBadge(a){var dias=diasAteVencimento(a);if(dias===null)return'<span class="bi">Sem data</span>';if(dias<0)return'<span class="bvn">Vencido '+Math.abs(dias)+'d</span>';if(dias===0)return'<span class="bvn">Vence hoje</span>';if(dias<=30)return'<span class="bvc">'+dias+'d restantes</span>';return'<span class="ba">'+dias+'d</span>';}
 
-/* OTIMIZAÇÃO: vigência roda 1x/dia */
 function verificarVigencias(forcar){
     var ultimo=cacheLer(CACHE_KEYS.vigCheck);
     var hojeStr=hojeISO();
@@ -493,32 +549,82 @@ function renderVigencia(){
 
 function updateSyncUI(){var el=document.getElementById('syncStatus'),cm=document.getElementById('cloudStatusMsg');if(!el)return;if(!isOnline){el.innerHTML='<div class="sync-badge sync-off"><div class="sync-dot off"></div>OFFLINE</div>';if(cm){cm.innerHTML='<strong>&#9888; Offline</strong>';cm.className='alert-y';}return;}if(!abaVisivel||(Date.now()-ultimaInteracao>INATIVIDADE_MS)){el.innerHTML='<div class="sync-badge sync-paused"><div class="sync-dot pa"></div>SINC ECONOMIA</div>';}else{el.innerHTML='<div class="sync-badge sync-on"><div class="sync-dot on"></div>SINCRONIZADO</div>';}if(cm){cm.innerHTML='<strong>&#9989; Conectado!</strong> Sincronização inteligente ativa (economia de dados).';cm.className='alert-g';}}
 
-function fbGet(p,cb){var x=new XMLHttpRequest();x.open('GET',FB_URL+'/'+p+'.json',true);x.timeout=8000;x.onload=function(){if(x.status===200)try{cb(null,JSON.parse(x.responseText))}catch(e){cb(e)}else cb(new Error(x.status))};x.onerror=function(){cb(new Error('Net'))};x.ontimeout=function(){cb(new Error('T'))};x.send();}
-function fbPut(p,d,cb){var x=new XMLHttpRequest();x.open('PUT',FB_URL+'/'+p+'.json',true);x.setRequestHeader('Content-Type','application/json');x.timeout=8000;x.onload=function(){if(cb)cb(null)};x.onerror=function(){if(cb)cb(new Error('Net'))};x.send(JSON.stringify(d));}
-function fbPost(p,d,cb){var x=new XMLHttpRequest();x.open('POST',FB_URL+'/'+p+'.json',true);x.setRequestHeader('Content-Type','application/json');x.timeout=8000;x.onload=function(){if(cb)try{cb(null,JSON.parse(x.responseText))}catch(e){cb(e)}};x.onerror=function(){if(cb)cb(new Error('Net'))};x.send(JSON.stringify(d));}
-function fbDelete(p,cb){var x=new XMLHttpRequest();x.open('DELETE',FB_URL+'/'+p+'.json',true);x.timeout=8000;x.onload=function(){if(cb)cb(null)};x.onerror=function(){if(cb)cb(new Error('Net'))};x.send();}
-
-/* OTIMIZAÇÃO: GET shallow para verificar mudanças sem baixar tudo */
-function fbGetShallow(p,cb){var x=new XMLHttpRequest();x.open('GET',FB_URL+'/'+p+'.json?shallow=true',true);x.timeout=8000;x.onload=function(){if(x.status===200)try{cb(null,JSON.parse(x.responseText))}catch(e){cb(e)}else cb(new Error(x.status))};x.onerror=function(){cb(new Error('Net'))};x.ontimeout=function(){cb(new Error('T'))};x.send();}
-
-/* OTIMIZAÇÃO: GET filtrado por timestamp (só registros novos) */
+/* ===== FUNÇÕES FIREBASE COM AUTENTICAÇÃO ===== */
+/* Todas as requisições agora aguardam o token e o enviam via ?auth= */
+function fbGet(p,cb){
+    _comToken(function(){
+        var x=new XMLHttpRequest();
+        x.open('GET',_authParam(FB_URL+'/'+p+'.json'),true);
+        x.timeout=8000;
+        x.onload=function(){if(x.status===200)try{cb(null,JSON.parse(x.responseText))}catch(e){cb(e)}else cb(new Error(x.status))};
+        x.onerror=function(){cb(new Error('Net'))};
+        x.ontimeout=function(){cb(new Error('T'))};
+        x.send();
+    });
+}
+function fbPut(p,d,cb){
+    _comToken(function(){
+        var x=new XMLHttpRequest();
+        x.open('PUT',_authParam(FB_URL+'/'+p+'.json'),true);
+        x.setRequestHeader('Content-Type','application/json');
+        x.timeout=8000;
+        x.onload=function(){if(cb)cb(null)};
+        x.onerror=function(){if(cb)cb(new Error('Net'))};
+        x.send(JSON.stringify(d));
+    });
+}
+function fbPost(p,d,cb){
+    _comToken(function(){
+        var x=new XMLHttpRequest();
+        x.open('POST',_authParam(FB_URL+'/'+p+'.json'),true);
+        x.setRequestHeader('Content-Type','application/json');
+        x.timeout=8000;
+        x.onload=function(){if(cb)try{cb(null,JSON.parse(x.responseText))}catch(e){cb(e)}};
+        x.onerror=function(){if(cb)cb(new Error('Net'))};
+        x.send(JSON.stringify(d));
+    });
+}
+function fbDelete(p,cb){
+    _comToken(function(){
+        var x=new XMLHttpRequest();
+        x.open('DELETE',_authParam(FB_URL+'/'+p+'.json'),true);
+        x.timeout=8000;
+        x.onload=function(){if(cb)cb(null)};
+        x.onerror=function(){if(cb)cb(new Error('Net'))};
+        x.send();
+    });
+}
+function fbGetShallow(p,cb){
+    _comToken(function(){
+        var x=new XMLHttpRequest();
+        x.open('GET',_authParam(FB_URL+'/'+p+'.json?shallow=true'),true);
+        x.timeout=8000;
+        x.onload=function(){if(x.status===200)try{cb(null,JSON.parse(x.responseText))}catch(e){cb(e)}else cb(new Error(x.status))};
+        x.onerror=function(){cb(new Error('Net'))};
+        x.ontimeout=function(){cb(new Error('T'))};
+        x.send();
+    });
+}
 function fbGetSince(p,ts,cb){
-    var url=FB_URL+'/'+p+'.json?orderBy=%22ts%22&startAt='+ts;
-    var x=new XMLHttpRequest();x.open('GET',url,true);x.timeout=8000;
-    x.onload=function(){if(x.status===200)try{cb(null,JSON.parse(x.responseText))}catch(e){cb(e)}else cb(new Error(x.status))};
-    x.onerror=function(){cb(new Error('Net'))};x.ontimeout=function(){cb(new Error('T'))};
-    x.send();
+    _comToken(function(){
+        var url=FB_URL+'/'+p+'.json?orderBy=%22ts%22&startAt='+ts;
+        var x=new XMLHttpRequest();
+        x.open('GET',_authParam(url),true);
+        x.timeout=8000;
+        x.onload=function(){if(x.status===200)try{cb(null,JSON.parse(x.responseText))}catch(e){cb(e)}else cb(new Error(x.status))};
+        x.onerror=function(){cb(new Error('Net'))};
+        x.ontimeout=function(){cb(new Error('T'))};
+        x.send();
+    });
 }
 
-/* ===== CARGA INICIAL: usa cache + sincroniza ===== */
+/* ===== CARGA INICIAL ===== */
 function carregarDados(){
     carregarCacheLocal();
-    // Se já tem cache, mostra imediato e sincroniza em background
     if(db.length>0){
         isOnline=true;updateSyncUI();stats();atualizarFeed();
         sincronizarCompleto();
     }else{
-        // Primeira carga: precisa baixar tudo uma vez
         sincronizarCompleto(true);
     }
     startPolling();
@@ -529,11 +635,9 @@ function sincronizarCompleto(forcarTudo){
     var done=0,total=5;
     function ck(){done++;if(done>=total){isOnline=true;fbOk=true;updateSyncUI();stats();atualizarFeed();verificarVigencias();}}
 
-    // Associados: baixa tudo só se cache vazio ou forçado, senão atualiza só mudanças via shallow
     if(forcarTudo||!db.length){
         fbGet('associados',function(e,d){if(!e&&d){db=[];for(var k in d){var a=d[k];a._fbKey=k;db.push(a);}cacheSalvar(CACHE_KEYS.db,db);stats();}ck();});
     }else{
-        // Compara chaves com shallow — se mudou, baixa tudo
         fbGetShallow('associados',function(e,keys){
             if(e){ck();return;}
             var atuais=db.filter(function(a){return a._fbKey;}).map(function(a){return a._fbKey;}).sort().join(',');
@@ -544,7 +648,6 @@ function sincronizarCompleto(forcarTudo){
         });
     }
 
-    // Acessos: incremental por timestamp
     if(forcarTudo||!logAc.length){
         fbGet('acessos',function(e,d){if(!e&&d){logAc=[];for(var k in d){var l=d[k];l._fbKey=k;logAc.push(l);if(l.ts>ultimoLogTs)ultimoLogTs=l.ts;}cacheSalvar(CACHE_KEYS.logAc,logAc);salvarCacheTs();stats();atualizarFeed();}ck();});
     }else{
@@ -558,7 +661,6 @@ function sincronizarCompleto(forcarTudo){
         });
     }
 
-    // Exclusões: pequeno volume, baixa shallow + completo se mudou
     if(forcarTudo||!delLog.length){
         fbGet('exclusoes',function(e,d){if(!e&&d){delLog=[];for(var k in d)delLog.push(d[k]);cacheSalvar(CACHE_KEYS.delLog,delLog);renderDelLog();}ck();});
     }else{
@@ -571,7 +673,6 @@ function sincronizarCompleto(forcarTudo){
         });
     }
 
-    // Auditoria: incremental por timestamp
     if(forcarTudo||!auditLog.length){
         fbGet('auditoria',function(e,d){if(!e&&d){auditLog=[];for(var k in d){var en=d[k];en._fbKey=k;auditLog.push(en);if(en.ts>ultimoAuditTs)ultimoAuditTs=en.ts;}cacheSalvar(CACHE_KEYS.auditLog,auditLog);salvarCacheTs();}ck();});
     }else{
@@ -585,7 +686,6 @@ function sincronizarCompleto(forcarTudo){
         });
     }
 
-    // Visitas parceiros: incremental
     if(forcarTudo||!visitasParc.length){
         fbGet('visitas_parceiros',function(e,d){if(!e&&d){visitasParc=[];for(var k in d){var v=d[k];v._fbKey=k;visitasParc.push(v);if(v.ts&&v.ts>ultimoVisitaTs)ultimoVisitaTs=v.ts;}cacheSalvar(CACHE_KEYS.visitasParc,visitasParc);salvarCacheTs();}ck();});
     }else{
@@ -600,7 +700,6 @@ function sincronizarCompleto(forcarTudo){
     }
 }
 
-/* ===== POLLING INTELIGENTE E ADAPTATIVO ===== */
 function getPollInterval(){
     if(!abaVisivel)return POLL_INT_OCULTO;
     if(Date.now()-ultimaInteracao>INATIVIDADE_MS)return POLL_INT_INATIVO;
@@ -613,7 +712,6 @@ function startPolling(){
     function loop(){
         if(!pollAtivo)return;
         sincronizarIncremental();
-        // Verifica vigência só 1x ao dia (controle interno)
         verificarVigencias();
         var prox=getPollInterval();
         pollTimer=setTimeout(loop,prox);
@@ -623,9 +721,7 @@ function startPolling(){
 
 function pararPolling(){pollAtivo=false;if(pollTimer){clearTimeout(pollTimer);pollTimer=null;}}
 
-/* OTIMIZAÇÃO MÁXIMA: sincronização incremental — só baixa o que mudou */
 function sincronizarIncremental(){
-    // Acessos: só os novos desde último ts
     fbGetSince('acessos',ultimoLogTs+1,function(e,d){
         if(e){isOnline=false;updateSyncUI();return;}
         isOnline=true;
@@ -637,7 +733,6 @@ function sincronizarIncremental(){
         updateSyncUI();
     });
 
-    // Auditoria: só os novos desde último ts
     fbGetSince('auditoria',ultimoAuditTs+1,function(e,d){
         if(e||!d)return;
         var novos=0;
@@ -645,7 +740,6 @@ function sincronizarIncremental(){
         if(novos>0){cacheSalvar(CACHE_KEYS.auditLog,auditLog);salvarCacheTs();if(document.getElementById('p-auditoria').classList.contains('act'))renderAuditoria();}
     });
 
-    // Visitas parceiros: incremental
     fbGetSince('visitas_parceiros',ultimoVisitaTs+1,function(e,d){
         if(e||!d)return;
         var novos=0;
@@ -653,18 +747,15 @@ function sincronizarIncremental(){
         if(novos>0){cacheSalvar(CACHE_KEYS.visitasParc,visitasParc);salvarCacheTs();}
     });
 
-    // Associados: shallow para detectar mudanças (não baixa tudo)
     fbGetShallow('associados',function(e,keys){
         if(e||!keys)return;
         var atuais=db.filter(function(a){return a._fbKey;}).map(function(a){return a._fbKey;}).sort().join(',');
         var remotas=Object.keys(keys).sort().join(',');
         if(atuais!==remotas){
-            // Mudou — baixa completo
             fbGet('associados',function(e2,d){if(!e2&&d){db=[];for(var k in d){var a=d[k];a._fbKey=k;db.push(a);}cacheSalvar(CACHE_KEYS.db,db);stats();if(document.getElementById('p-todos').classList.contains('act'))renderTodos();}});
         }
     });
 
-    // Exclusões: shallow
     fbGetShallow('exclusoes',function(e,keys){
         if(e)return;
         var n=keys?Object.keys(keys).length:0;
@@ -674,13 +765,12 @@ function sincronizarIncremental(){
     });
 }
 
-/* ===== DETECTOR DE VISIBILIDADE E INTERAÇÃO ===== */
 function setupVisibilidade(){
     document.addEventListener('visibilitychange',function(){
         abaVisivel=!document.hidden;
         if(abaVisivel){
             ultimaInteracao=Date.now();
-            sincronizarIncremental(); // ao voltar, sincroniza imediatamente
+            sincronizarIncremental();
         }
         updateSyncUI();
     });
@@ -796,7 +886,6 @@ function regAcesso(a){var ok=a.status==='Ativo';fbSaveLog({id:'L'+Date.now(),aid
 function resolverAssociado(v){var a=null;if(v.indexOf('ACQUACARD|')===0){var p=v.split('|');a=find(p[1]);if(!a)for(var i=0;i<db.length;i++)if(db[i].nome===p[2]){a=db[i];break;}}if(!a){var q=v.toUpperCase();for(var i=0;i<db.length;i++)if(db[i].nome.indexOf(q)>=0){a=db[i];break;}}return a;}
 function processarAcesso(){var v=document.getElementById('inpAcesso').value.trim();if(!v){toast('Digite','er');return;}var a=resolverAssociado(v),box=document.getElementById('acessoResult');box.style.display='block';if(!a){box.className='cd acesso-ng';box.innerHTML='<div style="text-align:center;padding:20px"><div style="font-size:50px">&#10060;</div><div style="font-size:18px;font-weight:900;color:#e53e3e">NAO ENCONTRADO</div></div>';document.getElementById('inpAcesso').value='';setTimeout(function(){box.style.display='none';},3000);return;}regAcesso(a);var ok=a.status==='Ativo';var dias=diasAteVencimento(a);var vigMsg='';if(ok&&dias!==null&&dias<=30&&dias>=0)vigMsg='<div style="background:#fffff0;border:1px solid #f6e05e;border-radius:8px;padding:8px;margin-top:10px;font-size:12px;color:#744210">⏰ Vence em <strong>'+dias+' dia'+(dias!==1?'s':'')+'</strong></div>';box.className='cd '+(ok?'acesso-ok':'acesso-ng');box.innerHTML='<div style="text-align:center;padding:20px">'+(a.foto?'<img src="'+a.foto+'" style="width:90px;height:90px;border-radius:50%;object-fit:cover;margin-bottom:10px;border:4px solid '+(ok?'#68d391':'#fc8181')+'"><br>':'')+'<div style="font-size:60px">'+(ok?'&#9989;':'&#9940;')+'</div><div style="font-size:24px;font-weight:900;color:'+(ok?'#22543d':'#c53030')+'">'+(ok?'LIBERADO':'BLOQUEADO')+'</div><div style="font-size:20px;font-weight:700;margin-top:8px">'+a.nome+'</div>'+(!ok&&dias!==null&&dias<0?'<div style="font-size:12px;color:#c53030;margin-top:6px">Vencido há '+Math.abs(dias)+' dias</div>':'')+vigMsg+'</div>';document.getElementById('inpAcesso').value='';pararCameraAcesso();setTimeout(function(){box.style.display='none';},4000);}
 
-/* ===== REGISTRO MANUAL ===== */
 function registroManual(){
     document.getElementById('mTit').textContent='🔎 Registro Manual de Acesso';
     document.getElementById('mBody').innerHTML=
@@ -928,7 +1017,6 @@ function calcFreq(){var de=document.getElementById('freqDe').value,ate=document.
 function freqWP(){window.open('https://wa.me/'+WP_NUMERO+'?text='+encodeURIComponent(gerarTxtRel()),'_blank');}
 function freqCSV(){var c='\uFEFF"Data";"Hora";"Nome";"Status"\n';logAc.forEach(function(l){c+='"'+l.dt+'";"'+l.hr+'";"'+l.nome+'";"'+l.tp+'"\n';});var b=new Blob([c],{type:'text/csv;charset=utf-8;'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='acessos.csv';a.click();}
 
-/* ===== HISTÓRICO INDIVIDUAL — PARQUE DAS ÁGUAS + PARQUES PARCEIROS ===== */
 function buscarIndiv(){
     var q=document.getElementById('freqIndiv').value.trim().toLowerCase(),box=document.getElementById('freqIndivR');
     if(q.length<2){box.innerHTML='';return;}
@@ -978,7 +1066,6 @@ function contarJ(){var c=(document.getElementById('delJust').value||'').trim().l
 function confDel(logId){var just=(document.getElementById('delJust').value||'').trim();if(just.length<15){toast('Min 15!','er');return;}var reg=null;for(var i=0;i<logAc.length;i++)if(logAc[i].id===logId){reg=logAc[i];break;}if(!reg){toast('Erro','er');fecharModal();return;}if(!confirm('Confirma?'))return;fbSaveDel({id:'DEL'+Date.now(),logId:reg.id,nome:reg.nome,dtAcesso:reg.dt,hrAcesso:reg.hr,tipoAcesso:reg.tp,justificativa:just,dtExclusao:hoje(),hrExclusao:agora(),usuario:USER.nome});registrarAuditoria('Apagou registro de acesso','del',reg.nome,'Acesso '+reg.dt+' '+reg.hr+' · Justificativa: '+just);fbRemoveLog(reg);fecharModal();toast('Removido!');setTimeout(buscarAcessoParaDeletar,500);}
 function renderDelLog(){var card=document.getElementById('delLogCard');if(!delLog.length){card.style.display='none';return;}card.style.display='block';document.getElementById('delLogList').innerHTML=delLog.slice().reverse().slice(0,30).map(function(d){return'<div class="del-log"><div class="dl-icon">&#128465;</div><div class="dl-info"><div class="dl-nome">'+d.nome+(d.usuario?' <span style="color:#0a4c7a">('+d.usuario+')</span>':'')+'</div><div class="dl-dt">'+d.dtAcesso+' '+d.hrAcesso+' | Excluido: '+d.dtExclusao+' '+d.hrExclusao+'</div><div class="dl-just">"'+d.justificativa+'"</div></div></div>';}).join('');}
 
-/* ===== AUDITORIA UI ===== */
 function getAuditFiltro(){var u='todos',t='todos';document.querySelectorAll('[data-af]').forEach(function(c){if(c.classList.contains('act'))u=c.getAttribute('data-af');});document.querySelectorAll('[data-at]').forEach(function(c){if(c.classList.contains('act'))t=c.getAttribute('data-at');});return{u:u,t:t};}
 function renderAuditoria(){
     var f=getAuditFiltro();
