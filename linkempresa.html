@@ -340,25 +340,15 @@ var FB='https://aqcuacard-default-rtdb.firebaseio.com';
    ============================================================ */
 var raw=[], cos={}, hist=[], curCo=null, online=false, lSync=null, curLK='', dirMode=false;
 
-/*
- * ESTRATÉGIA DE SINCRONIZAÇÃO ECONÔMICA
- * ─────────────────────────────────────
- * 1. No boot: baixa tudo uma vez e salva no localStorage.
- * 2. No poll (a cada 30s): lê APENAS /meta/version (1 leitura minúscula).
- *    • Se version mudou → baixa /associados e /passaportes_history completos.
- *    • Se version igual  → não faz nenhuma leitura adicional.
- * Resultado: em situação estável (sem alterações), o custo é 1 leitura
- * pequena a cada 30 segundos, independente do tamanho da base.
- */
 var CACHE_KEY_RAW     = 'pe_raw_v1';
 var CACHE_KEY_HIST    = 'pe_hist_v1';
 var CACHE_KEY_VERSION = 'pe_version_v1';
-var localVersion      = null;   // última versão conhecida
+var localVersion      = null;
 var pollTimer         = null;
-var POLL_INTERVAL     = 30000;  // 30 segundos
+var POLL_INTERVAL     = 30000;
 
 /* ============================================================
-   CACHE LOCAL (localStorage)
+   CACHE LOCAL
    ============================================================ */
 function cacheSalvar(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 function cacheLer(k){try{var v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch(e){return null;}}
@@ -374,7 +364,7 @@ function carregarCacheLocal(){
 }
 
 /* ============================================================
-   REQUISIÇÕES FIREBASE (sem autenticação — regras públicas leitura)
+   FIREBASE
    ============================================================ */
 function fbG(p){
     return new Promise(function(ok,no){
@@ -394,7 +384,7 @@ function fbG(p){
 }
 
 /* ============================================================
-   CARGA COMPLETA (boot ou quando versão mudou)
+   CARGA COMPLETA
    ============================================================ */
 async function carregarDadosCompletos(){
     var d=await fbG('associados');
@@ -416,23 +406,19 @@ async function carregarDadosCompletos(){
 }
 
 /* ============================================================
-   POLL ECONÔMICO — lê só /meta/version
+   POLL ECONÔMICO
    ============================================================ */
 async function verificarVersao(){
     try{
         var meta=await fbG('meta/version');
         var remoteVersion=meta!==null?String(meta):'0';
-
         if(remoteVersion!==String(localVersion)){
-            /* Versão diferente: baixa tudo */
             localVersion=remoteVersion;
             cacheSalvar(CACHE_KEY_VERSION, localVersion);
             await carregarDadosCompletos();
-            /* Atualiza a view ativa */
             reRenderViewAtiva();
             toast('🔄 Dados atualizados','ok');
         } else {
-            /* Sem mudança: apenas confirma que está online */
             online=true;
             upSync();
         }
@@ -466,18 +452,14 @@ function pararPoll(){
    CARGA INICIAL
    ============================================================ */
 async function load(){
-    /* 1. Tenta ler versão remota */
     try{
         var meta=await fbG('meta/version');
         var remoteVersion=meta!==null?String(meta):'0';
-
         if(remoteVersion!==String(localVersion)||!raw.length){
-            /* Versão nova ou cache vazio → baixa tudo */
             localVersion=remoteVersion;
             cacheSalvar(CACHE_KEY_VERSION, localVersion);
             await carregarDadosCompletos();
         } else {
-            /* Cache válido → usa cache, só confirma online */
             group();
             online=true;
             lSync=new Date();
@@ -486,7 +468,6 @@ async function load(){
         return true;
     }catch(e){
         console.error(e);
-        /* Offline: usa cache se disponível */
         if(raw.length){group();online=false;upSync();return true;}
         online=false;upSync();return false;
     }
@@ -540,7 +521,7 @@ function retryLoad(){
 }
 
 /* ============================================================
-   ÍCONES POR NOME DE EMPRESA
+   ÍCONES
    ============================================================ */
 var ICO=[
     {k:['SUPERMERCADO','MERCADO','ATACAD'],i:'🛒'},
@@ -578,7 +559,7 @@ function gIco(n){
 }
 
 /* ============================================================
-   LINKS E CODIFICAÇÃO
+   LINKS
    ============================================================ */
 function eKey(n){return btoa(unescape(encodeURIComponent((n||'').trim().toUpperCase()))).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');}
 function dKey(h){try{return decodeURIComponent(escape(atob(h.replace(/-/g,'+').replace(/_/g,'/'))));}catch(e){return null;}}
@@ -666,7 +647,7 @@ function doWp(){
 }
 
 /* ============================================================
-   PASSAPORTES DIRETOS (para relatório admin)
+   PASSAPORTES DIRETOS
    ============================================================ */
 function isEmpresarial(titulo){return titulo&&titulo.toString().trim().toUpperCase().indexOf('-E')>=0;}
 function getPassCode(titulo){
@@ -684,7 +665,7 @@ function getPassGroups(){
         groups[code].members.push({
             name:(a.nome||'').toUpperCase(),cpf:a.cpf||'',tel:a.tel||'',
             emp:(a.emp||'').trim().toUpperCase(),
-            status:a.status==='Ativo'?'active':(a.status==='Acesso Restrito'?'restricted':'active'),
+            status:a.status==='Ativo'?'active':(a.status==='Acesso Restrito'?'restricted':'inactive'),
             titulo:titulo
         });
     }
@@ -698,32 +679,76 @@ function buildCdlReportHTML(){
     var keys=Object.keys(cos),tA=0,tR=0,tG=0,cd=[];
     for(var i=0;i<keys.length;i++){
         var co=cos[keys[i]],a=0,r=0;
-        for(var j=0;j<co.staff.length;j++){if(co.staff[j].status==='active')a++;if(co.staff[j].status==='restricted')r++;}
-        tA+=a;tR+=r;tG+=co.staff.length;
-        cd.push({key:keys[i],name:co.name,icon:co.icon,a:a,r:r,t:co.staff.length});
+        for(var j=0;j<co.staff.length;j++){
+            if(co.staff[j].status==='active') a++;
+            if(co.staff[j].status==='restricted') r++;
+        }
+        tA+=a;tR+=r;
+        /* tG conta apenas ativos + restritos (exclui inativos) */
+        tG+=(a+r);
+        cd.push({key:keys[i],name:co.name,icon:co.icon,a:a,r:r,t:(a+r)});
     }
     var tSub=hist.length;
     var mx=1;for(var l=0;l<cd.length;l++) if(cd[l].a>mx) mx=cd[l].a;
     cd.sort(function(a,b){return b.a-a.a;});
 
     var rr='<div class="rp"><div class="rp-h"><h3>📊 Relatório — Passaportes Empresariais CDL</h3><div class="tb2">🏛️ CDL Nova Mutum × Parque das Águas</div></div>';
-    rr+='<div class="rsm"><div class="rs rgo"><div class="rv">'+keys.length+'</div><div class="rl">Empresas</div></div><div class="rs rgn"><div class="rv">'+tA+'</div><div class="rl">Sócios Ativos</div></div><div class="rs rrd"><div class="rv">'+tR+'</div><div class="rl">Restritos</div></div><div class="rs rbl"><div class="rv">'+tG+'</div><div class="rl">Total Geral</div></div><div class="rs rpu"><div class="rv">'+tSub+'</div><div class="rl">Movimentações</div></div></div></div>';
+    rr+='<div class="rsm">'
+       +'<div class="rs rgo"><div class="rv">'+keys.length+'</div><div class="rl">Empresas</div></div>'
+       +'<div class="rs rgn"><div class="rv">'+tA+'</div><div class="rl">Ativos</div></div>'
+       +'<div class="rs rrd"><div class="rv">'+tR+'</div><div class="rl">Restritos</div></div>'
+       +'<div class="rs rbl"><div class="rv">'+tG+'</div><div class="rl">Total Geral</div></div>'
+       +'<div class="rs rpu"><div class="rv">'+tSub+'</div><div class="rl">Movimentações</div></div>'
+       +'</div></div>';
 
     rr+='<div class="pnl"><div class="pnl-h"><div class="pnl-t">🏛️ Passaportes Empresariais — Detalhamento Completo</div><div style="font-size:.78rem;color:var(--t4);">Clique na empresa para ver os colaboradores</div></div><div class="pnl-b">';
+
     for(var m=0;m<cd.length;m++){
         var c=cd[m],p=Math.round((c.a/mx)*100),pct=tA>0?((c.a/tA)*100).toFixed(1):'0',co2=cos[c.key],gid='cdlg_'+m;
         rr+='<div class="pass-group">';
         rr+='<div class="pass-group-h" onclick="var b=document.getElementById(\''+gid+'\');b.classList.toggle(\'opn\');this.classList.toggle(\'opn\')">';
-        rr+='<div class="pg-left" style="flex:1;min-width:0;"><span style="font-size:1.3rem;flex-shrink:0;">'+c.icon+'</span><div style="flex:1;min-width:0;"><div style="font-weight:700;color:var(--t1);font-size:.95rem;">'+c.name+'</div><div style="font-size:.78rem;color:var(--t3);margin-top:2px;"><span style="color:var(--ok);font-weight:700;">'+c.a+' ativo'+(c.a!==1?'s':'')+'</span>'+(c.r>0?' · <span style="color:var(--err);font-weight:700;">'+c.r+' restrito'+(c.r!==1?'s':'')+'</span>':'')+' · Total '+c.t+' · '+pct+'%</div><div style="margin-top:6px;width:100%;height:5px;background:var(--hover);border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+p+'%;background:linear-gradient(90deg,var(--gold),#e0b85e);border-radius:3px;"></div></div></div></div>';
+        rr+='<div class="pg-left" style="flex:1;min-width:0;"><span style="font-size:1.3rem;flex-shrink:0;">'+c.icon+'</span>'
+           +'<div style="flex:1;min-width:0;">'
+           +'<div style="font-weight:700;color:var(--t1);font-size:.95rem;">'+c.name+'</div>'
+           +'<div style="font-size:.78rem;color:var(--t3);margin-top:2px;">'
+           +'<span style="color:var(--ok);font-weight:700;">'+c.a+' ativo'+(c.a!==1?'s':'')+'</span>'
+           +(c.r>0?' · <span style="color:var(--err);font-weight:700;">'+c.r+' restrito'+(c.r!==1?'s':'')+'</span>':'')
+           +' · Total '+c.t+' · '+pct+'%'
+           +'</div>'
+           +'<div style="margin-top:6px;width:100%;height:5px;background:var(--hover);border-radius:3px;overflow:hidden;">'
+           +'<div style="height:100%;width:'+p+'%;background:linear-gradient(90deg,var(--gold),#e0b85e);border-radius:3px;"></div>'
+           +'</div>'
+           +'</div></div>';
         rr+='<span class="pg-count">'+c.t+' sócio'+(c.t!==1?'s':'')+'</span></div>';
         rr+='<div class="pass-group-b" id="'+gid+'"><table class="tbl"><thead><tr><th>#</th><th>Nome</th><th>CPF</th><th>Telefone</th><th>Status</th></tr></thead><tbody>';
+
+        /* ✅ FIX: exibe apenas ativos e restritos */
+        var idxCdl=1;
         for(var s=0;s<co2.staff.length;s++){
-            var st=co2.staff[s],sts=st.status==='restricted'?'<span class="pill p-rs">⚠️ Restrito</span>':'<span class="pill p-ok">● Ativo</span>';
-            rr+='<tr'+(st.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'><td>'+(s+1)+'</td><td><strong>'+st.name+'</strong></td><td>'+(st.cpf||'—')+'</td><td>'+(st.tel||'—')+'</td><td>'+sts+'</td></tr>';
+            var st=co2.staff[s];
+            if(st.status!=='active'&&st.status!=='restricted') continue;
+            var sts=st.status==='restricted'
+                ?'<span class="pill p-rs">⚠️ Restrito</span>'
+                :'<span class="pill p-ok">● Ativo</span>';
+            rr+='<tr'+(st.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'>'+
+                '<td>'+idxCdl+'</td>'+
+                '<td><strong>'+st.name+'</strong></td>'+
+                '<td>'+(st.cpf||'—')+'</td>'+
+                '<td>'+(st.tel||'—')+'</td>'+
+                '<td>'+sts+'</td></tr>';
+            idxCdl++;
         }
+
         rr+='</tbody></table></div></div>';
     }
-    rr+='<div class="total-row"><div class="tr-label">📊 TOTAL GERAL</div><div class="tr-stats"><span style="color:var(--ok);">✅ '+tA+' ativos</span><span style="color:var(--err);">⚠️ '+tR+' restritos</span><span style="color:var(--gold);">👥 '+tG+' total</span></div></div>';
+
+    rr+='<div class="total-row">'
+       +'<div class="tr-label">📊 TOTAL GERAL</div>'
+       +'<div class="tr-stats">'
+       +'<span style="color:var(--ok);">✅ '+tA+' ativos</span>'
+       +'<span style="color:var(--err);">⚠️ '+tR+' restritos</span>'
+       +'<span style="color:var(--gold);">👥 '+tG+' total</span>'
+       +'</div></div>';
     rr+='</div></div>';
 
     if(hist.length){
@@ -869,22 +894,26 @@ function openComp(key){
     document.getElementById('cK').innerHTML=
         '<div class="kc kg"><div class="kv">'+ac+'</div><div class="kl">Ativos</div></div>'
        +'<div class="kc kd"><div class="kv">'+rs+'</div><div class="kl">Restritos</div></div>'
-       +'<div class="kc kb"><div class="kv">'+co.staff.length+'</div><div class="kl">Total Cadastrados</div></div>'
+       +'<div class="kc kb"><div class="kv">'+(ac+rs)+'</div><div class="kl">Total Cadastrados</div></div>'
        +'<div class="kc ko"><div class="kv">'+sb+'</div><div class="kl">Movimentações</div></div>';
 
+    /* ✅ FIX: exibe apenas ativos e restritos */
     var rows='',idx=1;
     for(var m=0;m<co.staff.length;m++){
         var s=co.staff[m];
-        var sp=s.status==='restricted'?'<span class="pill p-rs">⚠️ Restrito</span>':'<span class="pill p-ok">● Ativo</span>';
-        rows+='<tr'+(s.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'>'
-             +'<td>'+idx+'</td>'
-             +'<td><div><div class="un">'+s.name+'</div><div class="ut">'+co.name+'</div></div></td>'
-             +'<td>'+(s.cpf||'—')+'</td>'
-             +'<td>'+(s.tel||'—')+'</td>'
-             +'<td>'+sp+'</td></tr>';
+        if(s.status!=='active'&&s.status!=='restricted') continue;
+        var sp=s.status==='restricted'
+            ?'<span class="pill p-rs">⚠️ Restrito</span>'
+            :'<span class="pill p-ok">● Ativo</span>';
+        rows+='<tr'+(s.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'>'+
+              '<td>'+idx+'</td>'+
+              '<td><div><div class="un">'+s.name+'</div><div class="ut">'+co.name+'</div></div></td>'+
+              '<td>'+(s.cpf||'—')+'</td>'+
+              '<td>'+(s.tel||'—')+'</td>'+
+              '<td>'+sp+'</td></tr>';
         idx++;
     }
-    if(!rows) rows='<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--t3);">Nenhum colaborador</td></tr>';
+    if(!rows) rows='<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--t3);">Nenhum colaborador ativo</td></tr>';
     document.getElementById('cTbl').innerHTML=rows;
 
     var hs=[];
@@ -998,9 +1027,13 @@ function rReport(){
     var keys=Object.keys(cos),tA=0,tR=0,tG=0,cd=[];
     for(var i=0;i<keys.length;i++){
         var co=cos[keys[i]],a=0,r=0;
-        for(var j=0;j<co.staff.length;j++){if(co.staff[j].status==='active') a++;if(co.staff[j].status==='restricted') r++;}
-        tA+=a;tR+=r;tG+=co.staff.length;
-        cd.push({key:keys[i],name:co.name,icon:co.icon,a:a,r:r,t:co.staff.length});
+        for(var j=0;j<co.staff.length;j++){
+            if(co.staff[j].status==='active') a++;
+            if(co.staff[j].status==='restricted') r++;
+        }
+        tA+=a;tR+=r;
+        tG+=(a+r);
+        cd.push({key:keys[i],name:co.name,icon:co.icon,a:a,r:r,t:(a+r)});
     }
     var sem=0;for(var k=0;k<raw.length;k++) if(!(raw[k].emp||'').trim()) sem++;
     var pg=getPassGroups(),pgKeys=Object.keys(pg).sort(function(a,b){var na=parseInt(a)||0,nb=parseInt(b)||0;if(na&&nb)return na-nb;return a.localeCompare(b);}),totalPassDiretos=pgKeys.length,totalSociosDiretos=0;
@@ -1027,18 +1060,44 @@ function rReport(){
            +'<div class="pg-left" style="flex:1;min-width:0;"><span style="font-size:1.3rem;flex-shrink:0;">'+c.icon+'</span>'
            +'<div style="flex:1;min-width:0;">'
            +'<div style="font-weight:700;color:var(--t1);font-size:.95rem;">'+c.name+'</div>'
-           +'<div style="font-size:.78rem;color:var(--t3);margin-top:2px;"><span style="color:var(--ok);font-weight:700;">'+c.a+' ativo'+(c.a!==1?'s':'')+'</span>'+(c.r>0?' · <span style="color:var(--err);font-weight:700;">'+c.r+' restrito'+(c.r!==1?'s':'')+'</span>':'')+' · Total '+c.t+' · '+pct+'%</div>'
-           +'<div style="margin-top:6px;width:100%;height:5px;background:var(--hover);border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+p+'%;background:linear-gradient(90deg,var(--gold),#e0b85e);border-radius:3px;"></div></div>'
+           +'<div style="font-size:.78rem;color:var(--t3);margin-top:2px;">'
+           +'<span style="color:var(--ok);font-weight:700;">'+c.a+' ativo'+(c.a!==1?'s':'')+'</span>'
+           +(c.r>0?' · <span style="color:var(--err);font-weight:700;">'+c.r+' restrito'+(c.r!==1?'s':'')+'</span>':'')
+           +' · Total '+c.t+' · '+pct+'%'
+           +'</div>'
+           +'<div style="margin-top:6px;width:100%;height:5px;background:var(--hover);border-radius:3px;overflow:hidden;">'
+           +'<div style="height:100%;width:'+p+'%;background:linear-gradient(90deg,var(--gold),#e0b85e);border-radius:3px;"></div>'
+           +'</div>'
            +'</div></div>'
            +'<span class="pg-count">'+c.t+' sócio'+(c.t!==1?'s':'')+'</span></div>'
            +'<div class="pass-group-b" id="'+gid+'"><table class="tbl"><thead><tr><th>#</th><th>Nome</th><th>CPF</th><th>Telefone</th><th>Status</th></tr></thead><tbody>';
+
+        /* ✅ FIX: exibe apenas ativos e restritos */
+        var idxAdm=1;
         for(var s=0;s<co2.staff.length;s++){
-            var st=co2.staff[s],sts=st.status==='restricted'?'<span class="pill p-rs">⚠️ Restrito</span>':'<span class="pill p-ok">● Ativo</span>';
-            rr+='<tr'+(st.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'><td>'+(s+1)+'</td><td><strong>'+st.name+'</strong></td><td>'+(st.cpf||'—')+'</td><td>'+(st.tel||'—')+'</td><td>'+sts+'</td></tr>';
+            var st=co2.staff[s];
+            if(st.status!=='active'&&st.status!=='restricted') continue;
+            var sts=st.status==='restricted'
+                ?'<span class="pill p-rs">⚠️ Restrito</span>'
+                :'<span class="pill p-ok">● Ativo</span>';
+            rr+='<tr'+(st.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'>'+
+                '<td>'+idxAdm+'</td>'+
+                '<td><strong>'+st.name+'</strong></td>'+
+                '<td>'+(st.cpf||'—')+'</td>'+
+                '<td>'+(st.tel||'—')+'</td>'+
+                '<td>'+sts+'</td></tr>';
+            idxAdm++;
         }
+
         rr+='</tbody></table></div></div>';
     }
-    rr+='<div class="total-row"><div class="tr-label">📊 TOTAL CDL</div><div class="tr-stats"><span style="color:var(--ok);">✅ '+tA+' ativos</span><span style="color:var(--err);">⚠️ '+tR+' restritos</span><span style="color:var(--gold);">👥 '+tG+' total</span></div></div>';
+    rr+='<div class="total-row">'
+       +'<div class="tr-label">📊 TOTAL CDL</div>'
+       +'<div class="tr-stats">'
+       +'<span style="color:var(--ok);">✅ '+tA+' ativos</span>'
+       +'<span style="color:var(--err);">⚠️ '+tR+' restritos</span>'
+       +'<span style="color:var(--gold);">👥 '+tG+' total</span>'
+       +'</div></div>';
     rr+='</div></div>';
 
     /* Diretos */
@@ -1048,25 +1107,45 @@ function rReport(){
         rr+='<div class="pnl"><div class="pnl-h"><div class="pnl-t">🌊 Passaportes Diretos — Parque das Águas</div><div style="font-size:.78rem;color:var(--t4);">Clique no passaporte para ver os sócios</div></div><div class="pnl-b">';
         for(var pd2=0;pd2<pgKeys.length;pd2++){
             var grp=pg[pgKeys[pd2]],pW=Math.round((grp.members.length/mxD)*100),acD=0,rsD=0,gid2='pg_'+pd2;
-            for(var gm=0;gm<grp.members.length;gm++){if(grp.members[gm].status==='active') acD++;if(grp.members[gm].status==='restricted') rsD++;}
+            for(var gm=0;gm<grp.members.length;gm++){
+                if(grp.members[gm].status==='active') acD++;
+                if(grp.members[gm].status==='restricted') rsD++;
+            }
             var pctD=totalSociosDiretos>0?((grp.members.length/totalSociosDiretos)*100).toFixed(1):'0';
             rr+='<div class="pass-group">'
                +'<div class="pass-group-h" onclick="var b=document.getElementById(\''+gid2+'\');b.classList.toggle(\'opn\');this.classList.toggle(\'opn\')">'
                +'<div class="pg-left" style="flex:1;min-width:0;"><span class="pg-code">'+grp.code+'</span>'
                +'<div style="flex:1;min-width:0;">'
                +'<div style="font-weight:700;color:var(--t1);font-size:.95rem;">Passaporte '+grp.code+'</div>'
-               +'<div style="font-size:.78rem;color:var(--t3);margin-top:2px;"><span style="color:var(--ok);font-weight:700;">'+acD+' ativo'+(acD!==1?'s':'')+'</span>'+(rsD>0?' · <span style="color:var(--err);font-weight:700;">'+rsD+' restrito'+(rsD!==1?'s':'')+'</span>':'')+' · '+pctD+'%</div>'
-               +'<div style="margin-top:6px;width:100%;height:5px;background:var(--hover);border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+pW+'%;background:linear-gradient(90deg,var(--cyan),#67e8f9);border-radius:3px;"></div></div>'
+               +'<div style="font-size:.78rem;color:var(--t3);margin-top:2px;">'
+               +'<span style="color:var(--ok);font-weight:700;">'+acD+' ativo'+(acD!==1?'s':'')+'</span>'
+               +(rsD>0?' · <span style="color:var(--err);font-weight:700;">'+rsD+' restrito'+(rsD!==1?'s':'')+'</span>':'')
+               +' · '+pctD+'%'
+               +'</div>'
+               +'<div style="margin-top:6px;width:100%;height:5px;background:var(--hover);border-radius:3px;overflow:hidden;">'
+               +'<div style="height:100%;width:'+pW+'%;background:linear-gradient(90deg,var(--cyan),#67e8f9);border-radius:3px;"></div>'
+               +'</div>'
                +'</div></div>'
                +'<span class="pg-count">'+grp.members.length+' sócio'+(grp.members.length!==1?'s':'')+'</span></div>'
                +'<div class="pass-group-b" id="'+gid2+'"><table class="tbl"><thead><tr><th>#</th><th>Nome</th><th>CPF</th><th>Telefone</th><th>Empresa</th><th>Status</th></tr></thead><tbody>';
             for(var gm3=0;gm3<grp.members.length;gm3++){
                 var mb=grp.members[gm3],sts2=mb.status==='restricted'?'<span class="pill p-rs">⚠️ Restrito</span>':'<span class="pill p-ok">● Ativo</span>';
-                rr+='<tr'+(mb.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'><td>'+(gm3+1)+'</td><td><strong>'+mb.name+'</strong></td><td>'+(mb.cpf||'—')+'</td><td>'+(mb.tel||'—')+'</td><td style="font-size:.82rem;color:var(--t3);">'+(mb.emp||'—')+'</td><td>'+sts2+'</td></tr>';
+                rr+='<tr'+(mb.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'>'+
+                    '<td>'+(gm3+1)+'</td>'+
+                    '<td><strong>'+mb.name+'</strong></td>'+
+                    '<td>'+(mb.cpf||'—')+'</td>'+
+                    '<td>'+(mb.tel||'—')+'</td>'+
+                    '<td style="font-size:.82rem;color:var(--t3);">'+(mb.emp||'—')+'</td>'+
+                    '<td>'+sts2+'</td></tr>';
             }
             rr+='</tbody></table></div></div>';
         }
-        rr+='<div class="total-row"><div class="tr-label">📊 TOTAL DIRETOS</div><div class="tr-stats"><span style="color:var(--cyan);">🎫 '+totalPassDiretos+' passaportes</span><span style="color:var(--gold);">👥 '+totalSociosDiretos+' sócios</span></div></div>';
+        rr+='<div class="total-row">'
+           +'<div class="tr-label">📊 TOTAL DIRETOS</div>'
+           +'<div class="tr-stats">'
+           +'<span style="color:var(--cyan);">🎫 '+totalPassDiretos+' passaportes</span>'
+           +'<span style="color:var(--gold);">👥 '+totalSociosDiretos+' sócios</span>'
+           +'</div></div>';
         rr+='</div></div>';
     }
 
@@ -1084,7 +1163,7 @@ function fAdmE(){
 }
 
 /* ============================================================
-   NAVEGAÇÃO POR HASH (links diretos de empresa)
+   NAVEGAÇÃO POR HASH
    ============================================================ */
 function chkDL(){
     var h=location.hash;
@@ -1112,7 +1191,6 @@ var iTO=null;
 async function init(){
     if(iTO) clearTimeout(iTO);
 
-    /* Timeout de segurança: se demorar mais de 7s, exibe o que tem */
     iTO=setTimeout(function(){
         hideLo();
         document.getElementById('vHome').classList.remove('hdn');
@@ -1120,14 +1198,12 @@ async function init(){
         if(!online) toast('Conexão lenta — usando cache','warn');
     },7000);
 
-    /* Carrega cache local imediatamente para exibição rápida */
     carregarCacheLocal();
 
     try{
         var ok=await load();
         clearTimeout(iTO);
 
-        /* Verifica se é link direto de empresa */
         if(chkDL()){iniciarPoll();return;}
 
         hideLo();
@@ -1154,10 +1230,9 @@ async function init(){
 }
 
 /* ============================================================
-   BOOT — verifica sessão ou link direto
+   BOOT
    ============================================================ */
 if(location.hash&&location.hash.indexOf('#emp=')===0){
-    /* Acesso direto por link de empresa — sem login */
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('appContent').style.display='block';
     userRole='direct';
