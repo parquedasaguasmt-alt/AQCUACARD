@@ -249,7 +249,6 @@
     <div class="etb"><div><div class="en" id="cN"></div><div class="ec" id="cC"></div></div><div class="em"><div class="mi">👥 <strong id="cTA"></strong></div><div class="mi">📅 Vigência <strong>2026</strong></div><span class="pill p-ok">● Ativo</span></div></div>
     <div class="cnt">
         <div class="kr" id="cK"></div>
-
         <div class="info-box hdn" id="infoBoxEmpresa">
             <h4>📋 Painel de Consulta — Sua Empresa</h4>
             <p>Este é o portal exclusivo da sua empresa para <strong>conferir os colaboradores ativos</strong> com acesso aos parques e <strong>acompanhar o histórico de movimentações</strong> (inclusões, exclusões e substituições).</p>
@@ -258,9 +257,7 @@
                 Para solicitar inclusões, substituições ou exclusões de colaboradores, entre em contato com a <strong>CDL Nova Mutum</strong>.
             </div>
         </div>
-
         <div class="pnl"><div class="pnl-h"><div class="pnl-t">👥 Colaboradores Cadastrados</div><div id="cSync" style="font-size:.78rem;color:var(--t4);"></div></div><div class="pnl-b"><div style="overflow-x:auto;"><table class="tbl"><thead><tr><th>#</th><th>Colaborador</th><th>CPF</th><th>Telefone</th><th>Status</th></tr></thead><tbody id="cTbl"></tbody></table></div></div></div>
-
         <div class="pnl" id="cTL"><div class="pnl-h"><div class="pnl-t">📜 Histórico de Movimentações</div><div style="font-size:.78rem;color:var(--t4);">Inclusões, substituições e exclusões</div></div><div class="pnl-b timeline" id="cTLB"></div></div>
     </div>
 </div>
@@ -282,59 +279,436 @@
 </div>
 
 <script>
-var SENHA_ADMIN='PARQUE3308',SENHA_CDL='CDLPARQUE',userRole='';
-function tentarLogin(){var inp=document.getElementById('loginSenha'),erro=document.getElementById('loginErro'),box=document.querySelector('.login-box'),val=inp.value.trim();if(val===SENHA_ADMIN){userRole='admin';sessionStorage.setItem('pass_auth','admin');ativarApp();}else if(val===SENHA_CDL){userRole='cdl';sessionStorage.setItem('pass_auth','cdl');ativarApp();}else{erro.textContent='⚠️ Senha incorreta';box.classList.add('login-shake');inp.value='';inp.focus();setTimeout(function(){box.classList.remove('login-shake');},500);}}
-function ativarApp(){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('appContent').style.display='block';document.getElementById('loginErro').textContent='';atualizarBadgeUsuario();init();}
-function atualizarBadgeUsuario(){var el=document.getElementById('userBadge');if(userRole==='admin')el.innerHTML='<div class="user-badge admin">⚙️ Admin — Bruna</div>';else el.innerHTML='<div class="user-badge cdl">🏛️ CDL Nova Mutum</div>';}
-function fazerLogout(){sessionStorage.removeItem('pass_auth');userRole='';document.getElementById('appContent').style.display='none';document.getElementById('loginScreen').classList.remove('hidden');document.getElementById('loginSenha').value='';document.getElementById('loginSenha').focus();['vHome','vComp','vAdm','vCdlRp'].forEach(function(id){document.getElementById(id).classList.add('hdn');});}
-function checarSessao(){var s=sessionStorage.getItem('pass_auth');if(s==='admin'||s==='cdl'){userRole=s;ativarApp();return true;}if(location.hash&&location.hash.indexOf('#emp=')===0)return false;document.getElementById('loginSenha').focus();return false;}
+/* ============================================================
+   AUTENTICAÇÃO
+   ============================================================ */
+var SENHA_ADMIN='PARQUE3308', SENHA_CDL='CDLPARQUE', userRole='';
+
+function tentarLogin(){
+    var inp=document.getElementById('loginSenha'),
+        erro=document.getElementById('loginErro'),
+        box=document.querySelector('.login-box'),
+        val=inp.value.trim();
+    if(val===SENHA_ADMIN){userRole='admin';sessionStorage.setItem('pass_auth','admin');ativarApp();}
+    else if(val===SENHA_CDL){userRole='cdl';sessionStorage.setItem('pass_auth','cdl');ativarApp();}
+    else{
+        erro.textContent='⚠️ Senha incorreta';
+        box.classList.add('login-shake');
+        inp.value='';inp.focus();
+        setTimeout(function(){box.classList.remove('login-shake');},500);
+    }
+}
+function ativarApp(){
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('appContent').style.display='block';
+    document.getElementById('loginErro').textContent='';
+    atualizarBadgeUsuario();
+    init();
+}
+function atualizarBadgeUsuario(){
+    var el=document.getElementById('userBadge');
+    if(userRole==='admin') el.innerHTML='<div class="user-badge admin">⚙️ Admin — Bruna</div>';
+    else el.innerHTML='<div class="user-badge cdl">🏛️ CDL Nova Mutum</div>';
+}
+function fazerLogout(){
+    sessionStorage.removeItem('pass_auth');
+    userRole='';
+    document.getElementById('appContent').style.display='none';
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('loginSenha').value='';
+    document.getElementById('loginSenha').focus();
+    ['vHome','vComp','vAdm','vCdlRp'].forEach(function(id){document.getElementById(id).classList.add('hdn');});
+    pararPoll();
+}
+function checarSessao(){
+    var s=sessionStorage.getItem('pass_auth');
+    if(s==='admin'||s==='cdl'){userRole=s;ativarApp();return true;}
+    if(location.hash&&location.hash.indexOf('#emp=')===0) return false;
+    document.getElementById('loginSenha').focus();
+    return false;
+}
 function isAdmin(){return userRole==='admin';}
-function isDirectMode(){return userRole==='direct';}
 
-var BASE_URL='https://parquedasaguasmt-alt.github.io/AQCUACARD/linkempresa.html',FB='https://aqcuacard-default-rtdb.firebaseio.com';
-var raw=[],cos={},hist=[],curCo=null,online=false,lSync=null,curLK='',dirMode=false;
+/* ============================================================
+   CONSTANTES
+   ============================================================ */
+var BASE_URL='https://parquedasaguasmt-alt.github.io/AQCUACARD/linkempresa.html';
+var FB='https://aqcuacard-default-rtdb.firebaseio.com';
 
-var ICO=[{k:['SUPERMERCADO','MERCADO','ATACAD'],i:'🛒'},{k:['AGRO','FAZENDA','RURAL','SEMENTE','SAFRA'],i:'🌾'},{k:['CLINICA','SAUDE','HOSPITAL','MEDIC','FARMA','ODONTO','DENT'],i:'🏥'},{k:['CONSTRU','ENGENHARIA','OBRA'],i:'🏗️'},{k:['RESTAUR','LANCHE','PIZZA','ALIMENT','PADARIA'],i:'🍽️'},{k:['ESCOLA','EDUCA','COLEGIO','CURSO'],i:'🎓'},{k:['ADVOG','JURID','DIREITO'],i:'⚖️'},{k:['CONTAB','CONTAD','FISCAL'],i:'📊'},{k:['MAQUINA','TRATOR','MECANICA','PECAS'],i:'⚙️'},{k:['TRANSPORTE','LOGISTIC','FRETE'],i:'🚛'},{k:['HOTEL','POUSADA','TURISMO'],i:'🏨'},{k:['LOJA','COMERCIO','VAREJO','MAGAZINE'],i:'🏪'},{k:['IMOBIL','IMOVEIS','CORRET'],i:'🏠'},{k:['POSTO','COMBUSTIVEL','GASOLINA'],i:'⛽'},{k:['TECNOLOGIA','SISTEMA','SOFTWARE','TI','INFORM'],i:'💻'},{k:['BANCO','FINANC','CRED','SEGUR'],i:'🏦'},{k:['VETERI','ANIMAL','PET'],i:'🐾'},{k:['BELEZA','SALAO','ESTETICA'],i:'💇'},{k:['ACADEMIA','FITNESS','GYM','ESPORTE'],i:'🏋️'},{k:['CDL','ASSOCIA','SINDICATO','COOPERATIVA'],i:'🏛️'},{k:['FARMACIA','DROGA'],i:'💊'},{k:['OTICA','OPTICA'],i:'👓'},{k:['MOVEIS','COLCH','DECOR'],i:'🛋️'},{k:['ELETR','CELULAR','PHONE'],i:'📱'},{k:['AUTO','CARRO','VEICUL','REVENDA'],i:'🚗'}];
-function gIco(n){var u=(n||'').toUpperCase();for(var i=0;i<ICO.length;i++)for(var j=0;j<ICO[i].k.length;j++)if(u.indexOf(ICO[i].k[j])>=0)return ICO[i].i;return'🏢';}
+/* ============================================================
+   ESTADO GLOBAL
+   ============================================================ */
+var raw=[], cos={}, hist=[], curCo=null, online=false, lSync=null, curLK='', dirMode=false;
+
+/*
+ * ESTRATÉGIA DE SINCRONIZAÇÃO ECONÔMICA
+ * ─────────────────────────────────────
+ * 1. No boot: baixa tudo uma vez e salva no localStorage.
+ * 2. No poll (a cada 30s): lê APENAS /meta/version (1 leitura minúscula).
+ *    • Se version mudou → baixa /associados e /passaportes_history completos.
+ *    • Se version igual  → não faz nenhuma leitura adicional.
+ * Resultado: em situação estável (sem alterações), o custo é 1 leitura
+ * pequena a cada 30 segundos, independente do tamanho da base.
+ */
+var CACHE_KEY_RAW     = 'pe_raw_v1';
+var CACHE_KEY_HIST    = 'pe_hist_v1';
+var CACHE_KEY_VERSION = 'pe_version_v1';
+var localVersion      = null;   // última versão conhecida
+var pollTimer         = null;
+var POLL_INTERVAL     = 30000;  // 30 segundos
+
+/* ============================================================
+   CACHE LOCAL (localStorage)
+   ============================================================ */
+function cacheSalvar(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function cacheLer(k){try{var v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch(e){return null;}}
+
+function carregarCacheLocal(){
+    var cr=cacheLer(CACHE_KEY_RAW);
+    var ch=cacheLer(CACHE_KEY_HIST);
+    var cv=cacheLer(CACHE_KEY_VERSION);
+    if(cr&&cr.length){raw=cr;}
+    if(ch&&ch.length){hist=ch;}
+    if(cv!==null){localVersion=cv;}
+    if(raw.length){group();}
+}
+
+/* ============================================================
+   REQUISIÇÕES FIREBASE (sem autenticação — regras públicas leitura)
+   ============================================================ */
+function fbG(p){
+    return new Promise(function(ok,no){
+        var x=new XMLHttpRequest();
+        x.open('GET',FB+'/'+p+'.json',true);
+        x.timeout=8000;
+        x.onreadystatechange=function(){
+            if(x.readyState===4){
+                if(x.status===200){try{ok(JSON.parse(x.responseText));}catch(e){no(e);}}
+                else no(new Error('HTTP '+x.status));
+            }
+        };
+        x.onerror=function(){no(new Error('net'));};
+        x.ontimeout=function(){no(new Error('timeout'));};
+        x.send();
+    });
+}
+
+/* ============================================================
+   CARGA COMPLETA (boot ou quando versão mudou)
+   ============================================================ */
+async function carregarDadosCompletos(){
+    var d=await fbG('associados');
+    raw=[];
+    if(d) for(var k in d) if(d.hasOwnProperty(k)){var a=d[k];a._k=k;raw.push(a);}
+    cacheSalvar(CACHE_KEY_RAW, raw);
+
+    try{
+        var hd=await fbG('passaportes_history');
+        hist=[];
+        if(hd) for(var k2 in hd) if(hd.hasOwnProperty(k2)){var h=hd[k2];h._k=k2;hist.push(h);}
+        cacheSalvar(CACHE_KEY_HIST, hist);
+    }catch(e){}
+
+    group();
+    online=true;
+    lSync=new Date();
+    upSync();
+}
+
+/* ============================================================
+   POLL ECONÔMICO — lê só /meta/version
+   ============================================================ */
+async function verificarVersao(){
+    try{
+        var meta=await fbG('meta/version');
+        var remoteVersion=meta!==null?String(meta):'0';
+
+        if(remoteVersion!==String(localVersion)){
+            /* Versão diferente: baixa tudo */
+            localVersion=remoteVersion;
+            cacheSalvar(CACHE_KEY_VERSION, localVersion);
+            await carregarDadosCompletos();
+            /* Atualiza a view ativa */
+            reRenderViewAtiva();
+            toast('🔄 Dados atualizados','ok');
+        } else {
+            /* Sem mudança: apenas confirma que está online */
+            online=true;
+            upSync();
+        }
+    }catch(e){
+        online=false;
+        upSync();
+    }
+}
+
+function reRenderViewAtiva(){
+    if(!document.getElementById('vHome').classList.contains('hdn')){
+        renderHome();
+    } else if(!document.getElementById('vComp').classList.contains('hdn')&&curCo){
+        openComp(curCo);
+    } else if(!document.getElementById('vAdm').classList.contains('hdn')){
+        rAdm();
+    } else if(!document.getElementById('vCdlRp').classList.contains('hdn')){
+        document.getElementById('cdlRpContent').innerHTML=buildCdlReportHTML();
+    }
+}
+
+function iniciarPoll(){
+    pararPoll();
+    pollTimer=setInterval(verificarVersao, POLL_INTERVAL);
+}
+function pararPoll(){
+    if(pollTimer){clearInterval(pollTimer);pollTimer=null;}
+}
+
+/* ============================================================
+   CARGA INICIAL
+   ============================================================ */
+async function load(){
+    /* 1. Tenta ler versão remota */
+    try{
+        var meta=await fbG('meta/version');
+        var remoteVersion=meta!==null?String(meta):'0';
+
+        if(remoteVersion!==String(localVersion)||!raw.length){
+            /* Versão nova ou cache vazio → baixa tudo */
+            localVersion=remoteVersion;
+            cacheSalvar(CACHE_KEY_VERSION, localVersion);
+            await carregarDadosCompletos();
+        } else {
+            /* Cache válido → usa cache, só confirma online */
+            group();
+            online=true;
+            lSync=new Date();
+            upSync();
+        }
+        return true;
+    }catch(e){
+        console.error(e);
+        /* Offline: usa cache se disponível */
+        if(raw.length){group();online=false;upSync();return true;}
+        online=false;upSync();return false;
+    }
+}
+
+/* ============================================================
+   AGRUPAMENTO POR EMPRESA
+   ============================================================ */
+function group(){
+    cos={};
+    for(var i=0;i<raw.length;i++){
+        var a=raw[i], emp=(a.emp||'').trim().toUpperCase();
+        if(!emp) continue;
+        if(!cos[emp]) cos[emp]={name:emp,icon:gIco(emp),staff:[]};
+        cos[emp].staff.push({
+            id:a.id||a._k, _k:a._k,
+            name:(a.nome||'').toUpperCase(),
+            cpf:a.cpf||'', role:a.titulo||'', tel:a.tel||'',
+            status:a.status==='Ativo'?'active':(a.status==='Acesso Restrito'?'restricted':'inactive')
+        });
+    }
+}
+
+/* ============================================================
+   SYNC UI
+   ============================================================ */
+function upSync(){
+    var el=document.getElementById('syncB');
+    if(!el) return;
+    if(online){
+        el.className='sync sync-on';
+        el.innerHTML='<div class="sync-dot"></div><span>SINCRONIZADO</span>';
+    } else {
+        el.className='sync sync-off';
+        el.innerHTML='<div class="sync-dot"></div><span>OFFLINE</span>';
+    }
+}
+
+/* ============================================================
+   LOADING OVERLAY
+   ============================================================ */
+function hideLo(){
+    var o=document.getElementById('lo');
+    if(o){o.classList.add('fo');setTimeout(function(){o.style.display='none';},500);}
+}
+function retryLoad(){
+    document.getElementById('loRetry').style.display='none';
+    document.querySelector('#lo .spn').style.display='block';
+    document.getElementById('loMsg').textContent='Reconectando...';
+    init();
+}
+
+/* ============================================================
+   ÍCONES POR NOME DE EMPRESA
+   ============================================================ */
+var ICO=[
+    {k:['SUPERMERCADO','MERCADO','ATACAD'],i:'🛒'},
+    {k:['AGRO','FAZENDA','RURAL','SEMENTE','SAFRA'],i:'🌾'},
+    {k:['CLINICA','SAUDE','HOSPITAL','MEDIC','FARMA','ODONTO','DENT'],i:'🏥'},
+    {k:['CONSTRU','ENGENHARIA','OBRA'],i:'🏗️'},
+    {k:['RESTAUR','LANCHE','PIZZA','ALIMENT','PADARIA'],i:'🍽️'},
+    {k:['ESCOLA','EDUCA','COLEGIO','CURSO'],i:'🎓'},
+    {k:['ADVOG','JURID','DIREITO'],i:'⚖️'},
+    {k:['CONTAB','CONTAD','FISCAL'],i:'📊'},
+    {k:['MAQUINA','TRATOR','MECANICA','PECAS'],i:'⚙️'},
+    {k:['TRANSPORTE','LOGISTIC','FRETE'],i:'🚛'},
+    {k:['HOTEL','POUSADA','TURISMO'],i:'🏨'},
+    {k:['LOJA','COMERCIO','VAREJO','MAGAZINE'],i:'🏪'},
+    {k:['IMOBIL','IMOVEIS','CORRET'],i:'🏠'},
+    {k:['POSTO','COMBUSTIVEL','GASOLINA'],i:'⛽'},
+    {k:['TECNOLOGIA','SISTEMA','SOFTWARE','TI','INFORM'],i:'💻'},
+    {k:['BANCO','FINANC','CRED','SEGUR'],i:'🏦'},
+    {k:['VETERI','ANIMAL','PET'],i:'🐾'},
+    {k:['BELEZA','SALAO','ESTETICA'],i:'💇'},
+    {k:['ACADEMIA','FITNESS','GYM','ESPORTE'],i:'🏋️'},
+    {k:['CDL','ASSOCIA','SINDICATO','COOPERATIVA'],i:'🏛️'},
+    {k:['FARMACIA','DROGA'],i:'💊'},
+    {k:['OTICA','OPTICA'],i:'👓'},
+    {k:['MOVEIS','COLCH','DECOR'],i:'🛋️'},
+    {k:['ELETR','CELULAR','PHONE'],i:'📱'},
+    {k:['AUTO','CARRO','VEICUL','REVENDA'],i:'🚗'}
+];
+function gIco(n){
+    var u=(n||'').toUpperCase();
+    for(var i=0;i<ICO.length;i++)
+        for(var j=0;j<ICO[i].k.length;j++)
+            if(u.indexOf(ICO[i].k[j])>=0) return ICO[i].i;
+    return'🏢';
+}
+
+/* ============================================================
+   LINKS E CODIFICAÇÃO
+   ============================================================ */
 function eKey(n){return btoa(unescape(encodeURIComponent((n||'').trim().toUpperCase()))).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');}
 function dKey(h){try{return decodeURIComponent(escape(atob(h.replace(/-/g,'+').replace(/_/g,'/'))));}catch(e){return null;}}
 function gLink(n){return BASE_URL+'#emp='+eKey(n);}
-function fbG(p){return new Promise(function(ok,no){var x=new XMLHttpRequest();x.open('GET',FB+'/'+p+'.json',true);x.timeout=8000;x.onreadystatechange=function(){if(x.readyState===4){if(x.status===200){try{ok(JSON.parse(x.responseText));}catch(e){no(e);}}else no(new Error(x.status));}};x.onerror=function(){no(new Error('net'));};x.ontimeout=function(){no(new Error('timeout'));};x.send();});}
-function copyTxt(txt){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(function(){toast('📋 Link copiado!','ok');}).catch(function(){fallCopy(txt);});else fallCopy(txt);}
-function fallCopy(txt){var ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;left:-9999px;top:0;';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');toast('📋 Link copiado!','ok');}catch(e){toast('Erro ao copiar','err');}document.body.removeChild(ta);}
-function openWA(msg,num){var url='https://api.whatsapp.com/send?text='+encodeURIComponent(msg);if(num&&num.length>=12)url='https://api.whatsapp.com/send?phone='+num+'&text='+encodeURIComponent(msg);window.open(url,'_blank');}
 
-function isEmpresarial(titulo){return titulo&&titulo.toString().trim().toUpperCase().indexOf('-E')>=0;}
-function getPassCode(titulo){var t=(titulo||'').toString().trim();if(isEmpresarial(t))return null;if(!t||t==='—'||t==='-')return null;return t;}
-function getPassGroups(){var groups={};for(var i=0;i<raw.length;i++){var a=raw[i],titulo=(a.titulo||'').toString().trim(),code=getPassCode(titulo);if(!code)continue;if(!groups[code])groups[code]={code:code,members:[]};groups[code].members.push({name:(a.nome||'').toUpperCase(),cpf:a.cpf||'',tel:a.tel||'',emp:(a.emp||'').trim().toUpperCase(),status:a.status==='Ativo'?'active':(a.status==='Acesso Restrito'?'restricted':'active'),titulo:titulo});}return groups;}
+/* ============================================================
+   UTILITÁRIOS
+   ============================================================ */
+function copyTxt(txt){
+    if(navigator.clipboard&&navigator.clipboard.writeText)
+        navigator.clipboard.writeText(txt).then(function(){toast('📋 Link copiado!','ok');}).catch(function(){fallCopy(txt);});
+    else fallCopy(txt);
+}
+function fallCopy(txt){
+    var ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;left:-9999px;top:0;';
+    document.body.appendChild(ta);ta.focus();ta.select();
+    try{document.execCommand('copy');toast('📋 Link copiado!','ok');}catch(e){toast('Erro ao copiar','err');}
+    document.body.removeChild(ta);
+}
+function openWA(msg,num){
+    var url='https://api.whatsapp.com/send?text='+encodeURIComponent(msg);
+    if(num&&num.length>=12) url='https://api.whatsapp.com/send?phone='+num+'&text='+encodeURIComponent(msg);
+    window.open(url,'_blank');
+}
+function toast(msg,type){
+    var t=document.getElementById('toast');
+    t.textContent=msg;
+    t.className='tst '+(type==='ok'?'tok':type==='err'?'ter':'twn');
+    t.style.display='block';
+    setTimeout(function(){t.style.display='none';},3800);
+}
 
-async function load(){try{var d=await fbG('associados');raw=[];if(d)for(var k in d)if(d.hasOwnProperty(k)){var a=d[k];a._k=k;raw.push(a);}try{var hd=await fbG('passaportes_history');if(hd){hist=[];for(var k3 in hd)if(hd.hasOwnProperty(k3)){var h=hd[k3];h._k=k3;hist.push(h);}}}catch(e){}group();online=true;lSync=new Date();upSync();return true;}catch(e){console.error(e);online=false;upSync();return false;}}
-function group(){cos={};for(var i=0;i<raw.length;i++){var a=raw[i],emp=(a.emp||'').trim().toUpperCase();if(!emp)continue;if(!cos[emp])cos[emp]={name:emp,icon:gIco(emp),staff:[]};cos[emp].staff.push({id:a.id||a._k,_k:a._k,name:(a.nome||'').toUpperCase(),cpf:a.cpf||'',role:a.titulo||'',tel:a.tel||'',status:a.status==='Ativo'?'active':(a.status==='Acesso Restrito'?'restricted':'active')});}}
-function upSync(){var el=document.getElementById('syncB');if(!el)return;if(online){el.className='sync sync-on';el.innerHTML='<div class="sync-dot"></div><span>SINCRONIZADO</span>';}else{el.className='sync sync-off';el.innerHTML='<div class="sync-dot"></div><span>OFFLINE</span>';}}
-function hideLo(){var o=document.getElementById('lo');if(o){o.classList.add('fo');setTimeout(function(){o.style.display='none';},500);}}
-function retryLoad(){document.getElementById('loRetry').style.display='none';document.querySelector('#lo .spn').style.display='block';document.getElementById('loMsg').textContent='Reconectando...';init();}
-function buildMsg(key){var co=cos[key];if(!co)return'';var lnk=gLink(key),ac=0;for(var i=0;i<co.staff.length;i++)if(co.staff[i].status==='active')ac++;return['PARQUE DAS AGUAS','Passaportes Empresariais','','Empresa: '+co.name,'Colaboradores ativos: '+ac,'','Acesse o painel exclusivo da sua empresa:','',lnk,'','Pelo link voces podem:','- Conferir os colaboradores cadastrados','- Acompanhar inclusoes, substituicoes e exclusoes','','Para alteracoes, entre em contato com a CDL Nova Mutum.','','CDL Nova Mutum + Parque das Aguas'].join('\n');}
-function buildMsgQuick(key){var co=cos[key];if(!co)return'';var lnk=gLink(key),ac=0;for(var i=0;i<co.staff.length;i++)if(co.staff[i].status==='active')ac++;return['PARQUE DAS AGUAS','','Painel da empresa: '+co.name,'Colaboradores ativos: '+ac,'',lnk,'','Para conferir colaboradores e acompanhar movimentacoes.','CDL Nova Mutum + Parque das Aguas'].join('\n');}
-function openLink(key){curLK=key;var co=cos[key];if(!co)return;document.getElementById('lEN').textContent=co.icon+' '+co.name;document.getElementById('lURL').textContent=gLink(key);document.getElementById('wpN').value='';document.getElementById('wpS').style.display='none';upMP();document.getElementById('mLink').classList.add('act');document.body.style.overflow='hidden';}
+/* ============================================================
+   MENSAGENS WHATSAPP
+   ============================================================ */
+function buildMsg(key){
+    var co=cos[key];if(!co) return'';
+    var lnk=gLink(key),ac=0;
+    for(var i=0;i<co.staff.length;i++) if(co.staff[i].status==='active') ac++;
+    return['PARQUE DAS AGUAS','Passaportes Empresariais','',
+        'Empresa: '+co.name,'Colaboradores ativos: '+ac,'',
+        'Acesse o painel exclusivo da sua empresa:','',lnk,'',
+        'Pelo link voces podem:','- Conferir os colaboradores cadastrados',
+        '- Acompanhar inclusoes, substituicoes e exclusoes','',
+        'Para alteracoes, entre em contato com a CDL Nova Mutum.','',
+        'CDL Nova Mutum + Parque das Aguas'].join('\n');
+}
+function buildMsgQuick(key){
+    var co=cos[key];if(!co) return'';
+    var lnk=gLink(key),ac=0;
+    for(var i=0;i<co.staff.length;i++) if(co.staff[i].status==='active') ac++;
+    return['PARQUE DAS AGUAS','','Painel da empresa: '+co.name,
+        'Colaboradores ativos: '+ac,'',lnk,'',
+        'Para conferir colaboradores e acompanhar movimentacoes.',
+        'CDL Nova Mutum + Parque das Aguas'].join('\n');
+}
+
+/* ============================================================
+   MODAL DE LINK
+   ============================================================ */
+function openLink(key){
+    curLK=key;
+    var co=cos[key];if(!co) return;
+    document.getElementById('lEN').textContent=co.icon+' '+co.name;
+    document.getElementById('lURL').textContent=gLink(key);
+    document.getElementById('wpN').value='';
+    document.getElementById('wpS').style.display='none';
+    upMP();
+    document.getElementById('mLink').classList.add('act');
+    document.body.style.overflow='hidden';
+}
 function closeLink(){document.getElementById('mLink').classList.remove('act');document.body.style.overflow='';}
 document.getElementById('mLink').addEventListener('click',function(e){if(e.target===this)closeLink();});
 function doCopy(){copyTxt(gLink(curLK));}
-function togWp(){var s=document.getElementById('wpS');s.style.display=s.style.display==='none'?'block':'none';if(s.style.display==='block'){upMP();document.getElementById('wpN').focus();}}
+function togWp(){
+    var s=document.getElementById('wpS');
+    s.style.display=s.style.display==='none'?'block':'none';
+    if(s.style.display==='block'){upMP();document.getElementById('wpN').focus();}
+}
 function upMP(){document.getElementById('mpv').textContent=buildMsg(curLK);}
-function doWp(){var num=document.getElementById('wpN').value.replace(/\D/g,''),fn=num;if(num.length>=10&&num.length<=11)fn='55'+num;openWA(buildMsg(curLK),fn);closeLink();toast('📤 WhatsApp aberto!','ok');}
+function doWp(){
+    var num=document.getElementById('wpN').value.replace(/\D/g,''),fn=num;
+    if(num.length>=10&&num.length<=11) fn='55'+num;
+    openWA(buildMsg(curLK),fn);closeLink();toast('📤 WhatsApp aberto!','ok');
+}
 
-/* ===== RELATÓRIO CDL CONSOLIDADO ===== */
+/* ============================================================
+   PASSAPORTES DIRETOS (para relatório admin)
+   ============================================================ */
+function isEmpresarial(titulo){return titulo&&titulo.toString().trim().toUpperCase().indexOf('-E')>=0;}
+function getPassCode(titulo){
+    var t=(titulo||'').toString().trim();
+    if(isEmpresarial(t)) return null;
+    if(!t||t==='—'||t==='-') return null;
+    return t;
+}
+function getPassGroups(){
+    var groups={};
+    for(var i=0;i<raw.length;i++){
+        var a=raw[i],titulo=(a.titulo||'').toString().trim(),code=getPassCode(titulo);
+        if(!code) continue;
+        if(!groups[code]) groups[code]={code:code,members:[]};
+        groups[code].members.push({
+            name:(a.nome||'').toUpperCase(),cpf:a.cpf||'',tel:a.tel||'',
+            emp:(a.emp||'').trim().toUpperCase(),
+            status:a.status==='Ativo'?'active':(a.status==='Acesso Restrito'?'restricted':'active'),
+            titulo:titulo
+        });
+    }
+    return groups;
+}
+
+/* ============================================================
+   RELATÓRIO CDL
+   ============================================================ */
 function buildCdlReportHTML(){
     var keys=Object.keys(cos),tA=0,tR=0,tG=0,cd=[];
-    for(var i=0;i<keys.length;i++){var co=cos[keys[i]],a=0,r=0;for(var j=0;j<co.staff.length;j++){if(co.staff[j].status==='active')a++;if(co.staff[j].status==='restricted')r++;}tA+=a;tR+=r;tG+=co.staff.length;cd.push({key:keys[i],name:co.name,icon:co.icon,a:a,r:r,t:co.staff.length});}
+    for(var i=0;i<keys.length;i++){
+        var co=cos[keys[i]],a=0,r=0;
+        for(var j=0;j<co.staff.length;j++){if(co.staff[j].status==='active')a++;if(co.staff[j].status==='restricted')r++;}
+        tA+=a;tR+=r;tG+=co.staff.length;
+        cd.push({key:keys[i],name:co.name,icon:co.icon,a:a,r:r,t:co.staff.length});
+    }
     var tSub=hist.length;
-    var mx=1;for(var l=0;l<cd.length;l++)if(cd[l].a>mx)mx=cd[l].a;
+    var mx=1;for(var l=0;l<cd.length;l++) if(cd[l].a>mx) mx=cd[l].a;
     cd.sort(function(a,b){return b.a-a.a;});
 
     var rr='<div class="rp"><div class="rp-h"><h3>📊 Relatório — Passaportes Empresariais CDL</h3><div class="tb2">🏛️ CDL Nova Mutum × Parque das Águas</div></div>';
     rr+='<div class="rsm"><div class="rs rgo"><div class="rv">'+keys.length+'</div><div class="rl">Empresas</div></div><div class="rs rgn"><div class="rv">'+tA+'</div><div class="rl">Sócios Ativos</div></div><div class="rs rrd"><div class="rv">'+tR+'</div><div class="rl">Restritos</div></div><div class="rs rbl"><div class="rv">'+tG+'</div><div class="rl">Total Geral</div></div><div class="rs rpu"><div class="rv">'+tSub+'</div><div class="rl">Movimentações</div></div></div></div>';
 
-    /* BLOCO ÚNICO: Empresas CDL */
     rr+='<div class="pnl"><div class="pnl-h"><div class="pnl-t">🏛️ Passaportes Empresariais — Detalhamento Completo</div><div style="font-size:.78rem;color:var(--t4);">Clique na empresa para ver os colaboradores</div></div><div class="pnl-b">';
     for(var m=0;m<cd.length;m++){
         var c=cd[m],p=Math.round((c.a/mx)*100),pct=tA>0?((c.a/tA)*100).toFixed(1):'0',co2=cos[c.key],gid='cdlg_'+m;
@@ -343,21 +717,23 @@ function buildCdlReportHTML(){
         rr+='<div class="pg-left" style="flex:1;min-width:0;"><span style="font-size:1.3rem;flex-shrink:0;">'+c.icon+'</span><div style="flex:1;min-width:0;"><div style="font-weight:700;color:var(--t1);font-size:.95rem;">'+c.name+'</div><div style="font-size:.78rem;color:var(--t3);margin-top:2px;"><span style="color:var(--ok);font-weight:700;">'+c.a+' ativo'+(c.a!==1?'s':'')+'</span>'+(c.r>0?' · <span style="color:var(--err);font-weight:700;">'+c.r+' restrito'+(c.r!==1?'s':'')+'</span>':'')+' · Total '+c.t+' · '+pct+'%</div><div style="margin-top:6px;width:100%;height:5px;background:var(--hover);border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+p+'%;background:linear-gradient(90deg,var(--gold),#e0b85e);border-radius:3px;"></div></div></div></div>';
         rr+='<span class="pg-count">'+c.t+' sócio'+(c.t!==1?'s':'')+'</span></div>';
         rr+='<div class="pass-group-b" id="'+gid+'"><table class="tbl"><thead><tr><th>#</th><th>Nome</th><th>CPF</th><th>Telefone</th><th>Status</th></tr></thead><tbody>';
-        for(var s=0;s<co2.staff.length;s++){var st=co2.staff[s],sts=st.status==='restricted'?'<span class="pill p-rs">⚠️ Restrito</span>':'<span class="pill p-ok">● Ativo</span>';rr+='<tr'+(st.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'><td>'+(s+1)+'</td><td><strong>'+st.name+'</strong></td><td>'+(st.cpf||'—')+'</td><td>'+(st.tel||'—')+'</td><td>'+sts+'</td></tr>';}
+        for(var s=0;s<co2.staff.length;s++){
+            var st=co2.staff[s],sts=st.status==='restricted'?'<span class="pill p-rs">⚠️ Restrito</span>':'<span class="pill p-ok">● Ativo</span>';
+            rr+='<tr'+(st.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'><td>'+(s+1)+'</td><td><strong>'+st.name+'</strong></td><td>'+(st.cpf||'—')+'</td><td>'+(st.tel||'—')+'</td><td>'+sts+'</td></tr>';
+        }
         rr+='</tbody></table></div></div>';
     }
     rr+='<div class="total-row"><div class="tr-label">📊 TOTAL GERAL</div><div class="tr-stats"><span style="color:var(--ok);">✅ '+tA+' ativos</span><span style="color:var(--err);">⚠️ '+tR+' restritos</span><span style="color:var(--gold);">👥 '+tG+' total</span></div></div>';
     rr+='</div></div>';
 
-    /* Histórico */
     if(hist.length){
         rr+='<div class="pnl"><div class="pnl-h"><div class="pnl-t">📜 Histórico de Movimentações</div></div><div class="pnl-b">';
         var hsorted=hist.slice().sort(function(a,b){return (b._k||0)>(a._k||0)?1:-1;});
         for(var h=0;h<hsorted.length;h++){
-            var hi=hsorted[h],tipo=hi.tipo||'sub',ic='🔄',tt='Substituição';
-            if(tipo==='add'){ic='🟢';tt='Inclusão';}else if(tipo==='rem'){ic='🔴';tt='Exclusão';}
+            var hi=hsorted[h],tipo=hi.tipo||'sub',ic2='🔄',tt='Substituição';
+            if(tipo==='add'){ic2='🟢';tt='Inclusão';}else if(tipo==='rem'){ic2='🔴';tt='Exclusão';}
             var det=tipo==='add'?('🟢 Entrou: '+hi.inName):tipo==='rem'?('🔴 Saiu: '+hi.outName):('🔴 '+hi.outName+' → 🟢 '+hi.inName);
-            rr+='<div class="he"><div class="ht"><span class="hn">'+ic+' '+hi.companyName+' — '+tt+'</span><span class="hd">'+hi.date+'</span></div><div style="font-size:.85rem;color:var(--t2);margin-top:4px;">'+det+'</div></div>';
+            rr+='<div class="he"><div class="ht"><span class="hn">'+ic2+' '+hi.companyName+' — '+tt+'</span><span class="hd">'+hi.date+'</span></div><div style="font-size:.85rem;color:var(--t2);margin-top:4px;">'+det+'</div></div>';
         }
         rr+='</div></div>';
     }
@@ -365,53 +741,160 @@ function buildCdlReportHTML(){
 }
 
 function openCdlReport(){
-    document.getElementById('vHome').classList.add('hdn');document.getElementById('vComp').classList.add('hdn');document.getElementById('vAdm').classList.add('hdn');document.getElementById('vCdlRp').classList.remove('hdn');
+    document.getElementById('vHome').classList.add('hdn');
+    document.getElementById('vComp').classList.add('hdn');
+    document.getElementById('vAdm').classList.add('hdn');
+    document.getElementById('vCdlRp').classList.remove('hdn');
     document.getElementById('cdlRpContent').innerHTML=buildCdlReportHTML();
 }
 
+/* ============================================================
+   HOME
+   ============================================================ */
 function renderHome(){
-    var g=document.getElementById('hGrid'),keys=Object.keys(cos).sort(function(a,b){var aa=0,bb=0;for(var i=0;i<cos[a].staff.length;i++)if(cos[a].staff[i].status==='active')aa++;for(var j=0;j<cos[b].staff.length;j++)if(cos[b].staff[j].status==='active')bb++;return bb-aa;}),h='';
+    var g=document.getElementById('hGrid');
+    var keys=Object.keys(cos).sort(function(a,b){
+        var aa=0,bb=0;
+        for(var i=0;i<cos[a].staff.length;i++) if(cos[a].staff[i].status==='active') aa++;
+        for(var j=0;j<cos[b].staff.length;j++) if(cos[b].staff[j].status==='active') bb++;
+        return bb-aa;
+    });
+    var h='';
 
-    if(isAdmin())h+='<div class="crd adm" data-n="painel administrativo"><div class="ci">⚙️</div><h3>Painel Administrativo</h3><p>Gestão completa</p><div class="cb">⚙️ Acesso total</div></div>';
+    if(isAdmin())
+        h+='<div class="crd adm" data-n="painel administrativo"><div class="ci">⚙️</div><h3>Painel Administrativo</h3><p>Gestão completa</p><div class="cb">⚙️ Acesso total</div></div>';
 
-    var tA=0,tE=keys.length;for(var ti=0;ti<keys.length;ti++)for(var tj=0;tj<cos[keys[ti]].staff.length;tj++)if(cos[keys[ti]].staff[tj].status==='active')tA++;
+    var tA=0,tE=keys.length;
+    for(var ti=0;ti<keys.length;ti++)
+        for(var tj=0;tj<cos[keys[ti]].staff.length;tj++)
+            if(cos[keys[ti]].staff[tj].status==='active') tA++;
+
     h+='<div class="crd rpt" data-n="relatorio empresarial"><div class="ci">📊</div><h3>Relatório Empresarial</h3><p>Visão completa CDL</p><div class="cb">🏢 '+tE+' empresas · 👥 '+tA+' ativos</div></div>';
 
-    if(!keys.length)h+='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--t3);">📭 Nenhuma empresa</div>';
-    for(var i=0;i<keys.length;i++){var k=keys[i],c=cos[k],ac=0,rs=0;for(var j=0;j<c.staff.length;j++){if(c.staff[j].status==='active')ac++;if(c.staff[j].status==='restricted')rs++;}
-    h+='<div class="crd comp" data-n="'+c.name.toLowerCase()+'" data-key="'+i+'"><div class="ci">'+c.icon+'</div><h3>'+c.name+'</h3><p>ACQUA CARD</p><div class="cb">👥 '+ac+' ativo'+(ac!==1?'s':'')+(rs>0?' · ⚠️ '+rs+' restrito'+(rs!==1?'s':''):'')+'</div><div class="ca"><button class="cab ccp" data-act="copy" data-idx="'+i+'">📋 Copiar link</button><button class="cab cwp" data-act="wp" data-idx="'+i+'">💬 WhatsApp</button></div></div>';}
-    g.innerHTML=h;g._keys=keys;
-    g.onclick=function(e){var btn=e.target.closest('[data-act]');if(btn){e.stopPropagation();var idx=parseInt(btn.getAttribute('data-idx'));var key=g._keys[idx];if(!key)return;if(btn.getAttribute('data-act')==='copy')copyTxt(gLink(key));else if(btn.getAttribute('data-act')==='wp'){openWA(buildMsgQuick(key),'');toast('📤 WhatsApp aberto!','ok');}return;}var crd=e.target.closest('.comp');if(crd){var ci=parseInt(crd.getAttribute('data-key'));var ky=g._keys[ci];if(ky)openComp(ky);return;}var adm=e.target.closest('.adm');if(adm&&isAdmin()){openAdm();return;}var rpt=e.target.closest('.rpt');if(rpt){openCdlReport();return;}};
-}
-function filterHome(){var q=document.getElementById('sHome').value.toLowerCase().trim();var cards=document.querySelectorAll('#hGrid .comp');var adm=document.querySelector('#hGrid .adm');var rpt=document.querySelector('#hGrid .rpt');var v=0;for(var i=0;i<cards.length;i++){var m=!q||cards[i].getAttribute('data-n').indexOf(q)>=0;cards[i].classList.toggle('hid',!m);if(m)v++;}if(adm)adm.classList.toggle('hid',q&&'painel administrativo'.indexOf(q)<0);if(rpt)rpt.classList.toggle('hid',q&&'relatorio empresarial'.indexOf(q)<0);document.getElementById('sHomeCnt').textContent=q?(v===0?'Nenhuma':v+' de '+cards.length):'';}
-function goHome(){dirMode=false;location.hash='';document.getElementById('vHome').classList.remove('hdn');document.getElementById('vComp').classList.add('hdn');document.getElementById('vAdm').classList.add('hdn');document.getElementById('vCdlRp').classList.add('hdn');document.getElementById('sHome').value='';load().then(function(){renderHome();});}
+    if(!keys.length)
+        h+='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--t3);">📭 Nenhuma empresa</div>';
 
+    for(var i=0;i<keys.length;i++){
+        var k=keys[i],c=cos[k],ac=0,rs=0;
+        for(var j=0;j<c.staff.length;j++){
+            if(c.staff[j].status==='active') ac++;
+            if(c.staff[j].status==='restricted') rs++;
+        }
+        h+='<div class="crd comp" data-n="'+c.name.toLowerCase()+'" data-key="'+i+'">'
+          +'<div class="ci">'+c.icon+'</div>'
+          +'<h3>'+c.name+'</h3>'
+          +'<p>ACQUA CARD</p>'
+          +'<div class="cb">👥 '+ac+' ativo'+(ac!==1?'s':'')+(rs>0?' · ⚠️ '+rs+' restrito'+(rs!==1?'s':''):'')+'</div>'
+          +'<div class="ca">'
+          +'<button class="cab ccp" data-act="copy" data-idx="'+i+'">📋 Copiar link</button>'
+          +'<button class="cab cwp" data-act="wp" data-idx="'+i+'">💬 WhatsApp</button>'
+          +'</div></div>';
+    }
+    g.innerHTML=h;
+    g._keys=keys;
+
+    g.onclick=function(e){
+        var btn=e.target.closest('[data-act]');
+        if(btn){
+            e.stopPropagation();
+            var idx=parseInt(btn.getAttribute('data-idx'));
+            var key=g._keys[idx];if(!key) return;
+            if(btn.getAttribute('data-act')==='copy') copyTxt(gLink(key));
+            else if(btn.getAttribute('data-act')==='wp'){openWA(buildMsgQuick(key),'');toast('📤 WhatsApp aberto!','ok');}
+            return;
+        }
+        var crd=e.target.closest('.comp');
+        if(crd){var ci=parseInt(crd.getAttribute('data-key'));var ky=g._keys[ci];if(ky) openComp(ky);return;}
+        var adm=e.target.closest('.adm');
+        if(adm&&isAdmin()){openAdm();return;}
+        var rpt=e.target.closest('.rpt');
+        if(rpt){openCdlReport();return;}
+    };
+}
+
+function filterHome(){
+    var q=document.getElementById('sHome').value.toLowerCase().trim();
+    var cards=document.querySelectorAll('#hGrid .comp');
+    var adm=document.querySelector('#hGrid .adm');
+    var rpt=document.querySelector('#hGrid .rpt');
+    var v=0;
+    for(var i=0;i<cards.length;i++){
+        var m=!q||cards[i].getAttribute('data-n').indexOf(q)>=0;
+        cards[i].classList.toggle('hid',!m);
+        if(m) v++;
+    }
+    if(adm) adm.classList.toggle('hid',q&&'painel administrativo'.indexOf(q)<0);
+    if(rpt) rpt.classList.toggle('hid',q&&'relatorio empresarial'.indexOf(q)<0);
+    document.getElementById('sHomeCnt').textContent=q?(v===0?'Nenhuma':v+' de '+cards.length):'';
+}
+
+function goHome(){
+    dirMode=false;location.hash='';
+    document.getElementById('vHome').classList.remove('hdn');
+    document.getElementById('vComp').classList.add('hdn');
+    document.getElementById('vAdm').classList.add('hdn');
+    document.getElementById('vCdlRp').classList.add('hdn');
+    document.getElementById('sHome').value='';
+    renderHome();
+}
+
+/* ============================================================
+   TELA EMPRESA
+   ============================================================ */
 function openComp(key){
-    curCo=key;var co=cos[key];if(!co){toast('Não encontrada','err');return;}
-    document.getElementById('vHome').classList.add('hdn');document.getElementById('vComp').classList.remove('hdn');document.getElementById('vAdm').classList.add('hdn');document.getElementById('vCdlRp').classList.add('hdn');
+    curCo=key;
+    var co=cos[key];
+    if(!co){toast('Não encontrada','err');return;}
+
+    document.getElementById('vHome').classList.add('hdn');
+    document.getElementById('vComp').classList.remove('hdn');
+    document.getElementById('vAdm').classList.add('hdn');
+    document.getElementById('vCdlRp').classList.add('hdn');
     document.getElementById('bbkC').style.display=dirMode?'none':'';
     document.getElementById('infoBoxEmpresa').classList.remove('hdn');
 
-    document.getElementById('cN').textContent=co.icon+' '+co.name;document.getElementById('cC').textContent='Painel de consulta — Sincronizado em tempo real';
-    var ac=0,rs=0;for(var i=0;i<co.staff.length;i++){if(co.staff[i].status==='active')ac++;if(co.staff[i].status==='restricted')rs++;}
-    var sb=0;for(var k=0;k<hist.length;k++)if(hist[k].company===key)sb++;
+    document.getElementById('cN').textContent=co.icon+' '+co.name;
+    document.getElementById('cC').textContent='Painel de consulta — Sincronizado em tempo real';
+
+    var ac=0,rs=0;
+    for(var i=0;i<co.staff.length;i++){
+        if(co.staff[i].status==='active') ac++;
+        if(co.staff[i].status==='restricted') rs++;
+    }
+    var sb=0;
+    for(var k=0;k<hist.length;k++) if(hist[k].company===key) sb++;
+
     document.getElementById('cTA').textContent=ac+' ativo'+(ac!==1?'s':'');
     document.getElementById('cSync').textContent=lSync?'🔄 '+lSync.toLocaleTimeString('pt-BR'):'';
-    document.getElementById('cK').innerHTML='<div class="kc kg"><div class="kv">'+ac+'</div><div class="kl">Ativos</div></div><div class="kc kd"><div class="kv">'+rs+'</div><div class="kl">Restritos</div></div><div class="kc kb"><div class="kv">'+co.staff.length+'</div><div class="kl">Total Cadastrados</div></div><div class="kc ko"><div class="kv">'+sb+'</div><div class="kl">Movimentações</div></div>';
+    document.getElementById('cK').innerHTML=
+        '<div class="kc kg"><div class="kv">'+ac+'</div><div class="kl">Ativos</div></div>'
+       +'<div class="kc kd"><div class="kv">'+rs+'</div><div class="kl">Restritos</div></div>'
+       +'<div class="kc kb"><div class="kv">'+co.staff.length+'</div><div class="kl">Total Cadastrados</div></div>'
+       +'<div class="kc ko"><div class="kv">'+sb+'</div><div class="kl">Movimentações</div></div>';
 
     var rows='',idx=1;
-    for(var m=0;m<co.staff.length;m++){var s=co.staff[m];
-    var sp=s.status==='restricted'?'<span class="pill p-rs">⚠️ Restrito</span>':'<span class="pill p-ok">● Ativo</span>';
-    rows+='<tr'+(s.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'><td>'+idx+'</td><td><div><div class="un">'+s.name+'</div><div class="ut">'+co.name+'</div></div></td><td>'+(s.cpf||'—')+'</td><td>'+(s.tel||'—')+'</td><td>'+sp+'</td></tr>';idx++;}
-    if(!rows)rows='<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--t3);">Nenhum colaborador</td></tr>';
+    for(var m=0;m<co.staff.length;m++){
+        var s=co.staff[m];
+        var sp=s.status==='restricted'?'<span class="pill p-rs">⚠️ Restrito</span>':'<span class="pill p-ok">● Ativo</span>';
+        rows+='<tr'+(s.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'>'
+             +'<td>'+idx+'</td>'
+             +'<td><div><div class="un">'+s.name+'</div><div class="ut">'+co.name+'</div></div></td>'
+             +'<td>'+(s.cpf||'—')+'</td>'
+             +'<td>'+(s.tel||'—')+'</td>'
+             +'<td>'+sp+'</td></tr>';
+        idx++;
+    }
+    if(!rows) rows='<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--t3);">Nenhum colaborador</td></tr>';
     document.getElementById('cTbl').innerHTML=rows;
 
-    var hs=[];for(var p2=0;p2<hist.length;p2++)if(hist[p2].company===key)hs.push(hist[p2]);
+    var hs=[];
+    for(var p2=0;p2<hist.length;p2++) if(hist[p2].company===key) hs.push(hist[p2]);
     hs.sort(function(a,b){return (b._k||0)>(a._k||0)?1:-1;});
+
     var tlBody=document.getElementById('cTLB');
     if(!hs.length){
         tlBody.innerHTML='<div style="text-align:center;padding:40px;color:var(--t3);font-size:.88rem;">📭 Nenhuma movimentação registrada ainda.<br><span style="font-size:.78rem;color:var(--t4);">Inclusões, substituições e exclusões aparecerão aqui.</span></div>';
-    }else{
+    } else {
         var tl='';
         for(var q=0;q<hs.length;q++){
             var hi=hs[q],tipo=hi.tipo||'sub',cls='t-sub',ic='🔄',tt='Substituição',det='';
@@ -424,18 +907,42 @@ function openComp(key){
     }
 }
 
-function openAdm(){if(!isAdmin()){toast('⚠️ Acesso restrito','warn');return;}document.getElementById('vHome').classList.add('hdn');document.getElementById('vComp').classList.add('hdn');document.getElementById('vCdlRp').classList.add('hdn');document.getElementById('vAdm').classList.remove('hdn');rAdm();}
-function aTab(t,el){['Hi','Em','Rp'].forEach(function(s){document.getElementById('a'+s).classList.add('hdn');});document.getElementById('a'+t.charAt(0).toUpperCase()+t.slice(1)).classList.remove('hdn');document.querySelectorAll('.atab').forEach(function(a){a.classList.remove('act');});el.classList.add('act');}
+/* ============================================================
+   PAINEL ADMIN
+   ============================================================ */
+function openAdm(){
+    if(!isAdmin()){toast('⚠️ Acesso restrito','warn');return;}
+    document.getElementById('vHome').classList.add('hdn');
+    document.getElementById('vComp').classList.add('hdn');
+    document.getElementById('vCdlRp').classList.add('hdn');
+    document.getElementById('vAdm').classList.remove('hdn');
+    rAdm();
+}
+function aTab(t,el){
+    ['Hi','Em','Rp'].forEach(function(s){document.getElementById('a'+s).classList.add('hdn');});
+    document.getElementById('a'+t.charAt(0).toUpperCase()+t.slice(1)).classList.remove('hdn');
+    document.querySelectorAll('.atab').forEach(function(a){a.classList.remove('act');});
+    el.classList.add('act');
+}
 
 function rAdm(){
     var tE=Object.keys(cos).length,tC=0,tR=0,ks=Object.keys(cos);
-    for(var x=0;x<ks.length;x++)for(var y=0;y<cos[ks[x]].staff.length;y++){if(cos[ks[x]].staff[y].status==='active')tC++;if(cos[ks[x]].staff[y].status==='restricted')tR++;}
-    document.getElementById('aK').innerHTML='<div class="kc kb"><div class="kv">'+tE+'</div><div class="kl">Empresas</div></div><div class="kc kg"><div class="kv">'+tC+'</div><div class="kl">Ativos</div></div><div class="kc kd"><div class="kv">'+tR+'</div><div class="kl">Restritos</div></div><div class="kc ko"><div class="kv">'+hist.length+'</div><div class="kl">Movimentações</div></div>';
+    for(var x=0;x<ks.length;x++)
+        for(var y=0;y<cos[ks[x]].staff.length;y++){
+            if(cos[ks[x]].staff[y].status==='active') tC++;
+            if(cos[ks[x]].staff[y].status==='restricted') tR++;
+        }
+    document.getElementById('aK').innerHTML=
+        '<div class="kc kb"><div class="kv">'+tE+'</div><div class="kl">Empresas</div></div>'
+       +'<div class="kc kg"><div class="kv">'+tC+'</div><div class="kl">Ativos</div></div>'
+       +'<div class="kc kd"><div class="kv">'+tR+'</div><div class="kl">Restritos</div></div>'
+       +'<div class="kc ko"><div class="kv">'+hist.length+'</div><div class="kl">Movimentações</div></div>';
 
     /* Histórico */
     var hh='<div class="pnl"><div class="pnl-h"><div class="pnl-t">📋 Histórico de Movimentações</div></div><div class="pnl-b">';
-    if(!hist.length)hh+='<div style="text-align:center;padding:40px;color:var(--t3);">Nenhuma movimentação registrada</div>';
-    else{
+    if(!hist.length){
+        hh+='<div style="text-align:center;padding:40px;color:var(--t3);">Nenhuma movimentação registrada</div>';
+    } else {
         var hsorted=hist.slice().sort(function(a,b){return (b._k||0)>(a._k||0)?1:-1;});
         for(var j3=0;j3<hsorted.length;j3++){
             var hi=hsorted[j3],tipo=hi.tipo||'sub',ic='🔄',pl='<span class="pill p-cy">🔄 Sub</span>';
@@ -445,63 +952,118 @@ function rAdm(){
             hh+='<div class="he"><div class="ht"><span class="hn">'+ic+' '+hi.companyName+' — '+det+'</span><span class="hd">'+hi.date+'</span></div>'+pl+'</div>';
         }
     }
-    hh+='</div></div>';document.getElementById('aHi').innerHTML=hh;
+    hh+='</div></div>';
+    document.getElementById('aHi').innerHTML=hh;
 
     /* Empresas */
     var ee='<div class="asw"><div class="asi"><span class="asx">🔍</span><input type="text" class="asin" id="sAdmE" placeholder="Pesquisar..." oninput="fAdmE()"></div><div class="asc" id="sAdmC"></div></div>';
     ee+='<div class="pnl"><div class="pnl-h"><div class="pnl-t">🏢 Empresas</div></div><div class="pnl-b"><table class="tbl"><thead><tr><th>Empresa</th><th>Ativos</th><th>Restritos</th><th>Link</th><th>WhatsApp</th></tr></thead><tbody id="aETbl">';
-    var sk=Object.keys(cos).sort(function(a,b){var aa=0,bb=0;for(var i5=0;i5<cos[a].staff.length;i5++)if(cos[a].staff[i5].status==='active')aa++;for(var j5=0;j5<cos[b].staff.length;j5++)if(cos[b].staff[j5].status==='active')bb++;return bb-aa;});
-    for(var m2=0;m2<sk.length;m2++){var kk=sk[m2],co2=cos[kk],a2=0,r2=0;for(var n2=0;n2<co2.staff.length;n2++){if(co2.staff[n2].status==='active')a2++;if(co2.staff[n2].status==='restricted')r2++;}
-    ee+='<tr class="aer" data-n="'+co2.name.toLowerCase()+'" data-idx="'+m2+'"><td><strong>'+co2.icon+' '+co2.name+'</strong></td><td style="color:var(--ok);font-weight:700;">'+a2+'</td><td style="color:'+(r2>0?'var(--err)':'var(--t4)')+';font-weight:600;">'+r2+'</td><td><button class="btn b-gh" style="font-size:.8rem;padding:6px 12px;" data-ecopy="'+m2+'">📋 Copiar</button></td><td><button class="btn b-wp" style="font-size:.8rem;padding:6px 12px;" data-ewp="'+m2+'">💬 Enviar</button></td></tr>';}
+    var sk=Object.keys(cos).sort(function(a,b){
+        var aa=0,bb=0;
+        for(var i5=0;i5<cos[a].staff.length;i5++) if(cos[a].staff[i5].status==='active') aa++;
+        for(var j5=0;j5<cos[b].staff.length;j5++) if(cos[b].staff[j5].status==='active') bb++;
+        return bb-aa;
+    });
+    for(var m2=0;m2<sk.length;m2++){
+        var kk=sk[m2],co2=cos[kk],a2=0,r2=0;
+        for(var n2=0;n2<co2.staff.length;n2++){
+            if(co2.staff[n2].status==='active') a2++;
+            if(co2.staff[n2].status==='restricted') r2++;
+        }
+        ee+='<tr class="aer" data-n="'+co2.name.toLowerCase()+'" data-idx="'+m2+'">'
+           +'<td><strong>'+co2.icon+' '+co2.name+'</strong></td>'
+           +'<td style="color:var(--ok);font-weight:700;">'+a2+'</td>'
+           +'<td style="color:'+(r2>0?'var(--err)':'var(--t4)')+';font-weight:600;">'+r2+'</td>'
+           +'<td><button class="btn b-gh" style="font-size:.8rem;padding:6px 12px;" data-ecopy="'+m2+'">📋 Copiar</button></td>'
+           +'<td><button class="btn b-wp" style="font-size:.8rem;padding:6px 12px;" data-ewp="'+m2+'">💬 Enviar</button></td></tr>';
+    }
     ee+='</tbody></table></div></div>';
-    var emEl=document.getElementById('aEm');emEl.innerHTML=ee;emEl._keys=sk;
-    emEl.onclick=function(e){var cp=e.target.closest('[data-ecopy]');if(cp){var ky=emEl._keys[parseInt(cp.getAttribute('data-ecopy'))];if(ky)copyTxt(gLink(ky));return;}var wp=e.target.closest('[data-ewp]');if(wp){var wk=emEl._keys[parseInt(wp.getAttribute('data-ewp'))];if(wk)openLink(wk);return;}};
+    var emEl=document.getElementById('aEm');
+    emEl.innerHTML=ee;
+    emEl._keys=sk;
+    emEl.onclick=function(e){
+        var cp=e.target.closest('[data-ecopy]');
+        if(cp){var ky=emEl._keys[parseInt(cp.getAttribute('data-ecopy'))];if(ky) copyTxt(gLink(ky));return;}
+        var wp=e.target.closest('[data-ewp]');
+        if(wp){var wk=emEl._keys[parseInt(wp.getAttribute('data-ewp'))];if(wk) openLink(wk);return;}
+    };
 
     rReport();
 }
 
-/* ===== RELATÓRIO ADMIN CONSOLIDADO ===== */
+/* ============================================================
+   RELATÓRIO ADMIN
+   ============================================================ */
 function rReport(){
     var keys=Object.keys(cos),tA=0,tR=0,tG=0,cd=[];
-    for(var i=0;i<keys.length;i++){var co=cos[keys[i]],a=0,r=0;for(var j=0;j<co.staff.length;j++){if(co.staff[j].status==='active')a++;if(co.staff[j].status==='restricted')r++;}tA+=a;tR+=r;tG+=co.staff.length;cd.push({key:keys[i],name:co.name,icon:co.icon,a:a,r:r,t:co.staff.length});}
-    var sem=0;for(var k=0;k<raw.length;k++)if(!(raw[k].emp||'').trim())sem++;
+    for(var i=0;i<keys.length;i++){
+        var co=cos[keys[i]],a=0,r=0;
+        for(var j=0;j<co.staff.length;j++){if(co.staff[j].status==='active') a++;if(co.staff[j].status==='restricted') r++;}
+        tA+=a;tR+=r;tG+=co.staff.length;
+        cd.push({key:keys[i],name:co.name,icon:co.icon,a:a,r:r,t:co.staff.length});
+    }
+    var sem=0;for(var k=0;k<raw.length;k++) if(!(raw[k].emp||'').trim()) sem++;
     var pg=getPassGroups(),pgKeys=Object.keys(pg).sort(function(a,b){var na=parseInt(a)||0,nb=parseInt(b)||0;if(na&&nb)return na-nb;return a.localeCompare(b);}),totalPassDiretos=pgKeys.length,totalSociosDiretos=0;
-    for(var pi=0;pi<pgKeys.length;pi++)totalSociosDiretos+=pg[pgKeys[pi]].members.length;
-    var mx=1;for(var l=0;l<cd.length;l++)if(cd[l].a>mx)mx=cd[l].a;
+    for(var pi=0;pi<pgKeys.length;pi++) totalSociosDiretos+=pg[pgKeys[pi]].members.length;
+    var mx=1;for(var l=0;l<cd.length;l++) if(cd[l].a>mx) mx=cd[l].a;
     cd.sort(function(a,b){return b.a-a.a;});
 
-    /* HEADER */
-    var rr='<div class="rp"><div class="rp-h"><h3>📊 Relatório Geral</h3><div class="tb2">👥 '+tA+' ativos em '+keys.length+' empresas</div></div><div class="rsm"><div class="rs rgo"><div class="rv">'+keys.length+'</div><div class="rl">Empresas CDL</div></div><div class="rs rgn"><div class="rv">'+tA+'</div><div class="rl">Ativos CDL</div></div><div class="rs rrd"><div class="rv">'+tR+'</div><div class="rl">Restritos</div></div><div class="rs rcy"><div class="rv">'+totalPassDiretos+'</div><div class="rl">Passaportes Diretos</div></div><div class="rs rbl"><div class="rv">'+totalSociosDiretos+'</div><div class="rl">Sócios Diretos</div></div><div class="rs rpu"><div class="rv">'+sem+'</div><div class="rl">Sem Empresa</div></div></div></div>';
+    var rr='<div class="rp"><div class="rp-h"><h3>📊 Relatório Geral</h3><div class="tb2">👥 '+tA+' ativos em '+keys.length+' empresas</div></div>'
+          +'<div class="rsm">'
+          +'<div class="rs rgo"><div class="rv">'+keys.length+'</div><div class="rl">Empresas CDL</div></div>'
+          +'<div class="rs rgn"><div class="rv">'+tA+'</div><div class="rl">Ativos CDL</div></div>'
+          +'<div class="rs rrd"><div class="rv">'+tR+'</div><div class="rl">Restritos</div></div>'
+          +'<div class="rs rcy"><div class="rv">'+totalPassDiretos+'</div><div class="rl">Passaportes Diretos</div></div>'
+          +'<div class="rs rbl"><div class="rv">'+totalSociosDiretos+'</div><div class="rl">Sócios Diretos</div></div>'
+          +'<div class="rs rpu"><div class="rv">'+sem+'</div><div class="rl">Sem Empresa</div></div>'
+          +'</div></div>';
 
-    /* BLOCO ÚNICO: Passaportes Empresariais CDL */
+    /* CDL */
     rr+='<div class="pnl"><div class="pnl-h"><div class="pnl-t">🏛️ Passaportes Empresariais — CDL</div><div style="font-size:.78rem;color:var(--t4);">Clique na empresa para ver os colaboradores</div></div><div class="pnl-b">';
     for(var m=0;m<cd.length;m++){
         var c=cd[m],p=Math.round((c.a/mx)*100),pct=tA>0?((c.a/tA)*100).toFixed(1):'0',co2=cos[c.key],gid='admg_'+m;
-        rr+='<div class="pass-group">';
-        rr+='<div class="pass-group-h" onclick="var b=document.getElementById(\''+gid+'\');b.classList.toggle(\'opn\');this.classList.toggle(\'opn\')">';
-        rr+='<div class="pg-left" style="flex:1;min-width:0;"><span style="font-size:1.3rem;flex-shrink:0;">'+c.icon+'</span><div style="flex:1;min-width:0;"><div style="font-weight:700;color:var(--t1);font-size:.95rem;">'+c.name+'</div><div style="font-size:.78rem;color:var(--t3);margin-top:2px;"><span style="color:var(--ok);font-weight:700;">'+c.a+' ativo'+(c.a!==1?'s':'')+'</span>'+(c.r>0?' · <span style="color:var(--err);font-weight:700;">'+c.r+' restrito'+(c.r!==1?'s':'')+'</span>':'')+' · Total '+c.t+' · '+pct+'%</div><div style="margin-top:6px;width:100%;height:5px;background:var(--hover);border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+p+'%;background:linear-gradient(90deg,var(--gold),#e0b85e);border-radius:3px;"></div></div></div></div>';
-        rr+='<span class="pg-count">'+c.t+' sócio'+(c.t!==1?'s':'')+'</span></div>';
-        rr+='<div class="pass-group-b" id="'+gid+'"><table class="tbl"><thead><tr><th>#</th><th>Nome</th><th>CPF</th><th>Telefone</th><th>Status</th></tr></thead><tbody>';
-        for(var s=0;s<co2.staff.length;s++){var st=co2.staff[s],sts=st.status==='restricted'?'<span class="pill p-rs">⚠️ Restrito</span>':'<span class="pill p-ok">● Ativo</span>';rr+='<tr'+(st.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'><td>'+(s+1)+'</td><td><strong>'+st.name+'</strong></td><td>'+(st.cpf||'—')+'</td><td>'+(st.tel||'—')+'</td><td>'+sts+'</td></tr>';}
+        rr+='<div class="pass-group">'
+           +'<div class="pass-group-h" onclick="var b=document.getElementById(\''+gid+'\');b.classList.toggle(\'opn\');this.classList.toggle(\'opn\')">'
+           +'<div class="pg-left" style="flex:1;min-width:0;"><span style="font-size:1.3rem;flex-shrink:0;">'+c.icon+'</span>'
+           +'<div style="flex:1;min-width:0;">'
+           +'<div style="font-weight:700;color:var(--t1);font-size:.95rem;">'+c.name+'</div>'
+           +'<div style="font-size:.78rem;color:var(--t3);margin-top:2px;"><span style="color:var(--ok);font-weight:700;">'+c.a+' ativo'+(c.a!==1?'s':'')+'</span>'+(c.r>0?' · <span style="color:var(--err);font-weight:700;">'+c.r+' restrito'+(c.r!==1?'s':'')+'</span>':'')+' · Total '+c.t+' · '+pct+'%</div>'
+           +'<div style="margin-top:6px;width:100%;height:5px;background:var(--hover);border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+p+'%;background:linear-gradient(90deg,var(--gold),#e0b85e);border-radius:3px;"></div></div>'
+           +'</div></div>'
+           +'<span class="pg-count">'+c.t+' sócio'+(c.t!==1?'s':'')+'</span></div>'
+           +'<div class="pass-group-b" id="'+gid+'"><table class="tbl"><thead><tr><th>#</th><th>Nome</th><th>CPF</th><th>Telefone</th><th>Status</th></tr></thead><tbody>';
+        for(var s=0;s<co2.staff.length;s++){
+            var st=co2.staff[s],sts=st.status==='restricted'?'<span class="pill p-rs">⚠️ Restrito</span>':'<span class="pill p-ok">● Ativo</span>';
+            rr+='<tr'+(st.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'><td>'+(s+1)+'</td><td><strong>'+st.name+'</strong></td><td>'+(st.cpf||'—')+'</td><td>'+(st.tel||'—')+'</td><td>'+sts+'</td></tr>';
+        }
         rr+='</tbody></table></div></div>';
     }
     rr+='<div class="total-row"><div class="tr-label">📊 TOTAL CDL</div><div class="tr-stats"><span style="color:var(--ok);">✅ '+tA+' ativos</span><span style="color:var(--err);">⚠️ '+tR+' restritos</span><span style="color:var(--gold);">👥 '+tG+' total</span></div></div>';
     rr+='</div></div>';
 
-    /* BLOCO ÚNICO: Passaportes Diretos */
+    /* Diretos */
     if(pgKeys.length>0){
-        var mxD=1;for(var pd=0;pd<pgKeys.length;pd++){var cnt=pg[pgKeys[pd]].members.length;if(cnt>mxD)mxD=cnt;}
+        var mxD=1;
+        for(var pd=0;pd<pgKeys.length;pd++){var cnt=pg[pgKeys[pd]].members.length;if(cnt>mxD) mxD=cnt;}
         rr+='<div class="pnl"><div class="pnl-h"><div class="pnl-t">🌊 Passaportes Diretos — Parque das Águas</div><div style="font-size:.78rem;color:var(--t4);">Clique no passaporte para ver os sócios</div></div><div class="pnl-b">';
         for(var pd2=0;pd2<pgKeys.length;pd2++){
             var grp=pg[pgKeys[pd2]],pW=Math.round((grp.members.length/mxD)*100),acD=0,rsD=0,gid2='pg_'+pd2;
-            for(var gm=0;gm<grp.members.length;gm++){if(grp.members[gm].status==='active')acD++;if(grp.members[gm].status==='restricted')rsD++;}
+            for(var gm=0;gm<grp.members.length;gm++){if(grp.members[gm].status==='active') acD++;if(grp.members[gm].status==='restricted') rsD++;}
             var pctD=totalSociosDiretos>0?((grp.members.length/totalSociosDiretos)*100).toFixed(1):'0';
-            rr+='<div class="pass-group">';
-            rr+='<div class="pass-group-h" onclick="var b=document.getElementById(\''+gid2+'\');b.classList.toggle(\'opn\');this.classList.toggle(\'opn\')">';
-            rr+='<div class="pg-left" style="flex:1;min-width:0;"><span class="pg-code">'+grp.code+'</span><div style="flex:1;min-width:0;"><div style="font-weight:700;color:var(--t1);font-size:.95rem;">Passaporte '+grp.code+'</div><div style="font-size:.78rem;color:var(--t3);margin-top:2px;"><span style="color:var(--ok);font-weight:700;">'+acD+' ativo'+(acD!==1?'s':'')+'</span>'+(rsD>0?' · <span style="color:var(--err);font-weight:700;">'+rsD+' restrito'+(rsD!==1?'s':'')+'</span>':'')+' · '+pctD+'%</div><div style="margin-top:6px;width:100%;height:5px;background:var(--hover);border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+pW+'%;background:linear-gradient(90deg,var(--cyan),#67e8f9);border-radius:3px;"></div></div></div></div>';
-            rr+='<span class="pg-count">'+grp.members.length+' sócio'+(grp.members.length!==1?'s':'')+'</span></div>';
-            rr+='<div class="pass-group-b" id="'+gid2+'"><table class="tbl"><thead><tr><th>#</th><th>Nome</th><th>CPF</th><th>Telefone</th><th>Empresa</th><th>Status</th></tr></thead><tbody>';
-            for(var gm3=0;gm3<grp.members.length;gm3++){var mb=grp.members[gm3],sts2=mb.status==='restricted'?'<span class="pill p-rs">⚠️ Restrito</span>':'<span class="pill p-ok">● Ativo</span>';rr+='<tr'+(mb.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'><td>'+(gm3+1)+'</td><td><strong>'+mb.name+'</strong></td><td>'+(mb.cpf||'—')+'</td><td>'+(mb.tel||'—')+'</td><td style="font-size:.82rem;color:var(--t3);">'+(mb.emp||'—')+'</td><td>'+sts2+'</td></tr>';}
+            rr+='<div class="pass-group">'
+               +'<div class="pass-group-h" onclick="var b=document.getElementById(\''+gid2+'\');b.classList.toggle(\'opn\');this.classList.toggle(\'opn\')">'
+               +'<div class="pg-left" style="flex:1;min-width:0;"><span class="pg-code">'+grp.code+'</span>'
+               +'<div style="flex:1;min-width:0;">'
+               +'<div style="font-weight:700;color:var(--t1);font-size:.95rem;">Passaporte '+grp.code+'</div>'
+               +'<div style="font-size:.78rem;color:var(--t3);margin-top:2px;"><span style="color:var(--ok);font-weight:700;">'+acD+' ativo'+(acD!==1?'s':'')+'</span>'+(rsD>0?' · <span style="color:var(--err);font-weight:700;">'+rsD+' restrito'+(rsD!==1?'s':'')+'</span>':'')+' · '+pctD+'%</div>'
+               +'<div style="margin-top:6px;width:100%;height:5px;background:var(--hover);border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+pW+'%;background:linear-gradient(90deg,var(--cyan),#67e8f9);border-radius:3px;"></div></div>'
+               +'</div></div>'
+               +'<span class="pg-count">'+grp.members.length+' sócio'+(grp.members.length!==1?'s':'')+'</span></div>'
+               +'<div class="pass-group-b" id="'+gid2+'"><table class="tbl"><thead><tr><th>#</th><th>Nome</th><th>CPF</th><th>Telefone</th><th>Empresa</th><th>Status</th></tr></thead><tbody>';
+            for(var gm3=0;gm3<grp.members.length;gm3++){
+                var mb=grp.members[gm3],sts2=mb.status==='restricted'?'<span class="pill p-rs">⚠️ Restrito</span>':'<span class="pill p-ok">● Ativo</span>';
+                rr+='<tr'+(mb.status==='restricted'?' style="background:rgba(248,113,113,.03);"':'')+'><td>'+(gm3+1)+'</td><td><strong>'+mb.name+'</strong></td><td>'+(mb.cpf||'—')+'</td><td>'+(mb.tel||'—')+'</td><td style="font-size:.82rem;color:var(--t3);">'+(mb.emp||'—')+'</td><td>'+sts2+'</td></tr>';
+            }
             rr+='</tbody></table></div></div>';
         }
         rr+='<div class="total-row"><div class="tr-label">📊 TOTAL DIRETOS</div><div class="tr-stats"><span style="color:var(--cyan);">🎫 '+totalPassDiretos+' passaportes</span><span style="color:var(--gold);">👥 '+totalSociosDiretos+' sócios</span></div></div>';
@@ -511,14 +1073,100 @@ function rReport(){
     document.getElementById('aRp').innerHTML=rr;
 }
 
-function fAdmE(){var q=document.getElementById('sAdmE').value.toLowerCase().trim();var rows=document.querySelectorAll('.aer');var v=0;for(var i=0;i<rows.length;i++){var m=!q||rows[i].getAttribute('data-n').indexOf(q)>=0;rows[i].style.display=m?'':'none';if(m)v++;}document.getElementById('sAdmC').textContent=q?(v===0?'Nenhuma':'🔍 '+v+' de '+rows.length):'';}
-function toast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.className='tst '+(type==='ok'?'tok':type==='err'?'ter':'twn');t.style.display='block';setTimeout(function(){t.style.display='none';},3800);}
-function chkDL(){var h=location.hash;if(h&&h.indexOf('#emp=')===0){var e=dKey(h.replace('#emp=',''));if(e&&cos[e]){dirMode=true;hideLo();openComp(e);return true;}}return false;}
-window.addEventListener('hashchange',function(){if(location.hash.indexOf('#emp=')===0){var e=dKey(location.hash.replace('#emp=',''));if(e&&cos[e]){dirMode=true;openComp(e);}}else if(!location.hash)goHome();});
+function fAdmE(){
+    var q=document.getElementById('sAdmE').value.toLowerCase().trim();
+    var rows=document.querySelectorAll('.aer');var v=0;
+    for(var i=0;i<rows.length;i++){
+        var m=!q||rows[i].getAttribute('data-n').indexOf(q)>=0;
+        rows[i].style.display=m?'':'none';if(m) v++;
+    }
+    document.getElementById('sAdmC').textContent=q?(v===0?'Nenhuma':'🔍 '+v+' de '+rows.length):'';
+}
+
+/* ============================================================
+   NAVEGAÇÃO POR HASH (links diretos de empresa)
+   ============================================================ */
+function chkDL(){
+    var h=location.hash;
+    if(h&&h.indexOf('#emp=')===0){
+        var e=dKey(h.replace('#emp=',''));
+        if(e&&cos[e]){dirMode=true;hideLo();openComp(e);return true;}
+    }
+    return false;
+}
+
+window.addEventListener('hashchange',function(){
+    if(location.hash.indexOf('#emp=')===0){
+        var e=dKey(location.hash.replace('#emp=',''));
+        if(e&&cos[e]){dirMode=true;openComp(e);}
+    } else if(!location.hash){
+        goHome();
+    }
+});
+
+/* ============================================================
+   INICIALIZAÇÃO
+   ============================================================ */
 var iTO=null;
-async function init(){if(iTO)clearTimeout(iTO);iTO=setTimeout(function(){hideLo();document.getElementById('vHome').classList.remove('hdn');renderHome();if(!online)toast('Conexão lenta','warn');},6000);try{var ok=await load();clearTimeout(iTO);if(chkDL()){poll();return;}hideLo();document.getElementById('vHome').classList.remove('hdn');if(ok&&raw.length>0){renderHome();toast('🔗 '+raw.length+' associados','ok');}else{renderHome();toast(ok?'📭 Base vazia':'Falha','err');}poll();}catch(e){clearTimeout(iTO);hideLo();document.getElementById('vHome').classList.remove('hdn');renderHome();toast('Erro','err');poll();}}
-function poll(){setInterval(function(){load().then(function(){if(!document.getElementById('vHome').classList.contains('hdn'))renderHome();else if(!document.getElementById('vComp').classList.contains('hdn')&&curCo)openComp(curCo);});},15000);}
-if(location.hash&&location.hash.indexOf('#emp=')===0){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('appContent').style.display='block';userRole='direct';init();}else{if(!checarSessao())document.getElementById('loginSenha').focus();}
+
+async function init(){
+    if(iTO) clearTimeout(iTO);
+
+    /* Timeout de segurança: se demorar mais de 7s, exibe o que tem */
+    iTO=setTimeout(function(){
+        hideLo();
+        document.getElementById('vHome').classList.remove('hdn');
+        renderHome();
+        if(!online) toast('Conexão lenta — usando cache','warn');
+    },7000);
+
+    /* Carrega cache local imediatamente para exibição rápida */
+    carregarCacheLocal();
+
+    try{
+        var ok=await load();
+        clearTimeout(iTO);
+
+        /* Verifica se é link direto de empresa */
+        if(chkDL()){iniciarPoll();return;}
+
+        hideLo();
+        document.getElementById('vHome').classList.remove('hdn');
+
+        if(ok&&raw.length>0){
+            renderHome();
+            toast('🔗 '+raw.length+' associados carregados','ok');
+        } else {
+            renderHome();
+            toast(ok?'📭 Base vazia':'⚠️ Falha na conexão','err');
+        }
+
+        iniciarPoll();
+
+    }catch(e){
+        clearTimeout(iTO);
+        hideLo();
+        document.getElementById('vHome').classList.remove('hdn');
+        renderHome();
+        toast('⚠️ Erro ao carregar','err');
+        iniciarPoll();
+    }
+}
+
+/* ============================================================
+   BOOT — verifica sessão ou link direto
+   ============================================================ */
+if(location.hash&&location.hash.indexOf('#emp=')===0){
+    /* Acesso direto por link de empresa — sem login */
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('appContent').style.display='block';
+    userRole='direct';
+    init();
+} else {
+    if(!checarSessao()){
+        document.getElementById('loginSenha').focus();
+    }
+}
 </script>
 </body>
 </html>
